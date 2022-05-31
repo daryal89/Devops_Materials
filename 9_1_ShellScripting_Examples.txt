@@ -1,0 +1,147 @@
+
+Bash Shell (bash) Scripting
+______________________________
+https://devmanual.gentoo.org/tools-reference/bash/index.html
+
+
+Examples:
+----------
+ 
+#! /bin/bash
+
+echo " Hello World from ubuntu distribution Linux"
+
+# Variables in Linux: Two types: System Variables and User variables
+# System variables are usually defined in capital cases.
+# User variables are created by users and defined in lower cases without spaces
+# There is no space between variable and it's value. eg jobName=clerk
+# variable name should not start with number.
+
+echo Our shell name is:  $BASH
+echo Our shell version name is :  $BASH_VERSION
+echo Our home directory name is :  $HOME
+echo Our currnet working direcotry is:  $PWD
+
+# User defined variables
+name=Mark
+echo The name is:$name
+
+age=30
+echo The age is:$age
+
+profession=Software_Engineer
+echo The profession is:$profession
+
+# User to enter the name
+echo "Enter name: "
+read name
+echo "Entered name : $name"
+
+# User enter multiple values
+echo "Enter names: "
+read name1 name2 name3
+echo "Names : $name1, $name2, $name3"
+
+# ---- How to enter input in the same line -----
+read -p 'username : ' user_var
+read -sp 'password : ' pass_var
+echo
+echo "username : $user_var"
+echo "password : $pass_var"
+
+# ---- Enter multiple inputs and save those inputs in array ----
+echo "Enter names: "
+read -a names
+echo "Names: ${names[0]},${names[1]}"
+
+# Enter no variable after read command will go in built-in variable reply
+echo "Enter name: "
+read
+echo "Name : $REPLY"
+
+# -------Passing argument in bash script ------
+echo $0 $1 $2 $3 $4 $5 ' > echo $1 $2 $3 $4 $5'
+
+# Parse the arguments as an array
+args=("$@")
+echo ${args[0]} ${args[1]} ${args[2]} ${args[3]}
+
+echo $@ # it will print all the arguments this is called default variable.
+
+echo $#  # It will display the number of argument passed to the bash script
+
+_________________________________________________
+# ---- basic syntax of if statement in bash ----
+#! /bin/bash
+
+if [condition /comparisons]
+    then
+         commands
+fi
+
+# --------  Multiple selection syntax:-------
+if something ; then
+	do_stuff
+elif something_else ; then
+	do_other_stuff
+elif full_moon ; then
+	howl
+else
+	turn_into_a_newt
+fi
+________________________________________________
+
+# Example:  ------------------
+#! /bin/bash
+
+count=10
+if (($count >11))
+     then
+          echo "$count is greater"
+     else
+         echo  "$count is not greater"
+fi
+
+----------
+____________________
+
+#! /bin/bash
+ # -e flag is used to check whether the file exists or not
+ 
+echo -e "Enter the name of the file: \c"
+
+read file_name
+
+# -e flag is used to check whether the file exists or not
+if [ -e $file_name ]
+        then
+        echo "$file_name found"
+       else
+        echo "$file_name not found"
+        fi
+__________________________________________________
+
+#! /bin/bash
+ # -e flag is used to enable the interpretation of \c
+echo -e "Enter the name of the file: \c"
+
+ # -f is the file exists or it is a regular file or not
+if [ -f $fine_name ]
+        then
+        echo "$file_name found"
+       else
+        echo "$file_name not found"
+        fi
+_____________________________________________________
+
+#! /bin/bash
+echo -e "Enter the name of the directory: \c"
+
+# -d is the directory exists or not
+if [ -d $dir_name ]
+        then
+        echo "$dir_name found"
+       else
+        echo "$dir_name not found"
+        fi
+_________________________________________________________

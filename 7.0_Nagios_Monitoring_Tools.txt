@@ -1,0 +1,579 @@
+Lecture 43: Nagios - Continuous Monitoring tool 
+________________________________________________
+
+(Monitoring tools:Nagios, Splunk, Prometheus, ELK, Sensu, librato, kibana, Cloudwatch)
+
+Phases of Continuous Monitoring
+1. Define -> Develop a monitoring strategy
+2. Estlabish -> How frequently you are going to monitor it. (Set parameters)
+3. Implement
+4. Analyze data and Report findings
+5. Respond (According to findings report/error/failure happended you respond)
+6.Review and Update
+______________________________________________
+ 
+Nagios: Nagios is an open source software for continuous monitoring of systems, networks and infrasturcute. It runs plugins stored on a server which is connected with a host or another server on your network, or the internet. In case of any failure,Nagios alerts about the issue so that the technical team can perform recovery process immediately. Nagios works on client-server architecture.
+It uses port number 5666, 5667 and 5668 to monotor its Client. 
+
+Why we need continuous Monitoring ? (For Reduce downtime)
+Filure in CI/CD pipeline
+Application fature
+Infrastructure failure
+Analysis of code failure
+
+Why Nagios?
+- Detect all type of network or server issues
+- Helps you to find the root cause of the problem whihch allow you to get the permanent solution to the problem
+- Reduce downtime
+- Active monitoring of entire infrasturcture (Nagios server XI always checks the client by continuous
+- Allow you to monitor and troubleshoot server performance issues
+- Automatically fix problem
+
+---------------------------------
+Features of Nagios
+- Oldest and Latest
+- Good log and database system
+- Informative and attractive wbe interface
+- Automatically send alerts if condition changes
+- Helps you to detect network errors or server crashes.
+- You can monitor the entire business and IT infrastructure with a single pass
+- Monitor network services like http, smtp, snap, ftp, ssh, pop, DNS, LDAP, ipmi etv
+--------------------------------------
+Nagios Architecture
+Nagios is a Client-Server architecture usually on a network, a nagios server is running on a host and plugins are running on all the remote host which should you monitor.
+
+How does it work?
+- Mention all details in configuration files
+- Daemon read those details what data to be collected
+- Daemon use NRPE plug-in to collect data from nodes and stores in its own database
+- Finally shows everythin in dashboard
+--------------------------------------------------------
+Nagios Architecture: (Detail of architecture)
+
+Configuration file in nagios server will have:
+Ip address of client machine
+Username 
+password
+CPU load
+Oncomming traffic and out going traffic
+Request
+
+Daemon: It is the service in Nagios-server
+It will collect information from configuration file
+
+NRPE(Nagios remote plug-in executor)
+Daemon will invoke NRPE executor
+
+There will be an NRPE agent in client/node machine (Check by ssh plugin --> SSH or Secure Shell is a network communication protocol that enables two computers to communicate (c.f http or hypertext transfer protocol, which is the protocol used to transfer hypertext such as web pages) and share data)  and NRPE will communicate with NRPE agent (check by ssh) in client and get information and will provide the information to Daemon and the information will be stored Nagios-server and inforamtion will Display the information in web browser/Dashboard.
+----------------------------------------------------------------
+Prerequisite of Nagios
+- Httpd (Browser)
+- Php (Dashboard)
+- gcc & dg (compiler, to convert raw code into binaries)
+- makefile (to build) 
+- perl (Script)
+
+Main configuration file (Important for interview purpose)
+/usr/local/nagios/etc/nagios.cfg
+
+All monitoring things are called as 'Service'
+for eg -> 5 servers ->4 checks each
+you have to monitor -> 5*4 =20 
+
+---------------------
+Dashboard Overview
+
+To access nagios dashboard -> Url: machineipaddress/nagios/
+----------
+In dashboard, you can see
+Host status as:
+Up
+Down
+Unreachable
+Pending
+------
+Services has below status->
+Ok 
+Warning
+Unknown
+Critical
+Pending
+___________________________________________
+
+Lecture 44: Instillation of Nagios on Linux
+
+To start nagios core installation you must have your EC2 instance Up and run and have already configured SSH and http or All traffic access to the instance.
+
+Step 1: Install Pre-requisite softwares on your EC2 maching prior to Nagios instillation like apache,php, gcc compiler and gd development libaries.
+- sudo su
+- yum install httpd php 
+- yum install gcc glibc glibc-common -y
+- yum install gd gd-devel
+
+Step 2: Create account information you need to setup a nagios user run the following commands
+- adduser -m nagios
+- passwd nagios
+Now, it ask to enter new password give '12345' as password
+- groupadd nagioscmd
+- usermod -a -G nagioscmd nagios
+- usermod -a -G nagioscmd apache
+
+Step 3: Download nagios core and the plugins create a directory for storing the downloads
+- mkdir  ~/downloads
+- cd  ~/downloads
+
+Step 4: Download the source code tarballs of both nagios and the nagios plugins
+a. wget https://versaweb.dl.sourceforge.net/project/nagios/nagios-4.x/nagios-4.4.6/nagios-4.4.6.tar.gz
+b. wget https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz
+
+Step 5: Compile and isntall Nagios extract the nagios sourcedoce tarball
+- tar zxvf nagios-4.4.6.tar.gz
+- cd nagios-4.4.6
+
+Run the configuration script with the name of the group which you have to create in above step
+- ./configure --with-command-group=nagioscmd
+
+Compile the Nagios Source Code
+- make all
+
+Install binaries, init script, sample config files and set permissions on the external command directly] (To compile the script)
+- make install
+- make install-init
+- make install-config
+- make install-commandmode
+
+Step 5: Configure the web interface (To access from web browser) 
+- make install-webconf
+
+Step 6: Create a 'nagiosadmin' account for login into the nagios web interface set password as well
+ - htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+
+Asking for password, set a new password  -'12345'
+
+- service httpd restart
+
+Step 7: Compile and install the Nagios plugins Extract the nagios plugins sourcecode tarball
+- cd ~/downloads
+- tar zxvf nagios-plugins-2.3.3.tar.gz
+- cd nagios-plugins-2.3.3
+
+Compile and install the plugins
+- ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+- make
+- make install
+
+Step 8: Start Nagios. Add Nagios to the list of system services and have it automatically start when the system boots.
+- chkconfig --add nagios
+- chkconfig nagios on
+
+Step 9: verify the sample Nagios configuration files
+- /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+If there are no errors, Start nagios
+- service nagios start
+- service httpd restart
+
+Step  10: Copy public ip of EC2 instance and paste in google chorme , in given way
+for eg -> 20.1.1.11./nagios/
+ask for username -> nagiosadmin
+password ->12345
+______________________________________________________
+LAB:
+login as: ec2-user
+
+[ec2-user@ip-172-31-19-229 ~]$ sudo su
+
+[root@ip-172-31-19-229 ec2-user]# yum updage -y
+
+[root@ip-172-31-19-229 ec2-user]# yum install httpd php -y
+
+[root@ip-172-31-19-229 ec2-user]# yum install gcc glibc glibc-common -y
+[root@ip-172-31-19-229 ec2-user]# yum install gd gd-devel -y
+
+[root@ip-172-31-19-229 ec2-user]# adduser -m nagios
+---------
+[root@ip-172-31-19-229 ec2-user]# passwd nagios
+Changing password for user nagios.
+New password:
+BAD PASSWORD: The password is shorter than 8 characters
+Retype new password:
+passwd: all authentication tokens updated successfully.
+--------
+[root@ip-172-31-19-229 ec2-user]# groupadd nagioscmd
+
+[root@ip-172-31-19-229 ec2-user]# usermod -a -G nagioscmd nagios
+
+[root@ip-172-31-19-229 ec2-user]# usermod -a -G nagioscmd apache
+
+[root@ip-172-31-19-229 ec2-user]# mkdir ~/downloads
+
+[root@ip-172-31-19-229 ec2-user]# cd ~/downloads
+
+[root@ip-172-31-19-229 downloads]# wget https://versaweb.dl.sourceforge.net/project/nagios/nagios-4.x/nagios-4.4.6/nagios-4.4.6.tar.gz
+
+[root@ip-172-31-19-229 downloads]# wget https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz
+
+[root@ip-172-31-19-229 downloads]# ls
+nagios-4.4.6.tar.gz  nagios-plugins-2.3.3.tar.gz
+
+[root@ip-172-31-19-229 downloads]# tar zxvf nagios-4.4.6.tar.gz
+
+[root@ip-172-31-19-229 downloads]# ls
+nagios-4.4.6  nagios-4.4.6.tar.gz  nagios-plugins-2.3.3.tar.gz
+
+[root@ip-172-31-19-229 downloads]# cd nagios-4.4.6
+
+[root@ip-172-31-19-229 nagios-4.4.6]# ./configure --with-command-group=nagioscmd
+---------------------------
+[root@ip-172-31-19-229 nagios-4.4.6]# make all
+
+before you post a question to one of the mailing lists.
+Also make sure to include pertinent information that could
+help others help you.  This might include:
+
+     - What version of Nagios you are using
+     - What version of the plugins you are using
+     - Relevant snippets from your config files
+     - Relevant error messages from the Nagios log file
+
+For more information on obtaining support for Nagios, visit:
+
+       https://support.nagios.com
+
+*************************************************************
+Enjoy.
+------
+[root@ip-172-31-19-229 nagios-4.4.6]# make install
+--------
+[root@ip-172-31-19-229 nagios-4.4.6]# make install-init
+/bin/install -c -m 755 -d -o root -g root /lib/systemd/system
+/bin/install -c -m 755 -o root -g root startup/default-service /lib/systemd/system/nagios.service
+-------------
+[root@ip-172-31-19-229 nagios-4.4.6]# make install-config
+
+*** Config files installed ***
+
+Remember, these are *SAMPLE* config files.  You'll need to read
+the documentation for more information on how to actually define
+services, hosts, etc. to fit your particular needs.
+----------
+[root@ip-172-31-19-229 nagios-4.4.6]# make install-commandmode
+/bin/install -c -m 775 -o nagios -g nagioscmd -d /usr/local/nagios/var/rw
+chmod g+s /usr/local/nagios/var/rw
+
+*** External command directory configured ***
+--------------
+[root@ip-172-31-19-229 nagios-4.4.6]# vim /usr/local/nagios/etc/objects/contacts.cfg
+# Just one contact defined by default - the Nagios admin (that's you)
+# This contact definition inherits a lot of default values from the
+# 'generic-contact' template which is defined elsewhere.
+
+define contact {
+
+    contact_name            nagiosadmin             ; Short name of user
+    use                     generic-contact         ; Inherit default values from generic-contact template (defined above)
+    alias                   Nagios Admin            ; Full name of user
+    email                   nagios@localhost ; <<***** CHANGE THIS TO YOUR EMAIL ADDRESS ******
+}
+------------
+- Configure webinterface:
+
+[root@ip-172-31-19-229 nagios-4.4.6]# make install-webconf
+/bin/install -c -m 644 sample-config/httpd.conf /etc/httpd/conf.d/nagios.conf
+if [ 0 -eq 1 ]; then \
+        ln -s /etc/httpd/conf.d/nagios.conf /etc/apache2/sites-enabled/nagios.conf; \
+fi
+
+*** Nagios/Apache conf file installed ***
+--------
+- Create an Nagios admin account to login in the webpage
+
+[root@ip-172-31-19-229 nagios-4.4.6]# htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+New password:
+Re-type new password:
+Adding password for user nagiosadmin
+-------------
+[root@ip-172-31-19-229 nagios-4.4.6]# service httpd restart
+Redirecting to /bin/systemctl restart httpd.service
+------------------
+ - Compile and install nagios plugin
+
+[root@ip-172-31-19-229 nagios-4.4.6]# cd ~/downloads
+------------------
+[root@ip-172-31-19-229 downloads]# ls
+nagios-4.4.6  nagios-4.4.6.tar.gz  nagios-plugins-2.3.3.tar.gz
+-------------------
+[root@ip-172-31-19-229 downloads]# tar zxvf nagios-plugins-2.3.3.tar.gz
+------------
+[root@ip-172-31-19-229 downloads]# ls
+nagios-4.4.6         nagios-plugins-2.3.3
+nagios-4.4.6.tar.gz  nagios-plugins-2.3.3.tar.gz
+-----------------
+[root@ip-172-31-19-229 downloads]# cd nagios-plugins-2.3.3
+
+[root@ip-172-31-19-229 nagios-plugins-2.3.3]# ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+
+[root@ip-172-31-19-229 nagios-plugins-2.3.3]# make
+
+[root@ip-172-31-19-229 nagios-plugins-2.3.3]# make install
+
+[root@ip-172-31-19-229 nagios-plugins-2.3.3]# chkconfig --add nagios
+
+[root@ip-172-31-19-229 nagios-plugins-2.3.3]# chkconfig nagios on
+--------------------------
+[root@ip-172-31-19-229 nagios-plugins-2.3.3]# /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+Nagios Core 4.4.6
+Copyright (c) 2009-present Nagios Core Development Team and Community Contributors
+Copyright (c) 1999-2009 Ethan Galstad
+Last Modified: 2020-04-28
+License: GPL
+
+Website: https://www.nagios.org
+Reading configuration data...
+   Read main config file okay...
+   Read object config files okay...
+
+Running pre-flight check on configuration data...
+.
+.
+.
+Checking global event handlers...
+Checking obsessive compulsive processor commands...
+Checking misc settings...
+
+Total Warnings: 0
+Total Errors:   0
+
+Things look okay - No serious problems were detected during the pre-flight check
+--------------------------------------------
+[root@ip-172-31-19-229 nagios-plugins-2.3.3]# service nagios start
+Redirecting to /bin/systemctl start nagios.service
+--------------
+[root@ip-172-31-19-229 nagios-plugins-2.3.3]# service httpd restart
+Redirecting to /bin/systemctl restart httpd.service
+--------------
+In webbrowser past the public ip of EC2 machine/nagios 
+http://3.90.114.3/nagios
+username:nagiosadmin
+password:admin
+
+- We can see the dashboard of Nagios runnig with
+ Daemon running with PID 27770
+Nagios® Core™
+Version 4.4.6
+April 28, 2020
+Check for updates
+_____________________________________________
+Commands ran in EC2 machine
+    1  yum updage -y
+    3  yum install httpd php -y
+    4  which php
+    5  which httpd
+    6  yum install gcc glibc glibc-common -y
+    7  yum install gd gd-devel -y
+    8  adduser -m nagios
+    9  passwd nagios
+   10  groupadd nagioscmd
+   11  usermod -a -G nagioscmd nagios
+   12  usermod -a -G nagioscmd apache
+   13  mkdir ~/downloads
+   14  cd ~/downloads
+   15  wget https://versaweb.dl.sourceforge.net/project/nagios/nagios-4.x/nagios-4.4.6/nagios-4.4.6.tar.gz
+   16  wget https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz
+   17  ls
+   18  tar zxvf nagios-4.4.6.tar.gz
+   19  ls
+   20  cd nagios-4.4.6
+   21  ./configure --with-command-group=nagioscmd
+   22  make all
+   23  make install
+   24  make install-init
+   25  make install-init
+   26  make install-config
+   27  make install-commandmode
+   28  vim  /usr/local/nagios/etc/object/contacts.cfg
+   29  vim /usr/local/nagios/etc/objects/contacts.cfg
+   30  make install-webconf
+   31  htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+   32  htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+   33  service httpd restart
+   34  cd ~/downloads
+   35  ls
+   36  tar zxvf nagios-plugins-2.3.3.tar.gz
+   37  ls
+   38  cd nagios-plugins-2.3.3
+   39  ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+   40  make
+   41  make install
+   42  chkconfig --add nagios
+   43  chkconfig --add nagios
+   44  chkconfig nagios on
+   45  /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+   46  service nagios start
+   47  service httpd restart
+   48  history
+_______________________________________________________
+
+Lecture -44 (Copied form video)
+This #Nagios Installation Tutorial will help you to learn how to install Nagios Core on a Linux operating system and how to monitor more than one host. The same steps can be used for Nagios Installation on Ubuntu, Nagios Installation on Mac and Nagios Installation on Windows (using a linux VM). Below are the software that are required for this Nagios Installation:
+1) Linux Operating System: In this Nagios Tutorial we have used a AWS EC2 Linux  virtual machine to install Nagios Core.
+2) Apache: In this Nagios Tutorial we have used Apache2 web server to install Nagios.
+3) PHP: In this Nagios Tutorial we have used PHP for processing dynamic site content.
+
+******************CODE USED FOR INSTALLATION********************
+sudo su
+yum install httpd php
+yum install gcc glibc glibc-common
+yum install gd gd-devel
+
+adduser -m nagios
+passwd nagios
+
+groupadd nagioscmd
+usermod -a -G nagioscmd nagios
+usermod -a -G nagioscmd apache
+
+mkdir ~/downloads
+cd ~/downloads
+
+wget https://versaweb.dl.sourceforge.net/project/nagios/nagios-4.x/nagios-4.4.6/nagios-4.4.6.tar.gz
+wget https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz
+
+tar zxvf nagios-4.4.6.tar.gz
+cd nagios-4.4.6
+
+./configure --with-command-group=nagioscmd
+make all
+
+make install
+make install-init
+make install-config
+make install-commandmode
+
+make install-webconf
+
+service httpd restart
+
+cd ~/downloads
+tar zxvf nagios-plugins-2.0.3.tar.gz
+cd nagios-plugins-2.0.3
+
+./configure --with-nagios-user=nagios --with-nagios-group=nagios
+make
+make install
+
+chkconfig --add nagios
+chkconfig nagios on
+
+/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+service nagios start
+service httpd restart
+___________________________________________________________
+wget https://versaweb.dl.sourceforge.net/project/nagios/nagios-4.x/nagios-4.4.6/nagios-4.4.6.tar.gz
+
+wget https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz
+----------------------------------------------------------------
+https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+__________________________________________
+
+Lecture 44: Nagios
+sudo su
+yum install httpd php
+yum install gcc glibc glibc-common
+yum install gd gd-devel
+
+adduser -m nagios
+passwd nagios
+
+groupadd nagioscmd
+usermod -a -G nagioscmd nagios
+usermod -a -G nagioscmd apache
+
+mkdir ~/downloads
+cd ~/downloads
+
+wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-4.0.8.tar.gz
+wget http://nagios-plugins.org/download/nagios-plugins-2.0.3.tar.gz
+
+tar zxvf nagios-4.0.8.tar.gz
+cd nagios-4.0.8
+
+./configure --with-command-group=nagioscmd
+make all
+
+make install
+make install-init
+make install-config
+make install-commandmode
+
+make install-webconf
+
+htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+service httpd restart
+
+cd ~/downloads
+tar zxvf nagios-plugins-2.0.3.tar.gz
+cd nagios-plugins-2.0.3
+
+./configure --with-nagios-user=nagios --with-nagios-group=nagios
+make
+make install
+
+chkconfig --add nagios
+chkconfig nagios on
+
+/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+service nagios start
+service httpd restart
+
+ ----------------------------------------------------------------------
+    1  yum update -y
+    2  yum install httpd php -y
+    3  yum install gcc glibc glibc-common -y
+    4  yum install gd gd-devel -y
+    5  adduser -m nagios
+    6  passwd 12345678
+    7  adduser -m nagiosuser
+    8  passwd 12345678
+    9  passwd nagios 12345678
+   10  passwd nagios
+   11  passwd nagios
+   12  groupadd nagioscmd
+   13  usermod -a -G nagioscmd nagios
+   14  usermod -a -G nagioscmd apache
+   15  mkdir ~/downloads
+   16  cd ~/downloads
+   18  wget http://prdownloads.sourceforge.net/sorceforge/nagios/nagios-4.0.8.tar.gz
+   19  wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-4.0.8.tar.gz
+   20  wget http://nagios-plugins.org/download/nagios-plugins-2.0.3.tar.gz
+   21  tar zxvf nagios-4.0.8.tar.gz
+   22  cd nagios-4.0.8
+   23  ./configure --with-common-group=nagioscmd
+   24  make all
+   25  make install
+   26  make insall-init
+   27  make install-init
+   28  make install -config
+   29  make install-config
+   30  make install-commandmode
+   31  vim /usr/local/nagios/etc/objects/contacts.cfg
+   32  make install-webconf
+   33  htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+   34  service httpd restart
+   35  cd ~/downloads
+   36  tar zxvf nagios-plugins-2.0.3.tar.gz
+   37  cd nagios-plugins-2.0.3
+   38  ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+   39  make
+   40  make install
+   41  chkconfig --add nagios
+   42  chkconfig nagios on
+   43  /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+   44  service nagios restart
+   45  service httpd restart
+   46  history
+_________________________________ END _______________________________
+

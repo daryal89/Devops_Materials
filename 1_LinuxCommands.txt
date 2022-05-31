@@ -1,0 +1,873 @@
+
+Devops Essentials:
+
+Devlop --> Commit --> Build --> Testing --> Publish --> Provision & Deploy --> Operate --> Monitor
+
+Devlop:
+- Vs Code
+- API Code
+- Docker file
+- Terrraform IaC
+- Azure Pipelines
+ 
+Linux distributions: There are many linux distributions. Some important distriubtions are as below:
+
+RedHat, Fedora, Debian, Ubuntu, Linux mint, CentOS, Open SUSE/ SUSE Linux, Kali Linux,Linux Mint
+
+Features of Linux:
+- Simplified updates for all installed s/w
+- Free software Licensing
+- Access to Source Code
+- Multiple distributions
+- Better Malware Protection
+_______________________________________________
+
+Create a EC2 machine on AWS to practice linux command. We need to install putty and puttygen in our system. 
+
+For installing putty and puttygen  Go to: https://www.puttygen.com/download-putty
+
+1. putty.exe (the SSH and Telnet client itself)
+64-bit x86: putty.exe
+2. puttygen.exe (a RSA and DSA key generation utility)
+64-bit: puttygen.exe
+
+or
+https://winbuzzer.com/2021/08/25/how-to-enable-and-use-ssh-commands-on-windows-10-xcxwbt/
+______________________________
+
+yum --> yellodog update modified to install packages ( in CentOs, RHEL, debian, Amazon Linux)
+
+httpd --> hypertext transfer protocal daemon  (Apache)
+---
+sudo su or sudo -s [super user do switch user/switches the user as root user (admin)]
+
+cd dir1 [changes the directory to diri1]
+ . [Shows the current directory]
+pwd [prints current working directroy]
+
+cd .. [goes to the parent directory]
+cd ../../../..  
+_______________________________________________________
+
+Directories under root (/) directory in linux:
+
+/bin -- essential user command binaries
+eg: bash cat chmod cp date echo grep gunzip gzip hostname kill less ln ls mkdir more mount mv nano open ping ps pwd rm sh su tar touch
+_____________
+
+/etc - configuration files for the system
+crontab cups fonts fstab host.conf hostname hosts hosts.allow hosts.deny init init.d issue maciine-id mtab mtools.conf nanorc networks passwd profile protocols resolv.conf rpc securitty servides shells timezone
+_____________
+
+/sbin - essential system binaries
+fdisk fsck getty halt ifconfig init mkfs mkswap rboot route
+_____________
+
+/usr - read only user application support data and binaries
+/usr/bin -- most user commands
+/usr/include -- standard include files for 'C' code
+/usr/lib -- obj, bin lib files for coding and packages
+/usr/local -- local softwares
+/usr/local/bin
+/usr/local/lib
+/usr/local/man
+/usr/local/sbin
+/usr/local/share
+________________
+/var - variable data files
+/var/cache - application cache data
+/var/lib - data modified as programes run
+/var/lock - lock files to track resourdes in use
+/var/log - log files
+/var/opt - variable data for installed packages
+/var/spool - tasks waiting to b processed
+/var/spool/cron
+/var/spool/cups
+/var/spool/mail
+
+/var/tmp -- temporary files saved between reboots.
+_____________
+
+/dev - device files incl./dev/null
+/home - user home direcoties
+/lib - libaries and kernel modules
+/mnt - mount files for temoorary filesystems
+/opt - optional software applications
+/proc - process and kernel information files
+/root - home direcotry for the root user
+__________________________________________________
+
+Vim, GNU nano, emacs, gedit, are text editor.
+
+Vim - Aleardy installed in linux machine.Vim stands for an improved version of the vi text editor command.
+
+nano - Aleardy installed in linux machine.
+
+emacs and gedit editor are not pre-installed in linux. 
+
+What is shell? (user interface)
+The shell is a command line Interperer. It translates commands entered by the user and converts them into a language that is understood by the kernel.
+
+The shell is a program that takes commands from the keyboard and passes them to the operating system (kernel) for performing.
+
+During the initial days, shells was the only mode for communicating with the kernel(via the CLI).
+
+Script is a single file where you write commands.
+whereas in programming you write functions for applications.
+
+Types of shell in Linux
+1. The Bourne Shell (sh)
+2. The GNU Bourne-Again Shell (bash)
+3. The C Shell (csh)
+4. The Korn Shell (ksh)
+5. The Z Shell (zsh)
+
+Shell script are intrepreted not compiled.  
+
+What is BASH?
+Bash is short for Bourne Again Shell. it i s a replacement to the original shell(/bin/sh). Bash combines the features of the Original Shell + additional functionality to make it easier and more convenient to use.
+Nowadays, BASH has been adopted as the default shell for most Linux systems.
+
+Bash default characteristics
+1. command alias c=clear
+2. command completion
+3. command history
+
+#!/bin/bash is not provided it often consider #!/bin/sh  which would be same in most cases. When you put #!/bin/bash in your script, even if you run the script in a different shell, the kernel will know which shell to interprt it with. 
+
+/etc/shells  for configration files
+echo $SHELL
+
+what are Daemons?
+- A daemon is a type of program that runs in the background, free of user control.
+- They can be activated( initiated as a process) by the occurance of a specific event or condition.
+- Daemons accommodate service requests from tother programs or hardware activity or requests from other computer on a network.
+- After the request is serviced, the Daemon disconnects and wits for furtehr requests.
+ps -ef  (all the daemons in TTY)
+___________________________________________________
+
+Header file of shell script - using Shebang (#!)
+
+--> #! - This represents which interpreter a script should be interpreted with.
+
+--> #!/bin/bash - This is a header command which represents it is a bash/shell script.
+___________________________________
+Sample script:1
+
+To run a file test.sh in shell scripting
+[root@ip-172-31-89-24 ec2-user]# cat sample.sh
+#!/bin/bash
+echo "This is a sample script for a bash scripting!!!"
+ 
+1. [root@ip-172-31-89-24 ec2-user]# sh sample.sh
+This is a sample script for a bash scripting!!!
+
+2. [root@ip-172-31-89-24 ec2-user]# bash sample.sh
+This is a sample script for a bash scripting!!!
+
+3. [root@ip-172-31-89-24 ec2-user]# ./sample.sh
+bash: ./sample.sh: Permission denied
+
+[root@ip-172-31-89-24 ec2-user]# chmod +x sample.sh
+
+[root@ip-172-31-89-24 ec2-user]# ./sample.sh
+This is a sample script for a bash scripting!!!
+______________________________________________________
+
+Sample Script 2: devops_first.sh
+#!/bin/bash
+
+echo "I will be agreat DevOps Engineer"
+
+#echo $BASH
+
+name="Dhruba"
+
+echo "hello ${name}, please enter  your age"
+
+read age
+
+echo "My age is ${age}"
+
+echo "Sub: hello I am $1"
+
+sleep 2
+
+echo "Me: Aapka swagat hai TrainWithDhruba Channel pe"
+
+sleep 2
+
+echo "Please subscribe, and also tell your friends to subscribe as well"
+______________________________
+
+Sample Script 3: if_test.sh
+
+#!/bin/bash
+
+if [ "$1" = "like" ]
+then
+echo "Hey please $1 this video"
+else
+echo "Okay, then please Subscribe.)"
+_____________________________________________
+
+Connect to your instance 
+Connection method:  EC2 Instance Connect (browser-based SSH connection) 
+
+To access your instance:
+1. Open an SSH client. (find out how to connect using PuTTY)
+2. Locate your private key file (node-key.pem). The wizard automatically detects the key you used to launch the instance.
+3. Your key must not be publicly viewable for SSH to work. Use this command if needed:
+chmod 400 node-key.pem
+4. Connect to your instance using its Public DNS:
+ec2-18-212-28-137.compute-1.amazonaws.com
+ sudo ssh -i "node-key.pem" ec2-user@ec2-18-212-28-137.compute-1.amazonaws.com
+
+------------ Linux Commands and LAB with Descriptions   -----------------
+
+
+cat >file1 [creates file named file1 and we can add content in it]
+
+cat >>file1 [add contents inside existing file named file1]
+
+cat > .file1 [Creates hidden file file1]
+
+tac file1 [Shows the content of file1 from below to top]
+  
+touch file1 file2 file3 [create file1 file2 file3 empty files]
+
+stat file1 [Shows the timestamp for file1]
+
+touch -a file1 [updates the timestamp of access time of file1]
+
+touch -m file1 [updates the timestamp of modified time of file1]
+
+vi file1 [creates file1 and we can enter the code inside by pressing i and write some content and then press esc and :wq to save file]
+
+nano file1 [creates empty file1, write something in file and press ctrl+x and then Y to save the content in the file]
+
+echo "Hello" >file1 [Creates file1 and redirects "Hello" in file1]
+
+ls  [list --> shows non-hidden files and folder in the current directory]
+
+ls -a  (list all --> Show all hidden/non-hidden files and folder)
+
+ls -l or ll  [long list --> shows all details of non hidden files,folders]
+
+ll -a / ls -al / ls -al [long list all --> [Show the long list of all hidden and non hidden files/directories] ]
+
+------------------------------------------
+mkdir dir1 dir2 [creates directories dir1 dir2]
+
+mkdir -p dir1/dir2/dir3 [creates parent and child subdirectories]
+
+cat >.file1 [create hidden file]
+mkdir .dirx [create hidden directory]
+
+cp file1 file2 [copy file1 to file2]
+
+mv file1 dir1 [move file1 in directory dir2 or move one directory to another]  -cut and paste
+
+mv file1 myfile [rename file1 to myfile]
+
+rmdir  [remove empty directory]
+
+rmdir -p [remove both parent and child directory]
+rmdir -p dir1/dir2
+
+rmdir -pv [Removes all the parent and subdirectories along with verbrose]
+
+rm -rf [removes even non-empty file and directory]
+
+rm -rp [removes non-empty directories including parent & subdirectories]
+
+rm -r [Removes empty directories]
+
+less file1 [will display content of first page]
+
+head file1 [will display first 10 lines of file1]
+
+tail file1 [will display last 10 lines of file1] 
+
+more file1 [will show the % of the file]
+
+hostname  [displays name of machine. eg ip-172-31-94-150.ec2.internal]
+
+hostname -i [ipaddress of address]
+
+ifconfig  [ ipaddress of machine and networks and other details] 
+
+cat /etc/os-release   [ to check the version of os in your machine]
+cat /etc/*rel* [for Os details in your machine]
+
+yum - yellowdog updater modifier used to install any package in linux and installed in linux by default]
+
+yum install httpd -y [installs apache server on EC2 machine] 
+
+yum remove httpd  -y [removes apache server from EC2 machine] 
+
+yum update httpd -y [updates packages on EC2 machine] 
+
+service httpd start [starts apache server on EC2 machine] 
+
+service httpd status [shows the status of apache server on EC2 machine] 
+
+service httpd stop  [stops apache server on EC2 machine] 
+
+chkconfig httpd on  [configures apache server automatically starts  while restarting EC2 machine] 
+
+chkconfig httpd off [needs to manually start apache server each time while restart EC2 machine]
+
+which httpd [To check the httpd package installed in machine or not]
+
+whoami  [Shows who am I, root user or other user]
+
+echo "welcome"  [ reflects the message "Welcome"]
+
+yum list installed  [shows all the installed packages in the machine]
+
+grep  root /etc/passwd [will highlights 'root' word it on the file]
+example:
+[root@ip-172-31-94-150 ec2-user]# grep root /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin
+
+sort  [Sorts the output of file in alphabetical order]
+------------------------------------------
+
+useradd or adduser  xyz  [ creates an user xyz]
+cat /etc/passwd ---- To see the user
+
+userdel xyz [deletes user xyz]
+
+groupadd  pqr  [creates a group pqr]
+cat /etc/group  -- To see the group 
+groupdel pqr [deletes group pqr]
+
+gpasswd -a xyz pqr [ adds the user xyz in group pqr]
+
+gpasswd -M ajay,sameer,vijay devops [adds multiple users ajay,sameer,vijay devops user xyz in group devops]
+
+ln   [hardlink  --it is backup of a file.Even you delete original file it will have backup file]
+ln file1 hardlinkfile1 [ creates hardlink of file1 named hardlinkfile1]
+
+ln -s [softlink -- shortcut of a file.if something is updated in softlink it will be updated in original file but it won't open if original file is deleted]
+ln -s file1 softlinkfile1 [creates softlink of file1 named softlinkfile1]
+lrwxrwxrwx 1 root root         5 Jan 25 00:38 softlinkfile1 -> file1
+
+tar    [tape archive:Tar is an archiver used to combine multiple files into one.]
+tar -cvf(create verbose forcefully) dirx.tar dirx [creates dirx.tar filedir]
+-rw-r--r-- 1 root root 10240 Feb  4 20:40 dirx.tar
+
+gzip    [It is a compression tool used to reduce the size of a file  ]
+gzip dirx.tar  [compressed dirx.tar files and creates dirx.tar.zip]
+-rw-r--r-- 1 root root   153 Feb  4 20:40 dirx.tar.gz
+
+gunzip dirx.tar.gz [to unzip the dirx.tar.gz file]
+[root@ip-172-31-84-177 ec2-user]# gunzip dirx.tar.gz
+
+tar -xvf(extract verbose forcefully) dirx.tar  [extracts dirx.tar file into dirx directory]
+[root@ip-172-31-84-177 ec2-user]# tar -xvf dirx.tar
+
+wget  <url>   [wget is the non-interactive network downloader to download]
+wget https://packages.chef.io/files/stable/chef-workstation/22.1.745/el/8/chef-workstation-22.1.745-1.el8.x86_64.rpm
+ yum install chef-workstation-22.1.745-1.el8.x86_64.rpm
+
+rm -rf * [removes all the files and directories that you are created]
+
+rm -rf file1 file2 dir1 dir2 [removes multiple files and directories]
+
+------------------------------
+access mode/permissions
+chmod   [used to change access mode of file or directory]
+chmod 777 file1 [ changes the permisson of file1 as: rwxrwxrwx in ls -l]
+
+chown dhruba file1  [Changes the owner (as dhruba) of file file or directory]
+
+chgrp devops file1  [Changes the group (as devops) of file file1 or directory]
+
+When creating file or direcoty:
+default permission for file:  -rw-r--r-- 1  or 644
+default permission for dir:  drwxr-xr-x     or 755
+
+permissions are as follows:
+r - read  - 4
+w - write  - 2
+x - execute  -1
+------------------
+u =user/rootuser/owner
+g =group
+o =others
+
+chmod ugo filename
+0 = 0 = nothing
+1 = 1 = execute
+2 = 2 = write
+3 = 2+1 = w+x
+4 = 4 = read
+5 = 4+1 = r+x
+6 = 4+2 = r+w
+7 = 4+2+1 = r+w+x
+
+If I have given permission as rwx r-x r-- for file1 and needs permission as: r-- rwx -wx then,
+
+chmod u=r,g=rwx,o=wx file1
+or  
+chmod u-wx,g+w,o=wx file1
+
+chmod u=r,g=rwx,o=x file1
+-r--rwx--x 1 root root 0 Jan 25 04:01 file1
+- -->file
+1 --> link
+root --> owner
+root --> group
+0 -->file size
+
+chmod g=r,o=rw dir1
+
+chmod u=r,g=rwx,o=x file1
+
+chmod u+w,g-w,o+r file1
+
+history  [ It displays all the commands used on linux]
+
+find [finds the specified file or directory and files or subdirecotires]
+[ec2-user@ip-172-31-89-24 ~]$ find dir2
+dir2
+dir2/file2
+dir2/file3
+dir2/file4
+
+pwd & [ Runs in the background allowing other processes to run in parallel]
+[ec2-user@ip-172-31-89-24 ~]$ pwd &
+[1] 19527
+[ec2-user@ip-172-31-89-24 ~]$ /home/ec2-user
+--
+[ec2-user@ip-172-31-89-24 ~]$ ls || pwd &
+[1] 19631
+[ec2-user@ip-172-31-89-24 ~]$ chef-repo                                  dir2   nodes
+chef-workstation-20.7.96-1.el7.x86_64.rpm  filex  sample.sh
+dir1                                       filey  test.txt
+
+[1]+  Done                    ls --color=auto || pwd
+----
+
+ps [ Lists out all the running processes]
+[ec2-user@ip-172-31-89-24 ~]$ ps
+  PID TTY          TIME CMD
+16931 pts/0    00:00:00 bash
+19710 pts/0    00:00:00 ps
+---
+ps aux [Shows every single process which is running]
+
+
+-rw-r--r-- 1 root root  6 Jan  4 23:36 all
+drwxr-xr-x 2 root root  6 Jan  5 00:02 dir1
+-rw-r--r-- 1 root root  0 Jan  5 00:02 filex
+-rw-r--r-- 1 root root  0 Jan  5 00:02 filey
+lrwxrwxrwx 1 root root  5 Jan  5 15:54 softlinkfile1 -> file1
+-rw-r--r-- 1 root root  1 Jan  5 15:38 testfile
+---
+cat /etc/os-rel*
+
+NAME="Amazon Linux"
+VERSION="2"
+ID="amzn"
+ID_LIKE="centos rhel fedora"
+VERSION_ID="2"
+PRETTY_NAME="Amazon Linux 2"
+ANSI_COLOR="0;33"
+CPE_NAME="cpe:2.3:o:amazon:amazon_linux:2"
+HOME_URL="https://amazonlinux.com/"
+--------------------
+d  --> directory
+-  --> file
+rwx --owner
+r-x  -->group
+r--  -->other user
+
+r  --> 4
+w  --> 2
+x  --> 1
+
+for file default is 644
+for directory default is 755
+-------------------------------
+Linux commands practice: 
+
+    1  sudo yum update
+    2  ls
+    3  cat >file1
+    5  cat file1
+    9  cat >>file2
+   11  cat file1 file2 >all
+   17  tac file1
+   18  touch file3 file4 file5
+   21  stat file1
+   22  touch file1
+   23  stat file1
+   24  touch -a file1
+   26  touch -m file2
+   28  vi file5
+   33  nano file6
+   39  ls -l
+   40  ll
+   42  ls -a
+   43  history
+   58  mkdir dirx diry dirz .dira
+   63  mkdir -p dirc/dird/dire
+   75  cd dirc/dird/dire
+   76  pwd
+   77  cd ../../..
+   80  cd ..
+   83  cd home/ec2-user
+   99  cp file4 file5
+  101  cp file2 dir1
+  106  mv file2 dirc
+  117  mv file4 file40
+  130  cat >file55
+  131  less file55
+  132  head file55
+  133  more file55
+  134  tail file55
+  135  more file55
+  144  yum install tree
+  146  grep root /etc/passwd
+  147  less /etc/passwd
+  148  more /etc/passwd
+  152  sort file20
+  153  hostname
+  154  hostname -i
+  155  ifconfig
+  156  cat /etc/os-release
+  170  cat /etc/*rel*
+  171  yum install httpd -y
+  172  service httpd status
+  173  service httpd start
+  175  yum update httpd -y
+  176  yum remove httpd -y
+  181  service httpd stop
+  183  chkconfig httpd on
+  184  service httpd status
+  185  chkconfig httpd off
+  186  yum list installed
+  188  which tree
+  194  echo "hello"
+  195  echo "hello" testfile
+  196  cat testfile
+  197  echo "hello" >testfile
+  198  cat testfile
+  199  echo "welcome to my channel" >>testfile
+  209  useradd dhruba
+  210  cat /etc/passwd
+  212  groupadd devops
+  214  useradd ritu
+  215  useradd reyona
+  216  gpasswd -a dhruba devops
+  218  gpasswd -M ritu, reyona devops
+  228  ln -s file1 softlinkfile1
+  232  cat >>softlinkfile1
+  241  ln file2 hardlinkfile2
+  277  rm -rf dir1 dir2
+  279  tar -cvf dirx.tar dirx
+  284  gzip dirx.tar
+  287  gunzip dirx.tar.gz
+  290  tar -xvf dirx.tar
+  292  cat hardlinkfile2
+  293  cat file2
+  310  chmod 777 file1
+  312  chmod 700 dir1
+  314  chmod 755 file1
+  316  chmod g=r,o=rw dir1
+  318  chmod u=r,g=rwx,o=x
+  319  chmod u=r,g=rwx,o=x file1
+  322  chmod u+w, g-w,o+r file1
+  328  chgrp linux
+  329  chgrp linux file1
+  330  chgrp Linux file1
+------------------------- END --------------------------------------
+
+---------------------- New LAB ---------------------------
+
+[root@ip-172-31-83-186 ec2-user]# man ls
+
+[ec2-user@ip-172-31-83-186 home]$ sudo bash   [Switches user to root]
+
+[root@ip-172-31-83-186 home]# su ec2-user
+
+[ec2-user@ip-172-31-83-186 home]$ sudo useradd dhruba
+
+[ec2-user@ip-172-31-83-186 home]$ sudo passwd dhruba
+
+[ec2-user@ip-172-31-83-186 home]$ sudo userdel dhruba
+
+[ec2-user@ip-172-31-83-186 home]$ sudo groupadd devops
+
+[ec2-user@ip-172-31-83-186 home]$ sudo cat /etc/group
+
+[ec2-user@ip-172-31-83-186 home]$ sudo groupdel devops
+
+[ec2-user@ip-172-31-83-186 ~]$ cat -b cba.txt
+
+[root@ip-172-31-83-186 ec2-user]# sort sorttest.txt (sort)
+
+[root@ip-172-31-83-186 ec2-user]# sort -n sorttest.txt (numericaly)
+
+[root@ip-172-31-83-186 ec2-user]# sort -r sorttest.txt  (reverse)
+
+[root@ip-172-31-83-186 ec2-user]# chown root root file1
+
+[root@ip-172-31-83-186 ec2-user]# chgrp jenkins file1
+
+[root@ip-172-31-83-186 ec2-user]# chmod 777 file1
+-rwxrwxrwx 1 root     jenkins   20 Mar 22 18:25 file1
+
+[root@ip-172-31-83-186 ec2-user]# lsof (list of open files)
+
+[root@ip-172-31-83-186 ec2-user]# lsof -u ec2-user (List of open files by ec2-user)
+
+[root@ip-172-31-83-186 ec2-user]# id ec2-user   [To find user and group numeric id]
+uid=1000(ec2-user) gid=1000(ec2-user) groups=1000(ec2-user),4(adm),10(wheel),190(systemd-journal)
+
+[root@ip-172-31-83-186 ec2-user]# id -u ec2-user
+1000
+
+[root@ip-172-31-83-186 ec2-user]# id -g ec2-user
+1000
+
+[root@ip-172-31-83-186 ec2-user]# cat demo1.txt
+a11
+b22
+c33
+
+[root@ip-172-31-83-186 ec2-user]# cut -c1-2 demo1.txt   [cut column 1 &2 of file]
+a1
+b2
+c3
+
+[root@ip-172-31-83-186 ec2-user]# cat sedtest.txt
+how are you dhruba?
+
+[root@ip-172-31-83-186 ec2-user]# sed 's/dhruba/ritu/' sedtest.txt
+how are you ritu?
+-----
+[root@ip-172-31-83-186 ec2-user]# cat>unique.txt
+1
+1
+2
+2
+3
+3
+44
+5
+44
+6
+6
+6
+6
+----
+[root@ip-172-31-83-186 ec2-user]# uniq unique.txt
+1
+2
+3
+44
+5
+44
+6
+------
+[root@ip-172-31-83-186 ec2-user]# watch -d free -m
+
+Every 2.0s: free -m                            Tue Mar 22 22:08:00 2022
+
+              total        used        free      shared  buff/cache   a
+vailable
+Mem:            965         149         488           0         326
+     673
+Swap:             0           0           0
+------------
+
+[root@ip-172-31-83-186 ec2-user]# history 2
+   92  history 5
+   93  history 2
+--
+[root@ip-172-31-83-186 ec2-user]# dd if = /dev/hda of= /dev/hdb
+
+-------
+[root@ip-172-31-83-186 ec2-user]# free
+              total        used        free      shared  buff/cache   available
+Mem:         988672      153104      500860         408      334708      690124
+Swap:             0           0           0
+---------
+[root@ip-172-31-83-186 ec2-user]# free -m
+              total        used        free      shared  buff/cache   available
+Mem:            965         149         489           0         326         673
+Swap:             0           0           0
+-------
+[root@ip-172-31-83-186 ec2-user]# ssh masters-ip
+
+[root@ip-172-31-83-186 ec2-user]# ssh-keygen -t rsa
+
+-----
+[root@ip-172-31-83-186 ec2-user]# ifconfig -a
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9001
+        inet 172.31.83.186  netmask 255.255.240.0  broadcast 172.31.95.255
+        inet6 fe80::106a:e4ff:fe7e:c577  prefixlen 64  scopeid 0x20<link>
+        ether 12:6a:e4:7e:c5:77  txqueuelen 1000  (Ethernet)
+        RX packets 80075  bytes 6864365 (6.5 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 68986  bytes 8667290 (8.2 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+-----
+[root@ip-172-31-83-186 ec2-user]# ifconfig -s
+Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg
+eth0      9001    80095      0      0 0         69006      0      0      0 BMRU
+lo       65536        0      0      0 0             0      0      0      0 LRU
+-------
+[root@ip-172-31-83-186 ec2-user]# ip address
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 12:6a:e4:7e:c5:77 brd ff:ff:ff:ff:ff:ff
+    inet 172.31.83.186/20 brd 172.31.95.255 scope global dynamic eth0
+       valid_lft 3136sec preferred_lft 3136sec
+    inet6 fe80::106a:e4ff:fe7e:c577/64 scope link
+       valid_lft forever preferred_lft forever
+---------
+[root@ip-172-31-83-186 ec2-user]# ip link  [To display link layer information]
+
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+    link/ether 12:6a:e4:7e:c5:77 brd ff:ff:ff:ff:ff:ff
+---
+[root@ip-172-31-83-186 ec2-user]# netstat -at
+---
+
+[root@ip-172-31-83-186 ec2-user]# netstat - a
+----
+
+[root@ip-172-31-83-186 ec2-user]# nslookup google.com
+Server:         172.31.0.2
+Address:        172.31.0.2#53
+
+Non-authoritative answer:
+Name:   google.com
+Address: 172.217.0.46
+Name:   google.com
+Address: 2607:f8b0:4004:807::200e
+---  
+
+[root@ip-172-31-83-186 ec2-user]# curl options URL
+
+[root@ip-172-31-83-186 ec2-user]# curl -o URL
+__________________________________ END  ______________________________
+
+
+# Passing argument in bash script
+echo $0 $1 $2 $3 $4 $5 ' > echo $1 $2 $3 $4 $5'
+
+# Parse the arguments as an array
+args=("$@")
+echo ${args[0]} ${args[1]} ${args[2]} ${args[3]}
+
+echo $@ # it will print all the arguments this is called default variable.
+
+echo $#  # It will display the number of argument passed to the bash script
+_________________________________________________________________________
+
+1. Where did the convention of using single dashes for letters and doubles dashes for words come from and why is continued to be used?
+
+For example if I type in ls --help, you see:
+
+  -a, --all                  do not ignore entries starting with .
+  -A, --almost-all           do not list implied . and ..
+
+2. To change the priority of multiple swap partitions, which file would you edit
+
+/etc/fstab 
+
+3. Ensures that the croned service will start automatically on bootup
+
+4. You can set linux group passwords using which commands?
+- passwd -g <groupName>
+
+5. Secure Shell(SSH) utilizes which port by default?
+-22
+
+7. What do you need to do befor eyou can perform SSH passwordless logins?
+- Generate RSa or DSA key pairs using ssh-keygen
+
+8.You want to resolve a long list of DNS names using dig. what should you do?
+- Create a text file including all names and use the -f option of dig.
+
+9. Which command do you use to rename a file in linux?
+- mv
+
+10. What issue might a uer have when they mount a filesystem by partition path such as /dev/sda1 in the /etc/fstab file?
+-
+
+11.The object that systemd uses to manage services is called ----- file.
+-service
+
+12.  echo "Thu Jun 4 15:45:45 PDT 2020" | cut -f3 -d" "
+- 4
+
+13. If the active partition table and the drive's partition table do not match, which command forces the kernel to reread the partition table on the drive?
+
+
+14. [root@ip-172-31-15-182 ec2-user]# myNumber="1234567890"
+[root@ip-172-31-15-182 ec2-user]# echo $myNumber | sed -e 's/^[[:digit:]][[:digit:]][[:digit:]]/(&)/g'
+
+-(123)4567890
+______________________________________________________________________
+
+Devops Prerequisites Course - Getting Started with Devops
+
+[root@ip-172-31-15-182 ec2-user]# echo $SHELL
+/bin/bash
+
+[root@ip-172-31-15-182 ec2-user]# yum repolist
+Loaded plugins: extras_suggestions, langpacks, priorities, update-motd
+208 packages excluded due to repository priority protections
+repo id                         repo name                             status
+!amzn2-core/2/x86_64            Amazon Linux 2 core repository            27,693
+amzn2extra-docker/2/x86_64      Amazon Extras repo for docker                 56
+amzn2extra-kernel-5.10/2/x86_64 Amazon Extras repo for kernel-5.10           143
+epel/x86_64                     Extra Packages for Enterprise Linux 7 13,540+208
+repolist: 41,432
+
+----
+Services: /etc/systemd/system
+
+vi my_app.service
+[service]
+ExecStart=/usr/bin/python3 /opt/code/my_app.py
+systemctl daemon-reload
+systemctl start my_app
+
+
+
+
+
+
+
+
+
+
+
+
+
+

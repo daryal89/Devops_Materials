@@ -1,0 +1,1442 @@
+
+Git, GITHUB and LAB on these technologies:
+------------------------------------------
+
+[root@ip-172-31-87-19 ec2-user]# git --version/ git version
+git version 2.32.0
+
+How to use git and create github account?
+
+Create account in github and login into it using your credentials
+ https://github.com
+ Username:*******
+ Password:*******
+
+Personal access tocken for pushing your code from local to remote repo:
+https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+ Personal access tokens: *****
+
+Create  two EC2 instances (in two different AZ) in AWS  and login into the machines and run following commands in the machines 
+
+- sudo su
+- yum update -y
+- yum install git -y
+- which git
+- git --version
+- git config --global user.name "dhruba"
+- git config --global user.email "dhruba@gmail.com"
+- git config --list
+
+   ---- How to commit,push and pull from github ---------
+
+- mkdir virginiagit
+- cd virginiagit
+- git init
+- cat> virginiafile (put some data inside it)
+- git status
+- git add .
+- git commit -m "My first git commit"
+- git status
+- git log  
+- git show <commit id>
+---
+  Then go to github and create one new repository 
+
+---
+Then add the local git to remote repo
+- git remote add origin <url of remote repository>
+
+- git push -u origin master (enter username and password/personal access token of your github)
+---
+- mkdir Ohiogit
+- cd Ohiogit
+- git init
+- git remote add origin <github repo url/centralgit>
+- git pull -u origin master
+- git log
+- git show <commit id>
+ 
+  Then add some Code in the virginiafile
+
+- git status
+- git add .
+- git commit -m "My first git commit from ohio"
+- git status
+- git log  
+- git show <commit id>
+- git push origin master
+
+  Then go to virginia git machine and pull the latest code form github centralgit repository
+
+- git pull origin master
+- git log
+- git show <commit id>
+
+ -------------To ignore some files while commiting------------
+
+Create one hidden file .gitignore in virginagit directory and enter file format which you want to igonore
+for eg:  vi .gitignore
+       *.css
+       *.java
+       *.xlsx
+Esc --> :wq
+
+- git add .gitignore
+- git commit -m "latest update excludes css, java and xlsx files"
+- git status
+- Create some text,java,css,xlsx files and add them by running "git add"
+  For eg: touch file1.txt file2.txt file3.java file4.css file5.xlsx file6.css
+- ls
+- git status
+- git add
+- git status
+- git commit -m "My text file only" 
+- git log
+- git show <commit id>
+- touch myfile.css myfile.xlsx myfile.java
+- git status
+- touch myfile.txt myfile.html
+- git log -1 (shows last commit)
+- git log -2  (shows last two commits)
+- git log --oneline (Shows all commits)
+- git log --grep "ignore" (will show commits that have ignore word in commit message)
+
+-------------- How to create Branch, Merge and Stash -------------------
+
+- Each task has one seperate Branch
+- After done with code, Merge other branches with master
+- This Concept is useful for parallel Development.
+- You can create any number of branches
+- Changes are personal to that particulat Branch
+- Default Branch is 'Master'
+- File created in Workspace will be visible in any of the branch Workspace until you commit. Once you commit, then that files  belongs to that particular Branch.
+- When created new Branch, data of existing Branch is Copied to new Branch
+
+    -------------------Git branch commands ------------------
+
+To see how many commits in your git
+- git log --oneline
+
+To see list of Available Branches
+- git branch
+
+Create a New Branch
+- git branch <branch name>
+
+To switch Branch
+- git checkout <Name of Branch youwant to go>
+
+To create a branch and switch to that branch
+- git checkout -b <newBranchName>
+
+To delete branch
+- git branch -d <BranchName>
+
+To forcefully delete Branch
+- git  branch -D <BranchName>
+
+    --------------------------Git Merge:----------------------------
+ Git merge is designed to integrate changes from one branch into another branch.
+You can't merge branches of differnet Repositories
+
+We use pulling mecanism to merge branches
+
+- git merge <branch name>
+
+ To verify the merge
+- git log 
+
+To push to central repo like github
+- git push origin master
+
+   -------------------- Git rebase-------------------------------
+
+Git rebase is designed to integrate changes from one branch into another branch.
+- git checkout <branchname>
+- git rebase main
+
+This moves the entire feature branch to begin on the tip of the main branch, effectively incorporating all of the new commits in main. But, instead of using a merge commit, rebasing re-writes the project history by creating branch new commits for each commit in the original branch.
+
+The major benefit of rebasing is that you get a much cleaner project history. First, it eliminates the unnecessary merge commits required by git merge. Second, rebasing also results in a perfectly linear project history - you can follow the tip of feature all the way to the beginning of the project wighout any forks. This makes it easier to navigate yur project with commands like git log, git bisect, and gitk.
+But , ther ate two trade-offs for the pristine commit history: safety and traceability. If you don't follow the Golden Rule of Rebasing, re-writing project history ca be potentially catastrophic for your collaboration workflow. And, less importantly, rebasing loses the context provided by a merge commit - you can't see when upstream changes were incorporated into the feature.
+
+  ----------------- Git Conflict -----------------------
+
+When same name file having different content in differnet branches, if you do merge, Conflict occurs (Resolve conflict then add and commit)
+
+- Conflict Occurs when you merge branches
+
+----------------- Git Stashing -----------------------
+
+ Supposee you are implementing a new feature for your product. Your code is in process and suddenly a customer escalation comes. Because of this, you have to keep aside your new feature work for few hours. you cannot commit your partial code and slso cannot throw away your changes. So you need some temporary storage, when you can store your partial changes and later on commit it.
+- To stash an item (only applies to modified files not new files)
+
+To stash and item
+- git stash
+
+To see stashed items list
+- git stash list
+
+To apply stashed items
+- git stash apply stash@{0}   [0 is latest stashed file and 1,2,3 so on]
+
+Then you can add and commit
+
+To clear the stash items
+ - git stash clear
+
+--------------------------- Git Reset ----------------------------------
+
+Git Reset is a powerful command that is used to undo local changes to the state of a git repo.
+
+To reset stagging area
+- git reset <filename>
+- git reset .
+
+To reset the changes from both staging area and working directory at a time
+- git reset --hard
+
+------------------------- Git Revert ------------------------------
+
+The revert comand helps you undo an existing commit.
+- It does not delete any data in this process instead rather git creates a new commit with the inclded files reverted to their previous state. So, your version control history moves forward while the state of your file moves backwards.
+
+reset ---> before commit
+reveert ---> after commit
+
+- sudo su
+- cd mumbaigit
+- ls
+- git status
+- cat >newfile
+	Hi, final code for app
+- git add .
+- git commit -m "Code"
+- git log --oneline
+- git revert <commit id>
+
+   --------------- How to Remove untracked files ------------
+
+- git clean -n (dry run)
+- git clean -f (forcefully)
+
+  ----------------------- Tags ---------------------
+
+Tag operation allows giving meaningful names to a specific version in the repository
+
+To apply tag
+- git tag -a <tagname> -m <messge>
+
+To see the list of tags
+- git tag
+
+To see particlular commit content by using  tag
+- git show <tag name>
+
+To delete a tag
+- git tag -d <tagName>
+
+  -------------------------- Github clone ----------------
+
+- Open github website
+- login and choose existing repository
+- Now, go to your linux machine and run command
+- git clone <url of github repo>
+
+It creates a local local repo automatically in linux machine with the same name as in github account.
+
+  _______________________________  END  _________________________________
+
+Git: LAB Section
+
+Create two EC2 instance in AWS account
+
+Login into EC2 machine
+login as: ec2-user
+
+[ec2-user@ip-172-31-15-101 ~]$ sudo su
+
+[root@ip-172-31-15-101 ec2-user]# yum update -y
+
+[root@ip-172-31-15-101 ec2-user]# yum install git -y
+
+[root@ip-172-31-15-101 ec2-user]# which git
+/bin/git
+
+[root@ip-172-31-15-101 ec2-user]# git --version
+git version 2.32.0
+
+[root@ip-172-31-15-101 ec2-user]# git config --global user.name "dhruba"
+
+[root@ip-172-31-15-101 ec2-user]# git config --global user.email "dhruba@gmail.com"
+
+[root@ip-172-31-15-101 ec2-user]# git config --list
+user.name=dhruba
+user.email=dhruba@gmail.com
+---
+[root@ip-172-31-19-229 ec2-user]# mkdir virginiagit
+
+[root@ip-172-31-19-229 ec2-user]# cd virginiagit
+---
+[root@ip-172-31-19-229 virginiagit]# git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty Git repository in /home/ec2-user/virginiagit/.git/
+----
+[root@ip-172-31-19-229 virginiagit]# ls -a
+.  ..  .git
+---
+[root@ip-172-31-19-229 virginiagit]# cat > virginiafile
+Hello how are you?
+---
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        virginiafile
+
+nothing added to commit but untracked files present (use "git add" to track)
+---
+[root@ip-172-31-19-229 virginiagit]# git add .
+---
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   virginiafile
+---
+[root@ip-172-31-19-229 virginiagit]# git commit -m "My first commit from virginiagit"
+[master (root-commit) be7a9f9] My first commit from virginiagit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 virginiafile
+------
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+nothing to commit, working tree clean
+-----------
+[root@ip-172-31-19-229 virginiagit]# git log
+commit be7a9f9aaf3bf6b3aedbd982aa8ca9b02da55836 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:12:05 2022 +0000
+
+    My first commit from virginiagit
+-----------------
+[root@ip-172-31-19-229 virginiagit]# git show  be7a9f9aaf3bf6b3aedbd982aa8ca9b02da55836
+commit be7a9f9aaf3bf6b3aedbd982aa8ca9b02da55836 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:12:05 2022 +0000
+
+    My first commit from virginiagit
+
+diff --git a/virginiafile b/virginiafile
+new file mode 100644
+index 0000000..62c5e54
+--- /dev/null
++++ b/virginiafile
+@@ -0,0 +1 @@
++Hello how are you?
+--------------------
+[root@ip-172-31-19-229 virginiagit]# git remote add origin https://github.com/daryal89/centralgit.git
+-----
+[root@ip-172-31-19-229 virginiagit]# git push -u origin master
+Username for 'https://github.com': daryal89
+Password for 'https://daryal89@github.com':
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 241 bytes | 241.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/daryal89/centralgit.git
+ * [new branch]      master -> master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+---------------
+[root@ip-172-31-19-229 virginiagit]# cat >virginiafile
+I'm fine.
+How about you?
+--------
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   virginiafile
+
+no changes added to commit (use "git add" and/or "git commit -a")
+-------
+[root@ip-172-31-19-229 virginiagit]# git add .
+----
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   virginiafile
+------
+[root@ip-172-31-19-229 virginiagit]# git commit -m "My second code from virginia"
+[master f0a4cba] My second code from virginia
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+-----------
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+----------------
+[root@ip-172-31-19-229 virginiagit]# git log
+commit f0a4cba829dd8f7676f1d806042ebdf090971322 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:52:24 2022 +0000
+
+    My second code from virginia
+
+commit be7a9f9aaf3bf6b3aedbd982aa8ca9b02da55836 (origin/master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:12:05 2022 +0000
+
+    My first commit from virginiagit
+-------------------------
+[root@ip-172-31-19-229 virginiagit]# git show f0a4cba8
+commit f0a4cba829dd8f7676f1d806042ebdf090971322 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:52:24 2022 +0000
+
+    My second code from virginia
+
+diff --git a/virginiafile b/virginiafile
+index 62c5e54..691a752 100644
+--- a/virginiafile
++++ b/virginiafile
+@@ -1 +1,2 @@
+-Hello how are you?
++I'm fine.
++How about you?
+---------------
+[root@ip-172-31-19-229 virginiagit]# git push origin master
+Username for 'https://github.com': daryal89
+Password for 'https://daryal89@github.com':
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Writing objects: 100% (3/3), 275 bytes | 275.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/daryal89/centralgit.git
+   be7a9f9..f0a4cba  master -> master
+
+-------------   Git commands in Ohio EC2 machine   ---------------
+
+[root@ip-172-31-15-101 ec2-user]# mkdir ohiogit
+
+[root@ip-172-31-15-101 ec2-user]# cd ohiogit
+
+[root@ip-172-31-15-101 ohiogit]# git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty Git repository in /home/ec2-user/ohiogit/.git/
+-----
+[root@ip-172-31-15-101 ohiogit]# ls -a
+.  ..  .git
+----------------
+[root@ip-172-31-15-101 ohiogit]# git remote add origin https://github.com/daryal89/centralgit.git
+-------
+[root@ip-172-31-15-101 ohiogit]# git log
+fatal: your current branch 'master' does not have any commits yet
+------
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+---------------------
+[root@ip-172-31-15-101 ohiogit]# git pull origin master
+remote: Enumerating objects: 6, done.
+remote: Counting objects: 100% (6/6), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 6 (delta 0), reused 6 (delta 0), pack-reused 0
+Unpacking objects: 100% (6/6), 464 bytes | 464.00 KiB/s, done.
+From https://github.com/daryal89/centralgit
+ * branch            master     -> FETCH_HEAD
+ * [new branch]      master     -> origin/master
+---------------
+[root@ip-172-31-15-101 ohiogit]# git log
+commit f0a4cba829dd8f7676f1d806042ebdf090971322 (HEAD -> master, origin/master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:52:24 2022 +0000
+
+    My second code from virginia
+
+commit be7a9f9aaf3bf6b3aedbd982aa8ca9b02da55836
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:12:05 2022 +0000
+
+    My first commit from virginiagit
+------------
+[root@ip-172-31-15-101 ohiogit]# git show f0a4cba829dd8
+commit f0a4cba829dd8f7676f1d806042ebdf090971322 (HEAD -> master, origin/master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:52:24 2022 +0000
+
+    My second code from virginia
+
+diff --git a/virginiafile b/virginiafile
+index 62c5e54..691a752 100644
+--- a/virginiafile
++++ b/virginiafile
+@@ -1 +1,2 @@
+-Hello how are you?
++I'm fine.
++How about you?
+--------------------------
+[root@ip-172-31-15-101 ohiogit]# cat>>virginiafile
+Hi this is update from ohiogit
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   virginiafile
+
+no changes added to commit (use "git add" and/or "git commit -a")
+---
+[root@ip-172-31-15-101 ohiogit]# git add .
+---
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   virginiafile
+--------------
+[root@ip-172-31-15-101 ohiogit]# git commit -m "Commit from Ohio"
+[master 28e8838] Commit from Ohio
+ 1 file changed, 1 insertion(+)
+-----
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+nothing to commit, working tree clean
+------
+[root@ip-172-31-15-101 ohiogit]# git log
+commit 28e88380de8cea10636a21d7afd3916f411e6de7 (HEAD -> master)
+Author: dhruba <dhruba@gmail.com>
+Date:   Mon Feb 21 12:16:36 2022 +0000
+
+    Commit from Ohio
+
+commit f0a4cba829dd8f7676f1d806042ebdf090971322 (origin/master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:52:24 2022 +0000
+
+    My second code from virginia
+
+commit be7a9f9aaf3bf6b3aedbd982aa8ca9b02da55836
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:12:05 2022 +0000
+
+    My first commit from virginiagit
+------------
+[root@ip-172-31-15-101 ohiogit]# git show 28e88380de8
+commit 28e88380de8cea10636a21d7afd3916f411e6de7 (HEAD -> master)
+Author: dhruba <dhruba@gmail.com>
+Date:   Mon Feb 21 12:16:36 2022 +0000
+
+    Commit from Ohio
+
+diff --git a/virginiafile b/virginiafile
+index 691a752..87ba548 100644
+--- a/virginiafile
++++ b/virginiafile
+@@ -1,2 +1,3 @@
+ I'm fine.
+ How about you?
++Hi this is update from ohiogit
+-----------------------------
+[root@ip-172-31-15-101 ohiogit]# git push origin master
+Username for 'https://github.com': daryal89
+Password for 'https://daryal89@github.com':
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 297 bytes | 297.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/daryal89/centralgit.git
+   f0a4cba..28e8838  master -> master
+
+------------ Switch to virginiagit EC2 machine--------------------
+
+[root@ip-172-31-19-229 virginiagit]# git pull origin master
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 3 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), 277 bytes | 277.00 KiB/s, done.
+From https://github.com/daryal89/centralgit
+ * branch            master     -> FETCH_HEAD
+   f0a4cba..28e8838  master     -> origin/master
+Updating f0a4cba..28e8838
+Fast-forward
+ virginiafile | 1 +
+ 1 file changed, 1 insertion(+)
+--------
+[root@ip-172-31-19-229 virginiagit]# git log
+commit 28e88380de8cea10636a21d7afd3916f411e6de7 (HEAD -> master, origin/master)
+Author: dhruba <dhruba@gmail.com>
+Date:   Mon Feb 21 12:16:36 2022 +0000
+
+    Commit from Ohio
+
+commit f0a4cba829dd8f7676f1d806042ebdf090971322
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:52:24 2022 +0000
+
+    My second code from virginia
+
+commit be7a9f9aaf3bf6b3aedbd982aa8ca9b02da55836
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:12:05 2022 +0000
+
+    My first commit from virginiagit
+-------------
+[root@ip-172-31-19-229 virginiagit]# git show  28e88380de8cea1
+commit 28e88380de8cea10636a21d7afd3916f411e6de7 (HEAD -> master, origin/master)
+Author: dhruba <dhruba@gmail.com>
+Date:   Mon Feb 21 12:16:36 2022 +0000
+
+    Commit from Ohio
+
+diff --git a/virginiafile b/virginiafile
+index 691a752..87ba548 100644
+--- a/virginiafile
++++ b/virginiafile
+@@ -1,2 +1,3 @@
+ I'm fine.
+ How about you?
++Hi this is update from ohiogit
+
+ ---------------    Create and commit .gitignore file    ----------------
+
+[root@ip-172-31-19-229 virginiagit]# vi .gitignore
+
+[root@ip-172-31-19-229 virginiagit]# cat .gitignore
+*.css
+*.java
+*.xlsx
+-----
+[root@ip-172-31-19-229 virginiagit]# git add .gitignore
+-----
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   .gitignore
+-------
+[root@ip-172-31-19-229 virginiagit]# git commit -m "Ignore file format"
+[master 518f7b7] Ignore file format
+ 1 file changed, 4 insertions(+)
+ create mode 100644 .gitignore
+--------
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+--------
+[root@ip-172-31-19-229 virginiagit]# ls
+file1.txt  file3.java  file5.xlsx  file7.java
+file2.txt  file4.css   file6.css   virginiafile
+------
+[root@ip-172-31-19-229 virginiagit]#  git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        file1.txt
+        file2.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+------------
+[root@ip-172-31-19-229 virginiagit]# git add .
+----------------------
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   file1.txt
+        new file:   file2.txt
+----------------------
+[root@ip-172-31-19-229 virginiagit]# git commit -m "Ignore java, css and xlsx files"
+[master 38b21f1] Ignore java, css and xlsx files
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 file1.txt
+ create mode 100644 file2.txt
+----------------
+[root@ip-172-31-19-229 virginiagit]# git log
+commit 38b21f16e9e53c742ab29022ace537dd438d00a0 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 13:31:38 2022 +0000
+
+    Ignore java, css and xlsx files
+
+commit 518f7b78c323c4ef09a4e0edbf08841fd356fd3b
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 13:02:24 2022 +0000
+
+    Ignore file format
+
+commit 28e88380de8cea10636a21d7afd3916f411e6de7 (origin/master)
+Author: dhruba <dhruba@gmail.com>
+Date:   Mon Feb 21 12:16:36 2022 +0000
+
+    Commit from Ohio
+
+commit f0a4cba829dd8f7676f1d806042ebdf090971322
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:52:24 2022 +0000
+
+    My second code from virginia
+---------------
+[root@ip-172-31-19-229 virginiagit]# git show 38b21f16e9e53c74
+commit 38b21f16e9e53c742ab29022ace537dd438d00a0 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 13:31:38 2022 +0000
+
+    Ignore java, css and xlsx files
+
+diff --git a/file1.txt b/file1.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/file2.txt b/file2.txt
+new file mode 100644
+index 0000000..e69de29
+----------------
+[root@ip-172-31-19-229 virginiagit]# touch dhruba.java
+--
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+-------------------
+[root@ip-172-31-19-229 virginiagit]# touch dhruba.txt
+----
+[root@ip-172-31-19-229 virginiagit]# git status
+On branch master
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        dhruba.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+------
+[root@ip-172-31-19-229 virginiagit]# git log -1
+commit 38b21f16e9e53c742ab29022ace537dd438d00a0 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 13:31:38 2022 +0000
+
+    Ignore java, css and xlsx files
+------------------
+[root@ip-172-31-19-229 virginiagit]# git log -2
+commit 38b21f16e9e53c742ab29022ace537dd438d00a0 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 13:31:38 2022 +0000
+
+    Ignore java, css and xlsx files
+
+commit 518f7b78c323c4ef09a4e0edbf08841fd356fd3b
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 13:02:24 2022 +0000
+
+    Ignore file format
+--------------
+[root@ip-172-31-19-229 virginiagit]# git log --grep "Ignore"
+commit 38b21f16e9e53c742ab29022ace537dd438d00a0 (HEAD -> master)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 13:31:38 2022 +0000
+
+    Ignore java, css and xlsx files
+
+commit 518f7b78c323c4ef09a4e0edbf08841fd356fd3b
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 13:02:24 2022 +0000
+
+    Ignore file format
+--------------
+[root@ip-172-31-19-229 virginiagit]# git log --oneline
+38b21f1 (HEAD -> master) Ignore java, css and xlsx files
+518f7b7 Ignore file format
+28e8838 (origin/master) Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+   
+
+-----------   How to create Branch, Merge & Stash   ----------------------
+
+-------------------- Switch to ohiogit EC2 machine   ----------------------
+
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+28e8838 (HEAD -> master, origin/master) Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+----------
+[root@ip-172-31-15-101 ohiogit]# git branch
+* master
+
+[root@ip-172-31-15-101 ohiogit]# ls
+virginiafile
+
+[root@ip-172-31-15-101 ohiogit]# git branch branch1
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+
+[root@ip-172-31-15-101 ohiogit]# git checkout branch1
+Switched to branch 'branch1'
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+* branch1
+  master
+-------
+[root@ip-172-31-15-101 ohiogit]# ls
+virginiafile
+-----
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+28e8838 (HEAD -> branch1, origin/master, master) Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+--------------------
+[root@ip-172-31-15-101 ohiogit]# cat >> branchfile
+Hello all
+
+[root@ip-172-31-15-101 ohiogit]# ls
+branchfile  virginiafile
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+----
+[root@ip-172-31-15-101 ohiogit]# git commit -m "branch1 first commit"
+[branch1 e92d1a1] branch1 first commit
+ 1 file changed, 2 insertions(+)
+ create mode 100644 branchfile
+-----
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+e92d1a1 (HEAD -> branch1) branch1 first commit
+28e8838 (origin/master, master) Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+-------
+[root@ip-172-31-15-101 ohiogit]# git checkout master
+Switched to branch 'master'
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+--
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+28e8838 (HEAD -> master, origin/master) Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+-----
+[root@ip-172-31-15-101 ohiogit]# ls
+virginiafile
+--------
+[root@ip-172-31-15-101 ohiogit]# git checkout branch1
+Switched to branch 'branch1'
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+* branch1
+  master
+
+[root@ip-172-31-15-101 ohiogit]# cat >secondfile
+This is my second file
+
+[root@ip-172-31-15-101 ohiogit]# ls
+branchfile  secondfile  virginiafile
+
+[root@ip-172-31-15-101 ohiogit]# git checkout master
+Switched to branch 'master'
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+
+[root@ip-172-31-15-101 ohiogit]# ls
+secondfile  virginiafile
+
+[root@ip-172-31-15-101 ohiogit]# git checkout branch1
+Switched to branch 'branch1'
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+* branch1
+  master
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch branch1
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   secondfile
+-----------
+[root@ip-172-31-15-101 ohiogit]# git commit -m "Second commit from branch1"
+[branch1 b521a13] Second commit from branch1
+ 1 file changed, 1 insertion(+)
+ create mode 100644 secondfile
+--------
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+b521a13 (HEAD -> branch1) Second commit from branch1
+e92d1a1 branch1 first commit
+28e8838 (origin/master, master) Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+-------------
+[root@ip-172-31-15-101 ohiogit]# git checkout master
+Switched to branch 'master'
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+
+[root@ip-172-31-15-101 ohiogit]# ls
+virginiafile
+
+  ------------------   Git Merge   ---------------------------
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+
+[root@ip-172-31-15-101 ohiogit]# ls
+virginiafile
+
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+28e8838 (HEAD -> master, origin/master) Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+-------
+[root@ip-172-31-15-101 ohiogit]# git merge branch1
+Updating 28e8838..b521a13
+Fast-forward
+ branchfile | 2 ++
+ secondfile | 1 +
+ 2 files changed, 3 insertions(+)
+ create mode 100644 branchfile
+ create mode 100644 secondfile
+------
+[root@ip-172-31-15-101 ohiogit]# ls
+branchfile  secondfile  virginiafile
+----------
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+b521a13 (HEAD -> master, branch1) Second commit from branch1
+e92d1a1 branch1 first commit
+28e8838 (origin/master) Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+------
+
+------------------- Git Conflict -----------------------------
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+
+[root@ip-172-31-15-101 ohiogit]# ls
+branchfile  secondfile  virginiafile
+-----
+[root@ip-172-31-15-101 ohiogit]# cat > aryalfile
+Hello aryal
+
+[root@ip-172-31-15-101 ohiogit]# ls
+aryalfile  branchfile  secondfile  virginiafile
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   aryalfile
+------------
+[root@ip-172-31-15-101 ohiogit]# git commit -m "first commit before conflit"
+[master 23374e1] first commit before conflit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 aryalfile
+-----------
+[root@ip-172-31-15-101 ohiogit]# git checkout branch1
+Switched to branch 'branch1'
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+* branch1
+  master
+-------
+[root@ip-172-31-15-101 ohiogit]# cat >aryalfile
+Hi aryal
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+
+[root@ip-172-31-15-101 ohiogit]# git commit -m "commit from branch1"
+[branch1 9fc1a99] commit from branch1
+ 1 file changed, 1 insertion(+)
+ create mode 100644 aryalfile
+---------------
+[root@ip-172-31-15-101 ohiogit]# git branch
+* branch1
+  master
+[root@ip-172-31-15-101 ohiogit]# git checkout master
+Switched to branch 'master'
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+[root@ip-172-31-15-101 ohiogit]# git merge branch1
+CONFLICT (add/add): Merge conflict in aryalfile
+Auto-merging aryalfile
+Automatic merge failed; fix conflicts and then commit the result.
+-------
+[root@ip-172-31-15-101 ohiogit]# vi aryalfile
+
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both added:      aryalfile
+
+no changes added to commit (use "git add" and/or "git commit -a")
+-----
+[root@ip-172-31-15-101 ohiogit]# git add .
+----
+[root@ip-172-31-15-101 ohiogit]# git commit -m "resolve conflict"
+[master ba5151b] resolve conflict
+----------------
+[root@ip-172-31-15-101 ohiogit]# git commit -m "resolve conflict"
+[master ba5151b] resolve conflict
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+ba5151b (HEAD -> master) resolve conflict
+9fc1a99 (branch1) commit from branch1
+23374e1 first commit before conflit
+b521a13 (origin/master) Second commit from branch1
+e92d1a1 branch1 first commit
+28e8838 Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+
+    -------------   Git Stashing   ------------
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+
+[root@ip-172-31-15-101 ohiogit]# touch demofile
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+
+[root@ip-172-31-15-101 ohiogit]# git commit -m "demofile"
+[master 613ba63] demofile
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 demofile
+
+[root@ip-172-31-15-101 ohiogit]# vi demofile
+
+[root@ip-172-31-15-101 ohiogit]# cat demofile
+Firstcode
+Second code
+Third code
+
+[root@ip-172-31-15-101 ohiogit]# git stash
+Saved working directory and index state WIP on master: 613ba63 demofile
+
+[root@ip-172-31-15-101 ohiogit]# vi demofile
+
+[root@ip-172-31-15-101 ohiogit]# cat demofile
+
+[root@ip-172-31-15-101 ohiogit]# git stash list
+stash@{0}: WIP on master: 613ba63 demofile
+
+[root@ip-172-31-15-101 ohiogit]# vi demofile
+
+[root@ip-172-31-15-101 ohiogit]# cat demofile
+Code for client
+
+[root@ip-172-31-15-101 ohiogit]# git stash
+Saved working directory and index state WIP on master: 613ba63 demofile
+
+[root@ip-172-31-15-101 ohiogit]# git stash list
+stash@{0}: WIP on master: 613ba63 demofile
+stash@{1}: WIP on master: 613ba63 demofile
+
+[root@ip-172-31-15-101 ohiogit]# cat demofile
+
+[root@ip-172-31-15-101 ohiogit]# git stash apply stash@{1}
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   demofile
+
+no changes added to commit (use "git add" and/or "git commit -a")
+------
+[root@ip-172-31-15-101 ohiogit]# cat demofile
+Firstcode
+Second code
+Third code
+-----------
+[root@ip-172-31-15-101 ohiogit]# git add .
+
+[root@ip-172-31-15-101 ohiogit]# git commit -m "First code done"
+[master 2dc5a95] First code done
+ 1 file changed, 4 insertions(+)
+------------------------------
+[root@ip-172-31-15-101 ohiogit]# git stash apply  stash@{0}
+Auto-merging demofile
+CONFLICT (content): Merge conflict in demofile
+
+[root@ip-172-31-15-101 ohiogit]# vi demofile
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+------ 
+[root@ip-172-31-15-101 ohiogit]# git commit -m "second code commit"
+[master 435969a] second code commit
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+nothing to commit, working tree clean
+------
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+435969a (HEAD -> master) second code commit
+2dc5a95 First code done
+613ba63 demofile
+ba5151b resolve conflict
+9fc1a99 (branch1) commit from branch1
+23374e1 first commit before conflit
+b521a13 (origin/master) Second commit from branch1
+e92d1a1 branch1 first commit
+28e8838 Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+-------
+[root@ip-172-31-15-101 ohiogit]# git stash list
+stash@{0}: WIP on master: 613ba63 demofile
+stash@{1}: WIP on master: 613ba63 demofile
+
+[root@ip-172-31-15-101 ohiogit]# git stash clear
+
+[root@ip-172-31-15-101 ohiogit]# git stash list
+
+  -------------------------- Git Reset ---------------------------------
+
+[root@ip-172-31-15-101 ohiogit]# git branch
+  branch1
+* master
+
+[root@ip-172-31-15-101 ohiogit]# cat > testfile
+Hello Dhruba
+
+[root@ip-172-31-15-101 ohiogit]# cat testfile
+Hello Dhruba
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+-----
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   testfile
+-----------------
+[root@ip-172-31-15-101 ohiogit]# git reset .
+------
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        testfile
+
+nothing added to commit but untracked files present (use "git add" to track)
+------
+[root@ip-172-31-15-101 ohiogit]# git add .
+------
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   testfile
+---------------
+[root@ip-172-31-15-101 ohiogit]# git reset --hard
+HEAD is now at 435969a second code commit
+------
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+nothing to commit, working tree clean
+
+   ---------------- Git Revert   ---------------------
+
+[root@ip-172-31-15-101 ohiogit]# cat >revertfile
+paneer
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+
+[root@ip-172-31-15-101 ohiogit]# git commit -m "This is first shahi paneer commit"
+[master 8e90301] This is first shahi paneer commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 revertfile
+-------------
+[root@ip-172-31-15-101 ohiogit]# cat>revertfile
+mushroom
+
+[root@ip-172-31-15-101 ohiogit]# git add .
+---------
+[root@ip-172-31-15-101 ohiogit]# git commit -m "This is mushroom commit"
+[master 1d174c8] This is mushroom commit
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+-------------
+[root@ip-172-31-15-101 ohiogit]# git log
+commit 1d174c8f6b6a0e4c9a7b05b85692d091c27bbefd (HEAD -> master)
+Author: dhruba <dhruba@gmail.com>
+Date:   Tue Feb 22 01:22:30 2022 +0000
+
+    This is mushroom commit
+
+commit 8e90301c63a7a6486a138262a00febf7803bd5f1
+Author: dhruba <dhruba@gmail.com>
+Date:   Tue Feb 22 01:21:25 2022 +0000
+
+    This is first shahi paneer commit
+--------------------------------------------
+[root@ip-172-31-15-101 ohiogit]# cat >> revertfile
+garam masala
+chana masala
+mirch
+--------
+[root@ip-172-31-15-101 ohiogit]# git add .
+
+[root@ip-172-31-15-101 ohiogit]# git commit -m "This is Third  commit for shahi paneer"
+[master 71c10d0] This is Third  commit for shahi paneer
+ 1 file changed, 3 insertions(+)
+------------
+[root@ip-172-31-15-101 ohiogit]# git log
+commit 71c10d043e346ad5d841e60e8814821aa6daddb1 (HEAD -> master)
+Author: dhruba <dhruba@gmail.com>
+Date:   Tue Feb 22 01:28:11 2022 +0000
+
+    This is Third  commit for shahi paneer
+
+commit 1d174c8f6b6a0e4c9a7b05b85692d091c27bbefd
+Author: dhruba <dhruba@gmail.com>
+Date:   Tue Feb 22 01:22:30 2022 +0000
+
+    This is mushroom commit
+---------------------------------------
+[root@ip-172-31-15-101 ohiogit]# cat revertfile
+mushroom
+garam masala
+chana masala
+mirch
+---------------
+[root@ip-172-31-15-101 ohiogit]# git revert 71c10d043e346ad5d841e60e8814821aa6daddb1
+[master 4543512] Revert "This is Third  commit for shahi paneer"(Please ignore this commit)
+ 1 file changed, 3 deletions(-)
+[root@ip-172-31-15-101 ohiogit]# ls
+aryalfile  branchfile  demofile  revertfile  secondfile  virginiafile
+-------
+[root@ip-172-31-15-101 ohiogit]# cat revertfile
+mushroom
+------------------------------
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+4543512 (HEAD -> master) Revert "This is Third  commit for shahi paneer"(Please ignore previous commit)
+71c10d0 This is Third  commit for shahi paneer
+1d174c8 This is mushroom commit
+8e90301 This is first shahi paneer commit
+435969a second code commit
+2dc5a95 First code done
+613ba63 demofile
+ba5151b resolve conflict
+9fc1a99 (branch1) commit from branch1
+23374e1 first commit before conflit
+b521a13 (origin/master) Second commit from branch1
+e92d1a1 branch1 first commit
+28e8838 Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+
+-------------------Removing untracked files-----------------------------
+
+[root@ip-172-31-15-101 ohiogit]# touch filex filey filez file.xlsx file.txt file.java
+---
+[root@ip-172-31-15-101 ohiogit]# ls
+aryalfile   demofile   file.txt  file.xlsx  filez       secondfile
+branchfile  file.java  filex     filey      revertfile  virginiafile
+----
+[root@ip-172-31-15-101 ohiogit]# git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        file.java
+        file.txt
+        file.xlsx
+        filex
+        filey
+        filez
+
+nothing added to commit but untracked files present (use "git add" to track)
+---
+[root@ip-172-31-15-101 ohiogit]# git clean -n
+Would remove file.java
+Would remove file.txt
+Would remove file.xlsx
+Would remove filex
+Would remove filey
+Would remove filez
+---
+[root@ip-172-31-15-101 ohiogit]# git clean -f
+Removing file.java
+Removing file.txt
+Removing file.xlsx
+Removing filex
+Removing filey
+Removing filez
+---
+[root@ip-172-31-15-101 ohiogit]# ls
+aryalfile  branchfile  demofile  revertfile  secondfile  virginiafile
+
+---------------------- git tag ----------------------
+
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+4543512 (HEAD -> master) Revert "This is Third  commit for shahi paneer"(Please ignore this commit)
+71c10d0 This is Third  commit for shahi paneer
+1d174c8 This is mushroom commit
+8e90301 This is first shahi paneer commit
+435969a second code commit
+2dc5a95 First code done
+613ba63 demofile
+ba5151b resolve conflict
+9fc1a99 (branch1) commit from branch1
+23374e1 first commit before conflit
+b521a13 (origin/master) Second commit from branch1
+e92d1a1 branch1 first commit
+28e8838 Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 My first commit from virginiagit
+------------------
+[root@ip-172-31-15-101 ohiogit]# git tag -a important -m "This is very important commit " be7a9f9
+
+[root@ip-172-31-15-101 ohiogit]# git tag
+important
+---
+[root@ip-172-31-15-101 ohiogit]# git show important
+tag important
+Tagger: dhruba <dhruba@gmail.com>
+Date:   Tue Feb 22 01:43:20 2022 +0000
+
+This is very important commit
+
+commit be7a9f9aaf3bf6b3aedbd982aa8ca9b02da55836 (tag: important)
+Author: reyona <reyona@gmail.com>
+Date:   Mon Feb 21 11:12:05 2022 +0000
+
+    My first commit from virginiagit
+
+diff --git a/virginiafile b/virginiafile
+new file mode 100644
+index 0000000..62c5e54
+--- /dev/null
++++ b/virginiafile
+@@ -0,0 +1 @@
++Hello how are you?
+--------------
+[root@ip-172-31-15-101 ohiogit]# git log --oneline
+4543512 (HEAD -> master) Revert "This is Third  commit for shahi paneer"(Please ignore this commit)
+71c10d0 This is Third  commit for shahi paneer
+1d174c8 This is mushroom commit
+8e90301 This is first shahi paneer commit
+435969a second code commit
+2dc5a95 First code done
+613ba63 demofile
+ba5151b resolve conflict
+9fc1a99 (branch1) commit from branch1
+23374e1 first commit before conflit
+b521a13 (origin/master) Second commit from branch1
+e92d1a1 branch1 first commit
+28e8838 Commit from Ohio
+f0a4cba My second code from virginia
+be7a9f9 (tag: important) My first commit from virginiagit
+----------------
+[root@ip-172-31-15-101 ohiogit]# git tag -d important
+Deleted tag 'important' (was 70f728e)
+------
+[root@ip-172-31-15-101 ohiogit]# git tag
+
+----------------------- Github Clone ----------------------
+
+[root@ip-172-31-15-101 ohiogit]# git clone https://github.com/daryal89/centralgit.git
+Cloning into 'centralgit'...
+remote: Enumerating objects: 45, done.
+remote: Counting objects: 100% (45/45), done.
+remote: Compressing objects: 100% (21/21), done.
+remote: Total 45 (delta 9), reused 44 (delta 8), pack-reused 0
+Receiving objects: 100% (45/45), done.
+Resolving deltas: 100% (9/9), done.
+-----------
+[root@ip-172-31-15-101 ohiogit]# ls
+aryalfile   centralgit  filez       secondfile
+branchfile  demofile    revertfile  virginiafile
+---
+[root@ip-172-31-15-101 ohiogit]# cd centralgit
+--
+[root@ip-172-31-15-101 centralgit]# ls
+aryalfile  branchfile  demofile  filez  revertfile  secondfile  virginiafile
+---
+[root@ip-172-31-15-101 centralgit]# touch filefromcentralgit
+
+[root@ip-172-31-15-101 centralgit]# git add .
+--
+[root@ip-172-31-15-101 centralgit]# git commit -m "New commit from cloned project"
+[master 212ce47] New commit from cloned project
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 filefromcentralgit
+---
+[root@ip-172-31-15-101 centralgit]# git push origin master
+Username for 'https://github.com': daryal89
+Password for 'https://daryal89@github.com':
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (2/2), 247 bytes | 247.00 KiB/s, done.
+Total 2 (delta 1), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To https://github.com/daryal89/centralgit.git
+   73d81de..212ce47  master -> master
+___________________________  END ________________________________

@@ -1,0 +1,163 @@
+
+Latest versions of tools used to date (03/26/2022) 
+_______________________________________________________
+git --version
+git version 2.32.0
+
+docker --version or docker -v
+Docker version 20.10.7, build f0df350
+
+chef --version or chef version or chef -v
+Chef Workstation version: 22.1.745
+
+ansible --version
+ansible 2.9.27
+config file = /etc/ansible/ansible.cfg
+
+Jenkins version
+ jenkins 2.319.3 LTS (Generic Java Package (.war))
+
+httpd -v
+Server version: Apache/2.4.52 ()
+
+Nagios
+nagios-4.4.6  
+nagios-plugins-2.3.3
+
+________________________________________________________
+
+[root@ip-172-31-85-160 ec2-user]# cat /etc/os-release
+NAME="Amazon Linux"
+VERSION="2"
+ID="amzn"
+ID_LIKE="centos rhel fedora"
+VERSION_ID="2"
+PRETTY_NAME="Amazon Linux 2"
+ANSI_COLOR="0;33"
+CPE_NAME="cpe:2.3:o:amazon:amazon_linux:2"
+HOME_URL="https://amazonlinux.com/"
+---
+Chef Workstation version: 22.1.745
+Test Kitchen version: 3.2.2
+Cookstyle version: 7.26.1
+Chef Infra Client version: 17.9.26
+Chef InSpec version: 4.52.9
+Chef CLI version: 5.5.0
+Chef Habitat version: 1.6.420
+---
+[root@ip-172-31-85-160 ec2-user]#  docker
+
+Usage:  docker [OPTIONS] COMMAND
+
+A self-sufficient runtime for containers
+
+Options:
+      --config string      Location of client config files
+                           (default "/root/.docker")
+  -c, --context string     Name of the context to use to
+                           connect to the daemon (overrides
+                           DOCKER_HOST env var and default
+                           context set with "docker context
+                           use")
+  -D, --debug              Enable debug mode
+  -H, --host list          Daemon socket(s) to connect to
+  -l, --log-level string   Set the logging level
+                           ("debug"|"info"|"warn"|"error"|"fatal") (default "info")
+      --tls                Use TLS; implied by --tlsverify
+      --tlscacert string   Trust certs signed only by this
+                           CA (default "/root/.docker/ca.pem")
+      --tlscert string     Path to TLS certificate file
+                           (default "/root/.docker/cert.pem")
+      --tlskey string      Path to TLS key file (default
+                           "/root/.docker/key.pem")
+      --tlsverify          Use TLS and verify the remote
+  -v, --version            Print version information and quit
+
+Management Commands:
+  builder     Manage builds
+  config      Manage Docker configs
+  container   Manage containers
+  context     Manage contexts
+  image       Manage images
+  manifest    Manage Docker image manifests and manifest lists
+  network     Manage networks
+  node        Manage Swarm nodes
+  plugin      Manage plugins
+  secret      Manage Docker secrets
+  service     Manage services
+  stack       Manage Docker stacks
+  swarm       Manage Swarm
+  system      Manage Docker
+  trust       Manage trust on Docker images
+  volume      Manage volumes
+
+Commands:
+  attach      Attach local standard input, output, and error streams to a running container
+  build       Build an image from a Dockerfile
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  events      Get real time events from the server
+  exec        Run a command in a running container
+  export      Export a container's filesystem as a tar archive
+  history     Show the history of an image
+  images      List images
+  import      Import the contents from a tarball to create a filesystem image
+  info        Display system-wide information
+  inspect     Return low-level information on Docker objects
+  kill        Kill one or more running containers
+  load        Load an image from a tar archive or STDIN
+  login       Log in to a Docker registry
+  logout      Log out from a Docker registry
+  logs        Fetch the logs of a container
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  ps          List containers
+  pull        Pull an image or a repository from a registry
+  push        Push an image or a repository to a registry
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  run         Run a command in a new container
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  search      Search the Docker Hub for images
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  version     Show the Docker version information
+  wait        Block until one or more containers stop, then print their exit codes
+
+_________________________________________________________________________
+
+Devops skills roadmaps for 2022  by GK:
+
+1. Linux skills
+
+2. Docker 
+
+3. kubernetes one managed cloud (most important)
+CKE certificate
+
+4. Terraform: infrastructure as a code
+
+5. One cloud  knowledge AWS, Azure, GCP
+
+6. CI/CD concept  Azure devops, jenkins, Github Actions, Gitlab CI
+Know how to deploy codes in environments
+
+7. Ansible : leader in configuration management tool
+
+8. Solid understanding of Git and Github
+
+9. One programming language python or Java
+
+10. Bash Scripting  if not programming.
+--------
+
+_______________________________________ END _____________________________

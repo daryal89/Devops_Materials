@@ -1,0 +1,614 @@
+
+docker --version
+
+docker pull ubuntu
+
+docker images
+
+docker run -it(make the terminal interaction) -d(deamon run the container in the backgourund eventhough i am not working on it) ubuntu (imageName)
+
+docker ps
+
+docker ps -a 
+
+docker exec -it d58e50977ada bash
+
+docker kill <containerid>
+
+docker rm <containerid.
+
+docker rmi <Imageid>
+
+docker rm -f <containerID>
+
+saving changes to a container (can install softwares inside container and save: install apache, sql)
+docker commit <container ied> <name-for-image>
+
+docker rm -f $(docker ps -a -q)
+
+create a container and inside container install apache2 software
+
+apt-get update
+
+apt-get install apache2
+
+service apache2 status
+
+service apache2 start
+
+docker commit 819e4488d71d daryal89/apache
+
+docker login
+
+docker push daryal89/apache
+-----------------------------
+Dockerfile  commands/keywords
+FROM  -- first line of Dockerfile
+ADD
+RUN
+CMD
+ENTRYPOINT
+ENV
+
+The FROM keyword is used to define the base image, on which we willbe building 
+example:
+FROM ubuntu
+----
+ADD: Keyword used to add files to the container being built. The syntax which is followed is:
+ADD <source> <destination in container.
+FROM ubuntu
+ADD . /var/www/html
+---
+RUN is used to add layers to the base image, by installing components. Each run statement, adds a new layer to the docker image.
+FROM ubuntu
+RUN apt-get update
+RUN apt-get -y install apache2
+ADD . /var/www/html
+----
+CMD keyword is used to run commands on the start of the container. These commands run only when there is no argument specified while running the conatainer
+FROM ubuntu
+RUN apt-get update
+RUN apt-get -y install apache2
+ADD . /var/www/html
+CMD apachectl -D FOREGROUND # Run the commands at the runtime
+---
+ENTRYPOINT: keyword is used strictly run commands the moment the container initializes. The difference between CMD and ENTRYPOINT is, ENTRYPOINT will run irrespective of the fact whether argument is specified or not.
+FROM ubuntu
+RUN apt-get update
+RUN apt-get -y install apache2
+ADD . /var/www/html
+ENTRYPOINT apachectl -D FOREGROUND
+---
+ENV: Keyword is used to define environment variables in the container run-time
+FROM ubuntu
+RUN apt-get update
+RUN apt-get -y install apache2
+ADD . /var/www/html
+ENTRYPOINT apachectl -D FOREGROUND
+ENV name Devops_Intellipaat
+---------------------
+root@ip-172-31-88-242:/home/ubuntu/dockerfile# cat Dockerfile
+FROM ubuntu
+RUN apt-get update
+RUN apt-get -y install apache2
+ADD . /var/www/html
+ENTRYPOINT apachectl -D FOREGROUND
+ENV name Dhruba_Aryal
+-------
+root@ip-172-31-88-242:/home/ubuntu/dockerfile# cat 1.html
+<html>
+<title>Hello World</title>
+<body>
+<h1> Hello from Dhruba Aryal</h1>
+</body>
+</html>
+
+Building the dockerimage from dockerfile:
+docker build . -t new_dockerfile 
+
+-- how to run docker without sudo
+sudo usermod -aG docker $USER
+then relogin into your session 
+
+
+----------Docker volume---------------
+1.Bindmount
+2. Docker Volume
+Docker volumes are used to persist data across the lifetime of a container
+
+docker volume create <volumeName>
+docker volume ls
+
+docker run -it --mount source<name-of-volume>,target=<path-to-directory> -d <image-name>
+
+ docker run -it --mount source=test,target=/app -d ubuntu
+------------------------------------------------------------
+
+------- Microservices -----------------
+A monolothitic appliatgion is a single -tired software application in which diferent conponents are combined into a single program which resides in a single platform.
+Modules - notifications   mail    payments   location_services customer_service passenger_management 
+
+-------------
+microservices are a software development architectural style that structures an application as a collection of loosely coupled services.
+
+--------------Docker compose ----------------------
+
+ Go to https://docs.docker.com/compose/install/
+
+For docker-compose installing om Linux machine
+root@ip-172-31-88-242:/home/ubuntu#  sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+root@ip-172-31-88-242:/home/ubuntu#  sudo chmod +x /usr/local/bin/docker-compose
+
+root@ip-172-31-88-242:/home/ubuntu# docker-compose --version
+docker-compose version 1.29.2, build 5becea4c
+
+Compose is a tool for defining and running multi-container Docker applications. With compose, you use a YAML file to configure your application's services. Then, with a single command, you create and start all the services from your configuration. Run docker-compose up and compose starts and runs your entire app.
+----------
+https://docs.docker.com/samples/wordpress/
+
+1. Create an empty project directory.
+
+2. Change into your project directory
+
+For example, if you named your directory compose:
+ cd compose/
+3. Create a docker-compose.yml file that starts your WordPress blog and a separate MySQL instance with volume mounts for data persistence:
+-----
+root@ip-172-31-88-242:/home/ubuntu# cd compose
+
+root@ip-172-31-88-242:/home/ubuntu/compose#nano docker-compose.yml
+
+root@ip-172-31-88-242:/home/ubuntu/compose# cat docker-compose.yml
+
+version: "3.9"
+    
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+volumes:
+  db_data: {}
+  wordpress_data: {}
+-------
+
+root@ip-172-31-88-242:/home/ubuntu/compose# docker-compose up -d
+
+After completion copy and paste the public ip of EC2 instance in browser
+http://54.210.167.208:8000/wp-admin/install.php
+
+-------- docker orchestration tool: docker swarm ----------
+
+Docker swarm is a clustering and scheduling tool for Docker containers. With Swarm, IT administrators and developers can estlabish and manage a cluster of Dockernodes as a single virtual system.
+
+------
+Leader:
+root@ip-172-31-88-242:/home/ubuntu/compose# docker swarm init --advertise-addr=172.31.88.242
+Swarm initialized: current node (irxtco3kl2eojzivvi662tvjz) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-0ls5r9h8404tkreihpijn9seb0tcxsjfkmurbht1m8tijoqyn1-d88sv065tx4187cwywb56rqxh 172.31.88.242:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+------
+
+root@ip-172-31-80-238:/home/ubuntu# docker swarm join --token SWMTKN-1-0ls5r9h8404tkreihpijn9seb0tcxsjfkmurbht1m8tijoqyn1-d88sv065tx4187cwywb56rqxh 172.31.88.242:2377
+This node joined a swarm as a worker.
+----
+root@ip-172-31-88-242:/home/ubuntu/compose# docker node ls
+ID                            HOSTNAME           STATUS    AVAILABILITY    MANAGER STATUS   ENGINE VERSION
+4tc0meg295688w8p2khhjp4lo     ip-172-31-80-238   Ready     Active                           20.10.7
+irxtco3kl2eojzivvi662tvjz *   ip-172-31-88-242   Ready     Active          Leader           20.10.7
+-----
+
+root@ip-172-31-80-238:/home/ubuntu# docker swarm leave
+Node left the swarm.
+
+
+-----
+ID                            HOSTNAME           STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+4tc0meg295688w8p2khhjp4lo     ip-172-31-80-238   Down      Active                          20.10.7
+irxtco3kl2eojzivvi662tvjz *   ip-172-31-88-242   Ready     Active         Leader           20.10.7
+---
+root@ip-172-31-88-242:/home/ubuntu/compose# docker swarm leave --force
+Node left the swarm.
+-------
+creating a docker swarm cluster
+docker swarm init --advertise-addr=<private-ip-address-of-leader>
+
+---------------Deploy an app on docker swarm --------------------------
+
+What is a service?
+Containers on the cluster are deployed using services on Docker swarm. A service is a long-running Docker container that can be deployed to any node worker.
+
+creating a service
+docker service create -name <name-of-service> --replicas <number-of-replicas> <image-name>
+
+root@ip-172-31-88-242:/home/ubuntu/compose# docker service create --name apache --replicas 5 -p 83:80 hshar/webapp
+md5jzeehe2j9f3yhelzwq3aa7
+overall progress: 5 out of 5 tasks
+1/5: running
+2/5: running
+3/5: running
+4/5: running
+5/5: running
+verify: Service converged
+---
+root@ip-172-31-88-242:/home/ubuntu/compose# docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE                 PORTS
+md5jzeehe2j9   apache    replicated   5/5        hshar/webapp:latest   *:83->80/tcp
+---
+
+root@ip-172-31-88-242:/home/ubuntu/compose# docker ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED              STATUS              PORTS     NAMES
+7eb7630ae98e   hshar/webapp:latest   "/bin/sh -c 'apachec…"   About a minute ago   Up About a minute   80/tcp    apache.3.nze0ece20r0ga11n370jkeu4w
+93c952aa6c3d   hshar/webapp:latest   "/bin/sh -c 'apachec…"   About a minute ago   Up About a minute   80/tcp    apache.1.k8zt424q6xq9qw3jgiyjq4s4m
+59bb5156bc4a   hshar/webapp:latest   "/bin/sh -c 'apachec…"   About a minute ago   Up About a minute   80/tcp    apache.4.4jg9pb9mjdg6ov5z3mpdro1e
+----
+root@ip-172-31-88-242:/home/ubuntu/compose# docker rm -f $(docker ps -a -q)
+7eb7630ae98e
+93c952aa6c3d
+59bb5156bc4a
+------
+root@ip-172-31-80-238:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS     NAMES
+8ae7d4eaf369   hshar/webapp:latest   "/bin/sh -c 'apachec…"   31 seconds ago   Up 25 seconds   80/tcp    apache.4.a3wwyeybjgmo9pn7gxwa0xy5n
+50fe92dad8b6   hshar/webapp:latest   "/bin/sh -c 'apachec…"   31 seconds ago   Up 25 seconds   80/tcp    apache.3.f98mar17t8npdqw5f17hvq6k5
+6f472d24bd9e   hshar/webapp:latest   "/bin/sh -c 'apachec…"   31 seconds ago   Up 25 seconds   80/tcp    apache.1.uy2l82cwzvb2xho2sexavjiwo
+dae4fbf02259   hshar/webapp:latest   "/bin/sh -c 'apachec…"   2 minutes ago    Up 2 minutes    80/tcp    apache.2.zg5mfg0o52pz0hys2vrih0r13
+e86faf9c3a47   hshar/webapp:latest   "/bin/sh -c 'apachec…"   2 minutes ago    Up 2 minutes    80/tcp    apache.5.jx5dwskz5jsm0vqzpq3pgna4s
+-----
+root@ip-172-31-80-238:/home/ubuntu# docker rm -f $(docker ps -a -q)
+8ae7d4eaf369
+50fe92dad8b6
+6f472d24bd9e
+dae4fbf02259
+e86faf9c3a47
+-------
+root@ip-172-31-88-242:/home/ubuntu/compose# docker service scale apache=2
+apache scaled to 2
+overall progress: 2 out of 2 tasks
+1/2: running
+2/2: task: non-zero exit (137)
+verify: Service converged
+----
+root@ip-172-31-88-242:/home/ubuntu/compose# docker service scale apache=10
+apache scaled to 10
+overall progress: 10 out of 10 tasks
+1/10: running
+2/10: running
+3/10: running
+4/10: running
+5/10: running
+6/10: running
+7/10: running
+8/10: running
+9/10: running
+10/10: running
+verify: Service converged
+----
+root@ip-172-31-88-242:/home/ubuntu/compose# docker ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS     NAMES
+618ac8969c35   hshar/webapp:latest   "/bin/sh -c 'apachec…"   21 seconds ago   Up 19 seconds   80/tcp    apache.2.v9nhl4s6u30b7x1kk1wrm61bf
+9b5470ca2f96   hshar/webapp:latest   "/bin/sh -c 'apachec…"   22 seconds ago   Up 19 seconds   80/tcp    apache.7.zqh643ubfp53rrkssoplin5ht
+e893a785ff17   hshar/webapp:latest   "/bin/sh -c 'apachec…"   22 seconds ago   Up 19 seconds   80/tcp    apache.4.rrmv1vi2xc6ma40nmkdlozo0e
+c5aec5e3b2e3   hshar/webapp:latest   "/bin/sh -c 'apachec…"   22 seconds ago   Up 19 seconds   80/tcp    apache.9.xksr8ktiucjkk60glq5suck43
+24fc2afc45ec   hshar/webapp:latest   "/bin/sh -c 'apachec…"   4 minutes ago    Up 4 minutes    80/tcp    apache.1.xi6ljd45jp3a4lwsaw1dokhj0
+----
+root@ip-172-31-80-238:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS     NAMES
+c6d713c51155   hshar/webapp:latest   "/bin/sh -c 'apachec…"   46 seconds ago   Up 44 seconds   80/tcp    apache.3.uyyuoabifrirqsfip8nxae39p
+adf6fd9f8b9e   hshar/webapp:latest   "/bin/sh -c 'apachec…"   46 seconds ago   Up 44 seconds   80/tcp    apache.8.1z327h3293tqyhohm7i9fxypr
+5a64b61fd72e   hshar/webapp:latest   "/bin/sh -c 'apachec…"   46 seconds ago   Up 44 seconds   80/tcp    apache.10.nnm0legx9xkb18e2udsbedc2i
+bc310d930b58   hshar/webapp:latest   "/bin/sh -c 'apachec…"   47 seconds ago   Up 44 seconds   80/tcp    apache.6.hac9kiaz9f7g89ahust81q25x
+2cff540d9324   hshar/webapp:latest   "/bin/sh -c 'apachec…"   4 minutes ago    Up 4 minutes    80/tcp    apache.5.mu897xvrqyan962d1b5uxyrv8
+----
+root@ip-172-31-88-242:/home/ubuntu/compose# docker service rm apache
+apache
+------
+root@ip-172-31-88-242:/home/ubuntu/compose# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+----
+root@ip-172-31-80-238:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+--
+root@ip-172-31-80-238:/home/ubuntu# docker swarm leave
+Node left the swarm.
+-----------  master -----
+
+root@ip-172-31-88-242:/home/ubuntu/compose# docker swarm leave --force
+Node left the swarm.
+
+
+----------------------PUPPET --------------
+puppet is an open-source software configuration management tool. it runs on many unix-like systems as wellas on Microsoft windows,, and includes its own declarative language to describe system configuration.
+
+Features of Puppet
+- Large User Base (Open source)
+- Big Open Source Community
+- Documentation
+- Platform Support: Linux, MacOS, Microsoft Windows, RHEL, CentOS
+
+------- puppet architecture ------------------
+
+Puppet follows a master slave Architecture, the working has been explained in the below diagram:
+
+- Puppet pull configuraton type of configuration management system.
+- Slave sends it's state information to the master
+
+Puppet Architecture - SSL Connection
+- Because puppet nodes have to interact with the master, all the information which is communicated between the master node and the slave nodes are encrypeted using SSL certificates, The certificate signing processis as fillows.
+
+puppet slave requests for Master Certificate
+puppet master sends Master certificate to puppet slave
+Master requests for slave certificate
+Slave sends Certificate to the master
+On master server, we have to sign the slave certificate in order to authenticate slave to access the puppet master.
+
+------------- Setting up Puppet master-Slave on AWS --------------
+ 
+Master:
+Update the system
+root@ip-172-31-94-251:/home/ubuntu# apt-get update
+
+install wget package
+root@ip-172-31-94-251:/home/ubuntu# apt-get install wget
+
+download puppet package
+root@ip-172-31-94-251:/home/ubuntu# wget https://apt.puppetlabs.com/puppet-release-bionic.deb
+
+unzip puppet package
+root@ip-172-31-94-251:/home/ubuntu# dpkg -i puppet-release-bionic.deb
+
+install puppetmaster package
+root@ip-172-31-94-251:/home/ubuntu# apt-get install puppetmaster -y
+
+check installation policy
+root@ip-172-31-94-251:/home/ubuntu# apt policy puppetmaster
+puppetmaster:
+  Installed: 5.5.10-4ubuntu3
+  Candidate: 5.5.10-4ubuntu3
+  Version table:
+ *** 5.5.10-4ubuntu3 500
+        500 http://us-east-1.ec2.archive.ubuntu.com/ubuntu focal/universe amd64 Packages
+        100 /var/lib/dpkg/status
+
+status of puppetmaster service
+root@ip-172-31-94-251:/home/ubuntu# systemctl status puppet-master.service
+
+//puppet master will use 512mb of mermory instead of 1GB
+Edit the file  /etc/default/puppet-master
+JAVA_ARGS="-Xms512m -Xmx512m"
+
+root@ip-172-31-94-251:/home/ubuntu# vim /etc/default/puppet-master
+root@ip-172-31-94-251:/home/ubuntu# cat /etc/default/puppet-master
+# Defaults for puppetmaster - sourced by /etc/init.d/puppet-master
+
+JAVA_ARGS="-Xms512m -Xmx512m"
+
+# Start puppetmaster on boot?
+START=yes
+
+# Startup options.
+DAEMON_OPTS=""
+------
+Restart the puppet-master
+root@ip-172-31-94-251:/home/ubuntu# systemctl restart puppet-master.service
+
+open port through which puppet-master will communicate with node through firewall
+root@ip-172-31-94-251:/home/ubuntu# ufw allow 8140/tcp
+Rules updated
+Rules updated (v6)
+-----
+Add the ip address of master in hosts file
+root@ip-172-31-94-251:/home/ubuntu# nano /etc/hosts
+
+root@ip-172-31-94-251:/home/ubuntu# cat /etc/hosts
+127.0.0.1 localhost
+54.205.12.13
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+---
+see puppet cert list
+root@ip-172-31-94-251:/home/ubuntu# puppet cert list
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:315: warning: deprecated Object#=~ is called on Puppet::Transaction::Report; it always returns nil
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+Warning: `puppet cert` is deprecated and will be removed in a future release.
+   (location: /usr/lib/ruby/vendor_ruby/puppet/application.rb:370:in `run')
+  "ip-172-31-84-18.ec2.internal" (SHA256) B0:9E:E8:38:C8:51:66:E3:F0:62:A3:77:34:16:6E:3F:E8:E7:3C:10:03:BA:D6:34:F4:A7:D4:87:DE:ED:0D:0D
+--
+
+root@ip-172-31-94-251:/home/ubuntu# puppet cert sign --all
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:315: warning: deprecated Object#=~ is called on Puppet::Transaction::Report; it always returns nil
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+/usr/lib/ruby/vendor_ruby/puppet/util.rb:461: warning: URI.escape is obsolete
+Warning: `puppet cert` is deprecated and will be removed in a future release.
+   (location: /usr/lib/ruby/vendor_ruby/puppet/application.rb:370:in `run')
+Signing Certificate Request for:
+  "ip-172-31-84-18.ec2.internal" (SHA256) B0:9E:E8:38:C8:51:66:E3:F0:62:A3:77:34:16:6E:3F:E8:E7:3C:10:03:BA:D6:34:F4:A7:D4:87:DE:ED:0D:0D
+Notice: Signed certificate request for ip-172-31-84-18.ec2.internal
+Notice: Removing file Puppet::SSL::CertificateRequest ip-172-31-84-18.ec2.internal at '/var/lib/puppet/ssl/ca/requests/ip-172-31-84-18.ec2.internal.pem'
+
+------
+create a path on master
+root@ip-172-31-94-251:/home/ubuntu# mkdir -p /etc/puppet/code/environments/production/manifests/
+
+create a file 
+root@ip-172-31-94-251:/home/ubuntu# vi  /etc/puppet/code/environments/production/manifests/site.pp
+
+check the file content
+root@ip-172-31-94-251:/home/ubuntu# cat  /etc/puppet/code/environments/production/manifests/site.pp
+
+file{'/tmp/it_works.txt':                        # resource type file and file$
+ ensure  =>  present,                              # make sure it exists
+ mode   =>  '0644',                                 #file permissions
+ content =>  "it works on ${ipaddress_eth0}!\n",    #Print the eth0 IP fact
+}
+
+Restart puppet-master
+root@ip-172-31-94-251:/home/ubuntu# sudo systemctl restart puppet-master
+
+
+
+----------------------------------------
+
+Slave:
+ubuntu@ip-172-31-84-18:~$ sudo su
+
+
+root@ip-172-31-84-18:/home/ubuntu# apt-get update
+
+root@ip-172-31-84-18:/home/ubuntu# apt-get install wget
+
+root@ip-172-31-84-18:/home/ubuntu# wget https://apt.puppetlabs.com/puppet-release-bionic.deb
+
+root@ip-172-31-84-18:/home/ubuntu# dpkg -i puppet-release-bionic.deb
+Selecting previously unselected package puppet-release.
+(Reading database ... 63895 files and directories currently installed.)
+Preparing to unpack puppet-release-bionic.deb ...
+Unpacking puppet-release (1.0.0-14bionic) ...
+Setting up puppet-release (1.0.0-14bionic) ..
+
+install puppet agent in node
+root@ip-172-31-84-18:/home/ubuntu# apt-get install puppet -y
+
+provide the public ip address of master on /etc/hosts file
+root@ip-172-31-84-18:/home/ubuntu# nano /etc/hosts
+
+root@ip-172-31-84-18:/home/ubuntu# cat /etc/hosts
+127.0.0.1 localhost
+54.205.12.13 puppet
+
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+----
+
+Start the puppet agent
+root@ip-172-31-84-18:/home/ubuntu# systemctl start puppet
+
+Restart puppet
+root@ip-172-31-84-18:/home/ubuntu# systemctl enable puppet
+Synchronizing state of puppet.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable puppet
+Created symlink /etc/systemd/system/multi-user.target.wants/puppet.service → /lib/systemd/system/puppet.service.
+
+-----
+look in tmp file on slave
+root@ip-172-31-84-18:/home/ubuntu# cd /tmp
+
+root@ip-172-31-84-18:/tmp# ls
+
+snap.lxd
+systemd-private-7b34e999c91e48edaa89c169798a331f-systemd-logind.service-cjmREi
+systemd-private-7b34e999c91e48edaa89c169798a331f-systemd-resolved.service-ZqToTi
+systemd-private-7b34e999c91e48edaa89c169798a331f-systemd-timesyncd.service-OLWbni
+
+----
+
+root@ip-172-31-84-18:/tmp# puppet agent --test
+
+root@ip-172-31-84-18:/tmp# cat it_works.txt
+it works on 172.31.84.18!
+
+---------------- Code basics for puppet-------------
+The most basic component of puppet code is a resource. A resource desvirbes something about the state of the system, such as a certain user or file should exist, or a package should be installed, etc.
+
+Sample nginx package example:
+package { 'nginx':
+ensure =>'installed',
+}
+
+manifests are basically a collection of resource declarations, using the extension .pp
+
+---------------
+
+go to the master
+root@ip-172-31-94-251:/etc/puppet# ls
+auth.conf  code  hiera.yaml  puppet.conf
+
+root@ip-172-31-94-251:/etc/puppet# cd code
+
+root@ip-172-31-94-251:/etc/puppet/code# ls
+environments  
+
+root@ip-172-31-94-251:/etc/puppet/code# cd environments
+
+root@ip-172-31-94-251:/etc/puppet/code/environments# ls
+production
+
+root@ip-172-31-94-251:/etc/puppet/code/environments# cd production
+
+root@ip-172-31-94-251:/etc/puppet/code/environments/production# ls
+manifests
+
+root@ip-172-31-94-251:/etc/puppet/code/environments/production# cd manifests
+
+root@ip-172-31-94-251:/etc/puppet/code/environments/production/manifests# ls
+site.pp
+
+root@ip-172-31-94-251:/etc/puppet/code/environments/production/manifests# nano site.pp
+----
+root@ip-172-31-94-251:/etc/puppet/code/environments/production/manifests# cat site.pp
+
+node default{
+
+package { 'ngnix':
+ensure => installed,
+
+}
+
+file { '/tmp/status.txt':
+
+content => 'Nginx Installed',
+mode => '0644',
+
+}
+------
+
+-----
+
+

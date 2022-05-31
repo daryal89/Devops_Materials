@@ -1,0 +1,147 @@
+Lecture: 42 Complete Devops Project for CI/CD
+---------------------------------------------
+Build Pipeline:
+https://plugins.jenkins.io/build-pipeline-plugin/
+---------
+
+- Jobname ->configure -> general -> Advanced -> Use Custom Workspace	
+${JENKINS_HOME}/workspace/SampleWebApp
+
+- Source code Management ->git ->Copy github repo url and paste 
+https://github.com/daryal89/SampleWebApp.git
+
+-----------------------------------------------
+Steps for the project completion
+
+1. Download git and install 
+
+2. Download java, install java and configure java
+	System environment variable  user variables and system variables JAVA_HOME and add path
+	- variable name: JAVA_HOME   variable value: C:\Program Files\Java\jdk-16.0.1
+	- PATH:  C:\Program Files\Java\jdk-16.0.1\bin
+	- Check in command line:  Java --version and echo %JAVA_HOME%
+
+3. Downloand Jenkins.war file from:
+	- https://www.jenkins.io/download/
+	- Download Jenkins 2.319.2 LTS for:
+	- https://get.jenkins.io/war-stable/2.319.2/jenkins.war
+	- Create JENKINSHOME folder in c:\ drive
+	- Configure JENKINSHOME in system and user variable as variable name: JENKINS_HOME and variable value: C:\JENKINSHOME
+
+4. Download Apache Tomcat installer
+	- https://tomcat.apache.org/download-90.cgi
+	- https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.58/bin/apache-tomcat-9.0.58.exe
+	- Double click on apache-tomcat installer and complete instillation process
+	- Provide username and password as admin for simplicity
+	- Provide localhost:8080  in web browser
+	-Click on manager app
+		- Provide username and password (admin)
+
+5. Copy the downloaded jenkins.war file and paste in 
+	- C:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps
+	- Go to the Tomcat Web Application Manager and start jenkins and it will show running=true when jenkins starts.
+	- On browser type localhost:8080/jenkins
+	- Type the administrator password from: C:\JENKINSHOME\secrets\initialAdminPassword
+	- Select plugins to install --> None --> Install
+	- Create First Admin User  username--> admin Password --> admin confirm Password-->admin full name -->admin then press save and continue
+
+6. Download Apache Ant (ant.apache.org/bindownload.cgi)
+	- https://ant.apache.org/bindownload.cgi
+	- download --> 1.9.16 .zip archive: apache-ant-1.9.16-bin.zip [PGP] [SHA512]
+	- Unzip 1.9.16 and copy ANT folder in C:\ drive
+	- Configure ANT in Environment variables (in user variables) ANT_HOME   and path
+	- System variables - in path (ant's bin directory downloaded path)
+	- Restart &  Check Ant --version & Echo %ANT_HOME% (in cmd prompt)
+	- Restart your PC
+
+7. Clone sample Java code from Github
+	- Create "gitworkspace" folder in C:\( mkdir gitworkspace)
+	- Go inside gitworkspace --> git clone https://github.com/daryal89/SampleWebApp.git
+	- Check using dir in cmd
+
+8. Create 4 jobs in jenkins
+Login to jenkins using jenkins url: http://localhost:8080/jenkins/
+	A. Create a githubpull Job to pull Code
+	- Manage Jenkins -> manage plugins ->github ->install without Restart
+
+	- New job -> githubpull -> freestyle project -> ok
+
+	- githubpull -> configure -> general -> Advanced -> Use Custom Workspace	
+		${JENKINS_HOME}/workspace/SampleWebApp
+
+	- Source code Management ->git ->Copy github repo url and paste (https://github.com/daryal89/SampleWebApp.git)
+
+	B. Create a BuildandcodeReview job
+	- Manage Jenkins -> manage plugins -> a.Ant  & b. Warnings Next Generation Plugin ->install without Restart
+
+	- New job -> BuildandcodeReview -> freestyle project -> ok
+
+	- BuildandcodeReview -> configure -> general -> Advanced -> Use Custom Workspace	
+		${JENKINS_HOME}/workspace/SampleWebApp
+
+	- Source code Management ->git ->Copy github repo url and paste (https://github.com/daryal89/SampleWebApp.git)
+
+	- Build -> invoke ant
+
+	- Post build action -> Record compiler warnings and static analysis result. Tools->Checkstyle Report File pattern -> checkstyle-error.xml ->Apply -> save.
+
+	C. Continuous Testing Run tests and Publish Junit test Reports
+	- Manage Jenkins -> manage plugins -> Install JUnit realtime Test Reporter Plugin ->install without Restart
+
+	- New job -> Unittest -> freestyle project -> ok
+
+	- Unittest -> configure -> general -> Advanced -> Use Custom Workspace	
+		${JENKINS_HOME}/workspace/SampleWebApp
+
+	- Source code Management ->git ->Copy github repo url and paste (https://github.com/daryal89/SampleWebApp.git)
+
+	- Build -> invoke ant Targets -junit
+
+	- Post build action -> Publish Junit test Result report, Test report XMLs -> Testcalculator _JUnitResult.xml-> apply -> Save 
+-------------------------------------------
+				Setup New Deployment Server
+
+		Go to C:\Program Files\Apache Software Foundation\Tomcat 9.0\conf\server.xml and open the xml using Notepad++
+
+		Go to Connector port and change it to "8090" from "8080" and save the file.
+
+		Go to C:\Program Files\Apache Software Foundation\Tomcat 9.0\conf\tomcat-user.xml and open file with Notepad++
+		
+	in Line 22:
+		<user username="admin" password="admin" roles="manager-gui,manager-script,admin" />   and save the file.
+------------------------------------------------------------------------
+	D. Continuous deployment: Deploy code to Production
+	- Manage Jenkins -> manage plugins -> Install Deploy to container plugin -> install without Restart
+
+	- New job -> deploy -> freestyle project -> ok
+
+	- deploy -> configure -> general -> Advanced -> Use Custom Workspace	
+		${JENKINS_HOME}/workspace/SampleWebApp
+
+	- Source code Management ->git ->Copy github repo url and paste (https://github.com/daryal89/SampleWebApp.git)
+	- Build -> invoke ant, Targets  -> war
+
+	- Post build action -> deploy war/ear to container, WAR/EAR files -> **/*.war, Context path -> samplewebapp, 
+	 Containers -> add container -> Tomcat 9.x.Remote, Credentials -> Add -> jenkins, Username -> admin, Password -> admin ->add
+	Credentials -> admin/****, Tomcat URL: http://localhost:8090 -> Apply -> Save.
+
+	- Stop and Start Tomcat (Go To Monitor Tomcat -> Stop -> start).
+ 
+9. CI/CD Build Pipeline (Upstream pipeline)
+	- Go to Manage jenkins -> manage plugins -> Available -> Install "Build pipeline" plugin -> install without restart.
+
+	- Go to githubpull -> configure -> Postbuild action -> Build other project -> buildandcodeReview ->Trigger only if build is stable -> Apply -> save
+
+	- Go to buildandcodeReview -> configure -> Postbuild action -> Build other project -> unittest -> Trigger only if build is stable -> Apply -> save 
+
+	- Go to unittest -> configure -> Postbuild action -> Build other project -> deploy ->Trigger only if build is stable -> Apply -> save
+
+	- Click on + -> view name -> complete Pipeline -> click on Build Pipeline view -> ok, 
+		 in Upstream/downstream config, Select initial job ->githubpull -> Apply -> ok
+
+	-Go to Dashboard -> githubpull -> configure -> Build Triggers -> Poll SCM ->  * * * * *  -> Apply -> Save.
+
+
+The pipeline will start on every commit on github by developer!!!
+________________________________ END ________________________
+

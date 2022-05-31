@@ -1,0 +1,2489 @@
+
+Chef: Configuration Management Tool Complete LAB:
+___________________________________________________
+
+Performed all LAB work in AWS EC2 machine.
+
+login as: ec2-user
+
+[ec2-user@ip-172-31-89-24 ~]$ sudo su
+---
+[root@ip-172-31-89-24 ec2-user]# yum update -y
+Loaded plugins: extras_suggestions, langpacks, priorities, update-motd
+No packages marked for update
+---
+[root@ip-172-31-89-24 ec2-user]# wget https://packages.chef.io/files/stable/chef-workstation/20.7.96/el/7/chef-workstation-20.7.96-1.el7.x86_64.rpm
+---
+
+[root@ip-172-31-89-24 ec2-user]# ls
+chef-workstation-20.7.96-1.el7.x86_64.rpm
+---
+[root@ip-172-31-89-24 ec2-user]# yum install chef-workstation-20.7.96-1.el7.x86_64.rpm  -y
+---
+[root@ip-172-31-89-24 ec2-user]# which chef
+/bin/chef
+---
+[root@ip-172-31-89-24 ec2-user]# chef --version
+Chef Workstation version: 20.7.96
+Chef Infra Client version: 16.2.73
+Chef InSpec version: 4.21.3
+Chef CLI version: 3.0.11
+Test Kitchen version: 2.5.3
+Cookstyle version: 6.12.6
+---
+[root@ip-172-31-89-24 ec2-user]# chef -v
+Chef Workstation version: 20.7.96
+Chef Infra Client version: 16.2.73
+Chef InSpec version: 4.21.3
+Chef CLI version: 3.0.11
+Test Kitchen version: 2.5.3
+Cookstyle version: 6.12.6
+---
+[root@ip-172-31-89-24 ec2-user]# ls
+chef-workstation-20.7.96-1.el7.x86_64.rpm
+---
+[root@ip-172-31-89-24 ec2-user]# mkdir cookbooks
+---
+[root@ip-172-31-89-24 ec2-user]# ls
+chef-workstation-20.7.96-1.el7.x86_64.rpm  cookbooks
+---
+[root@ip-172-31-89-24 cookbooks]# chef generate cookbook test-cookbook
++---------------------------------------------+
+            Chef License Acceptance
+
+Before you can continue, 3 product licenses
+must be accepted. View the license at
+https://www.chef.io/end-user-license-agreement/
+
+Licenses that need accepting:
+  * Chef Workstation
+  * Chef Infra Client
+  * Chef InSpec
+test/integration/default/default_test.rb
+
+If you'd prefer to dive right in, the default recipe can be found at:
+
+recipes/default.rb
+---
+[root@ip-172-31-89-24 cookbooks]# ls
+test-cookbook
+---
+[root@ip-172-31-89-24 cookbooks]# tree
+bash: tree: command not found
+--
+[root@ip-172-31-89-24 cookbooks]# yum install tree -y
+Loaded plugins: extras_suggestions, langpacks, priorities, update-motd
+amzn2-core                                      | 3.7 kB     00:00
+Resolving Dependencies
+--> Running transaction check
+---> Package tree.x86_64 0:1.6.0-10.amzn2.0.1 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+=======================================================================
+ Package   Arch        Version                   Repository       Size
+=======================================================================
+Installing:
+ tree      x86_64      1.6.0-10.amzn2.0.1        amzn2-core       47 k
+
+Transaction Summary
+=======================================================================
+Install  1 Package
+
+Total download size: 47 k
+Installed size: 83 k
+Downloading packages:
+tree-1.6.0-10.amzn2.0.1.x86_64.rpm                |  47 kB   00:00
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : tree-1.6.0-10.amzn2.0.1.x86_64                      1/1
+  Verifying  : tree-1.6.0-10.amzn2.0.1.x86_64                      1/1
+
+Installed:
+  tree.x86_64 0:1.6.0-10.amzn2.0.1
+
+Complete!
+---
+
+[root@ip-172-31-89-24 cookbooks]# tree
+.
+└── test-cookbook
+    ├── CHANGELOG.md
+    ├── chefignore
+    ├── kitchen.yml
+    ├── LICENSE
+    ├── metadata.rb
+    ├── Policyfile.rb
+    ├── README.md
+    ├── recipes
+    │   └── default.rb
+    ├── spec
+    │   ├── spec_helper.rb
+    │   └── unit
+    │       └── recipes
+    │           └── default_spec.rb
+    └── test
+        └── integration
+            └── default
+                └── default_test.rb
+
+8 directories, 11 files
+---
+[root@ip-172-31-89-24 cookbooks]# cd test-cookbook
+
+[root@ip-172-31-89-24 test-cookbook]# ls
+CHANGELOG.md  kitchen.yml  metadata.rb    README.md  spec
+chefignore    LICENSE      Policyfile.rb  recipes    test
+---
+[root@ip-172-31-89-24 test-cookbook]# chef generate recipe test-recipe
+---
+[root@ip-172-31-89-24 test-cookbook]# cd ..
+---
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/test-recipe.rb
+---
+[root@ip-172-31-89-24 cookbooks]# cat test-cookbook/recipes/test-recipe.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: test-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# 1. The first code
+file '/myfile' do
+  content 'Welcome to Technical Guftgu youtube Channel'
+  action :create
+end
+---
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/test-recipe.rb
+Syntax OK
+---
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::test-recipe]"
+[2022-03-26T03:03:25+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::test-recipe"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create
+    - create new file /myfile
+    - update content in file /myfile from none to e6f410
+    --- /myfile 2022-03-26 03:03:27.562532033 +0000
+    +++ /.chef-myfile20220326-3652-bewubd       2022-03-26 03:03:27.562532033 +0000
+    @@ -1 +1,2 @@
+    +Welcome to Technical Guftgu youtube Channel
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/1 resources updated in 01 seconds
+---
+[root@ip-172-31-89-24 cookbooks]# ls /
+bin   dev  home  lib64  media  myfile  proc  run   srv  tmp  var
+boot  etc  lib   local  mnt    opt     root  sbin  sys  usr
+---
+[root@ip-172-31-89-24 cookbooks]# cat /myfile
+Welcome to Technical Guftgu youtube Channel
+---
+
+To check idempotency: (0/1 resources updated)
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::test-recipe]"
+
+[2022-03-26T03:05:11+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::test-recipe"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 0/1 resources updated in 01 seconds
+---
+
+------- Creating second recipe in test-cookbook--recipe2.rb-------------
+
+[root@ip-172-31-89-24 cookbooks]# cd test-cookbook/
+---
+[root@ip-172-31-89-24 test-cookbook]# tree
+.
+├── CHANGELOG.md
+├── chefignore
+├── kitchen.yml
+├── LICENSE
+├── metadata.rb
+├── Policyfile.rb
+├── README.md
+├── recipes
+│   ├── default.rb
+│   └── test-recipe.rb
+├── spec
+│   ├── spec_helper.rb
+│   └── unit
+│       └── recipes
+│           ├── default_spec.rb
+│           └── test-recipe_spec.rb
+└── test
+    └── integration
+        └── default
+            ├── default_test.rb
+            └── test-recipe_test.rb
+
+7 directories, 14 files
+---
+[root@ip-172-31-89-24 test-cookbook]# chef generate recipe recipe2
+---
+[root@ip-172-31-89-24 test-cookbook]# cd ..
+---
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/recipe2.rb
+---
+[root@ip-172-31-89-24 cookbooks]# cat test-cookbook/recipes/recipe2.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: recipe2
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install tree package
+package 'tree' do
+  action :install
+end
+
+#Task2: create a file in root directory
+file '/myfile2' do
+  content 'This is my second project'
+action :create
+owner 'root'
+group 'root'
+end
+---
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/recipe2.rb
+Syntax OK
+---
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::recipe2]"
+[2022-03-26T03:12:01+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::recipe2"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 2 resources
+Recipe: test-cookbook::recipe2
+  * yum_package[tree] action install (up to date)
+  * file[/myfile2] action create
+    - create new file /myfile2
+    - update content in file /myfile2 from none to 4a1b83
+    --- /myfile2        2022-03-26 03:12:04.964079282 +0000
+    +++ /.chef-myfile220220326-32721-bmodc3     2022-03-26 03:12:04.964079282 +0000
+    @@ -1 +1,2 @@
+    +This is my second project
+    - change owner from '' to 'root'
+    - change group from '' to 'root'
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/2 resources updated in 03 seconds
+---
+[root@ip-172-31-89-24 cookbooks]# ls /
+bin   dev  home  lib64  media  myfile   opt   root  sbin  sys  usr
+boot  etc  lib   local  mnt    myfile2  proc  run   srv   tmp  var
+---
+[root@ip-172-31-89-24 cookbooks]# cat /myfile2
+This is my second project
+---
+[root@ip-172-31-89-24 cookbooks]# ls -al /
+total 24
+-rw-r--r--   1 root root   25 Mar 26 03:12 myfile2
+---
+To check idempotency run the below command again which will not override the existing files becuase there is no change in the recipe.
+
+Idempotency: 0/2 resources updated
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::recipe2]"
+[2022-03-26T03:13:42+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::recipe2"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 2 resources
+Recipe: test-cookbook::recipe2
+  * yum_package[tree] action install (up to date)
+  * file[/myfile2] action create (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 0/2 resources updated in 03 seconds
+---
+Let us change the recipe2.rb content and execute recipe2.rb file
+
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/recipe2.rb
+---
+[root@ip-172-31-89-24 cookbooks]# cat test-cookbook/recipes/recipe2.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: recipe2
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install tree package
+package 'tree' do
+  action :remove
+end
+
+#Task2: create a file in root directory
+file '/myfile2' do
+  content 'This is my second project'
+action :create
+owner 'root'
+group 'root'
+end
+---
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/recipe2.rb
+Syntax OK
+---
+
+Idempotency: 1/2 resources updated
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::recipe2]"
+
+[2022-03-26T03:20:45+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::recipe2"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 2 resources
+Recipe: test-cookbook::recipe2
+  * yum_package[tree] action remove
+    - remove package tree
+  * file[/myfile2] action create (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/2 resources updated in 04 seconds
+---
+
+Again installing tree package and updating the file content will be applied while executing chef-client.
+
+[root@ip-172-31-89-24 cookbooks]# which tree
+/usr/bin/which: no tree in (/sbin:/bin:/usr/sbin:/usr/bin)
+---
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/recipe2.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat test-cookbook/recipes/recipe2.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: recipe2
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install tree package
+package 'tree' do
+  action :install
+end
+
+#Task2: create a file in root directory
+file '/myfile2' do
+  content 'This is my second project. Content is Updated !!!'
+action :create
+owner 'root'
+group 'root'
+end
+-----
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/recipe2.rb
+Syntax OK
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::recipe2]"
+[2022-03-26T03:46:57+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::recipe2"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 2 resources
+Recipe: test-cookbook::recipe2
+  * yum_package[tree] action install
+    - install version 0:1.6.0-10.amzn2.0.1.x86_64 of package tree
+  * file[/myfile2] action create
+    - update content in file /myfile2 from 4a1b83 to 70c177
+    --- /myfile2        2022-03-26 03:12:04.964079282 +0000
+    +++ /.chef-myfile220220326-790-1qoluyk      2022-03-26 03:47:01.826164844 +0000
+    @@ -1,2 +1,2 @@
+    -This is my second project
+    +This is my second project. Content is Updated !!!
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 2/2 resources updated in 04 seconds
+
+
+---------------Creating an apache-cookbook and recipes in it ------------
+
+
+[root@ip-172-31-89-24 cookbooks]# chef generate cookbook apache-cookbook
+
+[root@ip-172-31-89-24 cookbooks]# ls
+apache-cookbook  test-cookbook
+
+[root@ip-172-31-89-24 cookbooks]# cd apache-cookbook
+
+[root@ip-172-31-89-24 apache-cookbook]# ls
+CHANGELOG.md  kitchen.yml  metadata.rb    README.md  spec
+chefignore    LICENSE      Policyfile.rb  recipes    test
+
+[root@ip-172-31-89-24 apache-cookbook]# tree
+.
+├── CHANGELOG.md
+├── chefignore
+├── kitchen.yml
+├── LICENSE
+├── metadata.rb
+├── Policyfile.rb
+├── README.md
+├── recipes
+│   └── default.rb
+├── spec
+│   ├── spec_helper.rb
+│   └── unit
+│       └── recipes
+│           └── default_spec.rb
+└── test
+    └── integration
+        └── default
+            └── default_test.rb
+
+7 directories, 11 files
+----
+[root@ip-172-31-89-24 apache-cookbook]# chef generate recipe apache-recipe
+
+[root@ip-172-31-89-24 apache-cookbook]# cd ..
+
+[root@ip-172-31-89-24 cookbooks]# vi apache-cookbook/recipes/apache-recipe.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat apache-cookbook/recipes/apache-recipe.rb
+#
+# Cookbook:: apache-cookbook
+# Recipe:: apache-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install httpd package
+package 'httpd' do
+  action :install
+end
+
+#Task2: Create an file
+file '/var/www/html/index.html' do
+  content 'Welcome to technical guftgu youtube channel ---learn to code!!!'
+  action :create
+end
+
+#Task3 and 4: enable and start the server
+service 'httpd' do
+  action [:enable, :start]
+end
+-------
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c apache-cookbook/recipes/apache-recipe.rb
+Syntax OK
+
+Execution: 4/4 resources updated
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[apache-cookbook::apache-recipe]"
+[2022-03-26T03:54:04+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["apache-cookbook::apache-recipe"]
+Synchronizing Cookbooks:
+  - apache-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 3 resources
+Recipe: apache-cookbook::apache-recipe
+  * yum_package[httpd] action install
+    - install version 0:2.4.52-1.amzn2.x86_64 of package httpd
+  * file[/var/www/html/index.html] action create
+    - create new file /var/www/html/index.html
+    - update content in file /var/www/html/index.html from none to 659254
+    --- /var/www/html/index.html        2022-03-26 03:54:10.996137461 +0000
+    +++ /var/www/html/.chef-index20220326-987-1x67b5i.html      2022-03-26 03:54:10.996137461 +0000
+    @@ -1 +1,2 @@
+    +Welcome to technical guftgu youtube channel ---learn to code!!!
+  * service[httpd] action enable
+    - enable service service[httpd]
+  * service[httpd] action start
+    - start service service[httpd]
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 4/4 resources updated in 07 seconds
+----
+
+Created an index.html webpage
+Copy and paste the public ip of the ec2 machine in browser you will get
+http://100.26.185.177/
+Welcome to technical guftgu youtube channel ---learn to code!!!
+
+[root@ip-172-31-89-24 cookbooks]# which httpd
+/sbin/httpd
+
+[root@ip-172-31-89-24 cookbooks]# service httpd status
+Redirecting to /bin/systemctl status httpd.service
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sat 2022-03-26 03:54:11 UTC; 2min 46s ago
+     Docs: man:httpd.service(8)
+ Main PID: 1170 (httpd)
+   Status: "Total requests: 2; Idle/Busy workers 83/16;Requests/sec: 0.0126; Bytes served/sec:  10 B/sec"
+   CGroup: /system.slice/httpd.service
+           ├─1170 /usr/sbin/httpd -DFOREGROUND
+           ├─1171 /usr/sbin/httpd -DFOREGROUND
+           ├─1172 /usr/sbin/httpd -DFOREGROUND
+           ├─1178 /usr/sbin/httpd -DFOREGROUND
+           ├─1179 /usr/sbin/httpd -DFOREGROUND
+           ├─1180 /usr/sbin/httpd -DFOREGROUND
+           └─1227 /usr/sbin/httpd -DFOREGROUND
+
+Mar 26 03:54:11 ip-172-31-89-24.ec2.internal systemd[1]: Starting Th...
+Mar 26 03:54:11 ip-172-31-89-24.ec2.internal systemd[1]: Started The...
+Hint: Some lines were ellipsized, use -l to show in full.
+
+Idempotency: Execution: 0/4 resources updated
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[apache-cookbook::apache-recipe]"
+
+[2022-03-26T03:57:26+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["apache-cookbook::apache-recipe"]
+Synchronizing Cookbooks:
+  - apache-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 3 resources
+Recipe: apache-cookbook::apache-recipe
+  * yum_package[httpd] action install (up to date)
+  * file[/var/www/html/index.html] action create (up to date)
+  * service[httpd] action enable (up to date)
+  * service[httpd] action start (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 0/4 resources updated in 03 seconds
+
+____________________________________________________________________
+--------------------  Lecture 19  -------------------------
+----------------------------Chef-Architecture/components -----------
+
+[root@ip-172-31-89-24 cookbooks]# cd ..
+
+[root@ip-172-31-89-24 ec2-user]# ls
+chef-workstation-20.7.96-1.el7.x86_64.rpm  cookbooks  nodes
+
+[root@ip-172-31-89-24 ec2-user]# ls -l
+total 158684
+-rw-r--r-- 1 root root 162491539 Jul 17  2020 chef-workstation-20.7.96-1.el7.x86_64.rpm
+drwxr-xr-x 4 root root        50 Mar 26 03:48 cookbooks
+drwx------ 2 root root        47 Mar 26 03:03 nodes
+------
+[root@ip-172-31-89-24 ec2-user]# ohai
+ "root_group": "root",
+  "shard_seed": 90291026,
+  "shells": [
+    "/bin/sh",
+    "/bin/bash",
+    "/usr/bin/sh",
+    "/usr/bin/bash",
+    "/bin/tcsh",
+    "/bin/csh"
+  ]
+}
+---
+[root@ip-172-31-89-24 ec2-user]# ohai hostname
+[
+  "ip-172-31-89-24"
+]
+---
+[root@ip-172-31-89-24 ec2-user]# ohai ipaddress
+[
+  "172.31.89.24"
+]
+---
+[root@ip-172-31-89-24 ec2-user]# ohai memory/total
+[
+  "988672kB"
+]
+---
+[root@ip-172-31-89-24 ec2-user]# ohai cpu
+{
+  "0": {
+    "vendor_id": "GenuineIntel",
+    "family": "6",
+    "model": "63",
+    "model_name": "Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz",
+    "stepping": "2",
+    "mhz": "2400.200",
+    "cache_size": "30720 KB",
+    "physical_id": "0",
+    "core_id": "0",
+    "cores": "1",
+    "flags": [
+---
+[root@ip-172-31-89-24 ec2-user]# ohai cpu/0/mhz
+[
+  "2400.200"
+]
+--
+[root@ip-172-31-89-24 ec2-user]# cd cookbooks
+
+[root@ip-172-31-89-24 cookbooks]# ls
+apache-cookbook  test-cookbook
+---
+[root@ip-172-31-89-24 cookbooks]# cd apache-cookbook
+
+[root@ip-172-31-89-24 apache-cookbook]# tree
+.
+├── CHANGELOG.md
+├── chefignore
+├── kitchen.yml
+├── LICENSE
+├── metadata.rb
+├── Policyfile.rb
+├── README.md
+├── recipes
+│   ├── apache-recipe.rb
+│   └── default.rb
+├── spec
+│   ├── spec_helper.rb
+│   └── unit
+│       └── recipes
+│           ├── apache-recipe_spec.rb
+│           └── default_spec.rb
+└── test
+    └── integration
+        └── default
+            ├── apache-recipe_test.rb
+            └── default_test.rb
+
+7 directories, 14 files
+----
+[root@ip-172-31-89-24 apache-cookbook]# chef generate recipe recipe-new
+--
+[root@ip-172-31-89-24 apache-cookbook]# cd ..
+
+[root@ip-172-31-89-24 cookbooks]# vi apache-cookbook/recipes/recipe-new.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat apache-cookbook/recipes/recipe-new.rb
+#
+# Cookbook:: apache-cookbook
+# Recipe:: recipe-new
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: Create a file in root with basic info of the Ec2 machine
+file '/basicinfo' do
+  content "This is to get Attributes
+  HOSTNAME: #{node['hostname']}
+    IPADDRESS: #{node['ipaddress']}
+    CPU: #{node['cpu']['0']['mhz']}
+    MEMORY: #{node['memory']['total']}"
+    owner 'root'
+  group 'root'
+  action :create
+end
+------------
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c apache-cookbook/recipes/recipe-new.rb
+Syntax OK
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[apache-cookbook::recipe-new]"
+[2022-03-26T04:12:46+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["apache-cookbook::recipe-new"]
+Synchronizing Cookbooks:
+  - apache-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: apache-cookbook::recipe-new
+  * file[/basicinfo] action create
+    - create new file /basicinfo
+    - update content in file /basicinfo from none to 745c0e
+    --- /basicinfo      2022-03-26 04:12:48.442847376 +0000
+    +++ /.chef-basicinfo20220326-1627-13sdh61   2022-03-26 04:12:48.442847376 +0000
+    @@ -1 +1,6 @@
+    +This is to get Attributes
+    +  HOSTNAME: ip-172-31-89-24
+    +    IPADDRESS: 172.31.89.24
+    +    CPU: 2400.200
+    +    MEMORY: 988672kB
+    - change owner from '' to 'root'
+    - change group from '' to 'root'
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/1 resources updated in 01 seconds
+---
+[root@ip-172-31-89-24 cookbooks]# ls /
+basicinfo  dev   lib    media   myfile2  root  srv  usr
+bin        etc   lib64  mnt     opt      run   sys  var
+boot       home  local  myfile  proc     sbin  tmp
+
+[root@ip-172-31-89-24 cookbooks]# cat /basicinfo
+This is to get Attributes
+  HOSTNAME: ip-172-31-89-24
+    IPADDRESS: 172.31.89.24
+    CPU: 2400.200
+    MEMORY: 988672kB
+______________________________________________________________________
+
+-----------Insert linux command, create user and group, runlist-------
+
+[root@ip-172-31-89-24 cookbooks]# ls
+apache-cookbook  test-cookbook
+
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/test-recipe.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat test-cookbook/recipes/test-recipe.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: test-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# 1. The first code
+file '/myfile' do
+  content 'Welcome to Technical Guftgu youtube Channel'
+  action :create
+end
+
+# Task2: Create dirctory and a file using linux
+# command using between EOH: end of Here or end of hunk
+
+execute 'run a script' do
+  command <<-EOH
+  mkdir /aryaldir
+  touch /aryalfile
+  EOH
+  end
+---
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/test-recipe.rb
+Syntax OK
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::test-recipe]"
+[2022-03-26T04:24:35+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::test-recipe"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 2 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/2 resources updated in 01 seconds
+-------------
+[root@ip-172-31-89-24 cookbooks]# ls /
+aryaldir   bin   etc   lib64  mnt      opt   run   sys  var
+aryalfile  boot  home  local  myfile   proc  sbin  tmp
+basicinfo  dev   lib   media  myfile2  root  srv   usr
+----
+
+No idempotency with linux command: command will execute each time even if we don't update the commad.
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::test-recipe]"
+[2022-03-26T04:26:12+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::test-recipe"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 2 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/2 resources updated in 01 seconds
+-----------
+Again add another task in test-recipe.rb
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/test-recipe.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat test-cookbook/recipes/test-recipe.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: test-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# 1. The first code
+file '/myfile' do
+  content 'Welcome to Technical Guftgu youtube Channel'
+  action :create
+end
+
+# Task2: Create dirctory and a file using linux
+# command using between EOH: end of Here or end of hunk
+
+execute 'run a script' do
+  command <<-EOH
+  mkdir /aryaldir
+  touch /aryalfile
+  EOH
+  end
+
+# Task3: Create user
+user 'aryal' do
+  action :create
+end
+-----
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/test-recipe.rb
+Syntax OK
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::test-recipe]"
+[2022-03-26T04:36:12+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::test-recipe"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 3 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+  * linux_user[aryal] action create
+    - create user aryal
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 2/3 resources updated in 01 seconds
+-------
+[root@ip-172-31-89-24 cookbooks]# cat /etc/passwd
+partial o/p --> aryal:x:1001:1001::/home/aryal:/bin/bash
+
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/test-recipe.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat test-cookbook/recipes/test-recipe.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: test-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# 1. The first code
+file '/myfile' do
+  content 'Welcome to Technical Guftgu youtube Channel'
+  action :create
+end
+
+# Task2: Create dirctory and a file using linux
+# command using between EOH: end of Here or end of hunk
+
+execute 'run a script' do
+  command <<-EOH
+  mkdir /aryaldir
+  touch /aryalfile
+  EOH
+  end
+
+# Task3: Create user
+user 'aryal' do
+  action :create
+end
+
+# Task4: Create a group
+group 'devops' do
+  action :create
+  members 'aryal'
+  append true
+end
+---
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/test-recipe.rb
+Syntax OK
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::test-recipe]"
+[2022-03-26T04:42:03+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::test-recipe"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 4 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+  * linux_user[aryal] action create (up to date)
+  * group[devops] action create
+    - create group devops
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 2/4 resources updated in 01 seconds
+---
+[root@ip-172-31-89-24 cookbooks]# cat /etc/group
+
+Partial op ---> root:x:0:
+aryal:x:1001:
+devops:x:1002:aryal
+---
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/test-recipe.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat  test-cookbook/recipes/test-recipe.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: test-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# 1. The first code
+file '/myfile' do
+  content 'Welcome to Technical Guftgu youtube Channel'
+  action :create
+end
+
+# Task2: Create dirctory and a file using linux
+# command using between EOH: end of Here or end of hunk
+
+execute 'run a script' do
+  command <<-EOH
+  mkdir /aryaldir
+  touch /aryalfile
+  EOH
+  end
+
+# Task3: Create user
+user 'aryal' do
+  action :create
+end
+
+# Task4: Create a group
+group 'devops' do
+  action :create
+  members 'aryal'
+  append true
+end
+
+#Task5 and Task6: This is default in Ruby can directly write as below:
+user "reyona"
+file "AutomationTesting"
+------
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/test-recipe.rb
+Syntax OK
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::test-recipe]"
+[2022-03-26T04:50:03+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::test-recipe"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 6 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+  * linux_user[aryal] action create (up to date)
+  * group[devops] action create (up to date)
+  * linux_user[reyona] action create
+    - create user reyona
+  * file[AutomationTesting] action create
+    - create new file AutomationTesting
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 3/6 resources updated in 01 seconds
+---
+[root@ip-172-31-89-24 cookbooks]# ls /
+aryaldir           bin   home   media    opt   sbin  usr
+aryalfile          boot  lib    mnt      proc  srv   var
+AutomationTesting  dev   lib64  myfile   root  sys
+basicinfo          etc   local  myfile2  run   tmp
+---
+
+[root@ip-172-31-89-24 cookbooks]# cat /etc/passwd
+partial op ---> reyona:x:1002:1003::/home/reyona:/bin/bash
+
+
+____________________________________________________________________
+
+------  Creating Runlist: How to include recipe  --------------------
+
+------Running one recipe from each cookbook-------
+
+(One task is using linux commands which overrides the previous task, it doesn't have idempotency[change commands are not run unless needed])
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::test-recipe]","recipe[apache-cookbook::apache-recipe]"
+
+[2022-03-26T04:58:07+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::test-recipe", "apache-cookbook::apache-recipe"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+  - apache-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 9 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+  * linux_user[aryal] action create (up to date)
+  * group[devops] action create (up to date)
+  * linux_user[reyona] action create (up to date)
+  * file[AutomationTesting] action create (up to date)
+Recipe: apache-cookbook::apache-recipe
+  * yum_package[httpd] action install (up to date)
+  * file[/var/www/html/index.html] action create (up to date)
+  * service[httpd] action enable (up to date)
+  * service[httpd] action start (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/10 resources updated in 03 seconds
+---------
+
+-- Run more than one recipe from one cookbook --------
+
+To run more than one recipe from one cookbook we need to include other recipes in one recipe preferably in default.rb and run the default.rb recipe.
+
+[root@ip-172-31-89-24 cookbooks]# vi test-cookbook/recipes/default.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat test-cookbook/recipes/default.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: default
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Include other recipes from test-cookbook in default.rb recipe
+# Recipe1:
+include_recipe 'test-cookbook::test-recipe'
+
+#Recipe2:
+include_recipe 'test-cookbook::recipe2'
+------
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c test-cookbook/recipes/default.rb
+Syntax OK
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::default]"
+[2022-03-26T05:15:29+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::default"]
+Synchronizing Cookbooks:
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 8 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+  * linux_user[aryal] action create (up to date)
+  * group[devops] action create (up to date)
+  * linux_user[reyona] action create (up to date)
+  * file[AutomationTesting] action create (up to date)
+Recipe: test-cookbook::recipe2
+  * yum_package[tree] action install (up to date)
+  * file[/myfile2] action create (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/8 resources updated in 03 seconds
+------------
+
+[root@ip-172-31-89-24 cookbooks]# vi apache-cookbook/recipes/default.rb
+
+[root@ip-172-31-89-24 cookbooks]# cat apache-cookbook/recipes/default.rb
+#
+# Cookbook:: apache-cookbook
+# Recipe:: default
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task: Include other recipes from the apache-cookbook
+include_recipe "apache-cookbook::apache-recipe"
+include_recipe 'apache-cookbook::recipe-new'
+---
+[root@ip-172-31-89-24 cookbooks]# chef exec ruby -c apache-cookbook/recipes/default.rb
+Syntax OK
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[apache-cookbook::default]"
+
+[2022-03-26T05:19:54+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["apache-cookbook::default"]
+Synchronizing Cookbooks:
+  - apache-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 4 resources
+Recipe: apache-cookbook::apache-recipe
+  * yum_package[httpd] action install (up to date)
+  * file[/var/www/html/index.html] action create (up to date)
+  * service[httpd] action enable (up to date)
+  * service[httpd] action start (up to date)
+Recipe: apache-cookbook::recipe-new
+  * file[/basicinfo] action create (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 0/5 resources updated in 03 seconds
+
+
+--------- Run more multiple recipes from multiple cookbooks -------------
+
+
+- First, include all the recipe of each cookbook in default recipe
+- Then execute the following command by appending all cookbooks in sequence.
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[test-cookbook::default],recipe[apache-cookbook::default]"
+[2022-03-26T05:22:17+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["test-cookbook::default", "apache-cookbook::default"]
+Synchronizing Cookbooks:
+  - apache-cookbook (0.1.0)
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 12 resources
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+  * linux_user[aryal] action create (up to date)
+  * group[devops] action create (up to date)
+  * linux_user[reyona] action create (up to date)
+  * file[AutomationTesting] action create (up to date)
+Recipe: test-cookbook::recipe2
+  * yum_package[tree] action install (up to date)
+  * file[/myfile2] action create (up to date)
+Recipe: apache-cookbook::apache-recipe
+  * yum_package[httpd] action install (up to date)
+  * file[/var/www/html/index.html] action create (up to date)
+  * service[httpd] action enable (up to date)
+  * service[httpd] action start (up to date)
+Recipe: apache-cookbook::recipe-new
+  * file[/basicinfo] action create (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/13 resources updated in 03 seconds
+---------------
+
+-------------------     OR     ----------------------- 
+we can directly include cookbook if we inclue other recipes under default.rb recipes like below:
+
+[root@ip-172-31-89-24 cookbooks]# chef-client -zr "recipe[apache-cookbook],recipe[test-cookbook]"
+[2022-03-26T05:24:31+00:00] WARN: No config file found or specified on command line. Using command line options instead.
+Starting Chef Infra Client, version 16.2.73
+resolving cookbooks for run list: ["apache-cookbook", "test-cookbook"]
+Synchronizing Cookbooks:
+  - apache-cookbook (0.1.0)
+  - test-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 12 resources
+Recipe: apache-cookbook::apache-recipe
+  * yum_package[httpd] action install (up to date)
+  * file[/var/www/html/index.html] action create (up to date)
+  * service[httpd] action enable (up to date)
+  * service[httpd] action start (up to date)
+Recipe: apache-cookbook::recipe-new
+  * file[/basicinfo] action create (up to date)
+Recipe: test-cookbook::test-recipe
+  * file[/myfile] action create (up to date)
+  * execute[run a script] action run
+    - execute   mkdir /aryaldir
+      touch /aryalfile
+
+  * linux_user[aryal] action create (up to date)
+  * group[devops] action create (up to date)
+  * linux_user[reyona] action create (up to date)
+  * file[AutomationTesting] action create (up to date)
+Recipe: test-cookbook::recipe2
+  * yum_package[tree] action install (up to date)
+  * file[/myfile2] action create (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/13 resources updated in 03 seconds
+
+_____________________________________________________________________
+  ----------------------  Lecture: 21 ------------------------
+
+------- Getting Started With Chef-Server and Node  --------
+
+Login as: ec2-user
+
+[ec2-user@ip-172-31-89-24 ~]$ sudo su
+
+[root@ip-172-31-89-24 ec2-user]# ls
+chef-workstation-20.7.96-1.el7.x86_64.rpm  cookbooks  nodes
+
+[root@ip-172-31-89-24 ec2-user]# cd cookbooks
+
+[root@ip-172-31-89-24 cookbooks]# ls
+apache-cookbook  test-cookbook
+
+------- Login into chef-Server and install WINSCP software ------
+Go to google chrome and search
+https://manage.chef.io/login
+
+- Click on don't have an account
+- Provide all your information  and create an account.
+
+- Verify your account through the email  and create an password
+
+- Create an organization and give fullname
+- Provide the short name for organization
+
+- Click on create organization.
+- Under Administration ---> select organization and click on Starter kit on left hand panel
+
+- Download started kit
+- Chef-starter zip file will be downloaded and then extract the file.
+- when unziping chef-repo folder will be created.
+- Now to send the chef-repo into the EC2 linux server we need to download WINSCP software.
+- double click the executable file and install the WINSCP software.
+- Open WINSCP 
+- There will be dialogue box opened provide DNS of Linux in hostname 
+- Username :ec2-user
+- Click on advanced  then in authentication and open .ppk file -->Ok
+- Then click login.
+
+- Open directory --> download --> Ok
+- Drag and drop chef-repo from windows to Linux machine
+
+---------------------------------------------------
+
+[root@ip-172-31-89-24 cookbooks]# cd ..
+
+[root@ip-172-31-89-24 ec2-user]# ls
+chef-repo  chef-workstation-20.7.96-1.el7.x86_64.rpm  cookbooks  nodes
+
+[root@ip-172-31-89-24 ec2-user]# cd chef-repo
+
+[root@ip-172-31-89-24 chef-repo]# ls -a
+.  ..  .chef  cookbooks  .gitignore  README.md  roles
+
+[root@ip-172-31-89-24 chef-repo]# cd .chef
+
+[root@ip-172-31-89-24 .chef]# ls
+config.rb  dhruba1.pem
+
+[root@ip-172-31-89-24 .chef]# cat config.rb
+# See http://docs.chef.io/workstation/config_rb/ for more information on knife configuration options
+
+current_dir = File.dirname(__FILE__)
+log_level                :info
+log_location             STDOUT
+node_name                "dhruba1"
+client_key               "#{current_dir}/dhruba1.pem"
+chef_server_url          "https://api.chef.io/organizations/dautomation"
+cookbook_path            ["#{current_dir}/../cookbooks"]
+---
+[root@ip-172-31-89-24 .chef]# knife ssl check  (Check Workstation is connected with Chef-Server or not)
+Connecting to host api.chef.io:443
+Successfully verified certificates from `api.chef.io'
+---
+[root@ip-172-31-89-24 .chef]# cd ..
+
+[root@ip-172-31-89-24 chef-repo]# ls
+cookbooks  README.md  roles
+
+------------------ Bootstrap a Node----------------------------
+
+- Workstation and node should be in same availability zone.
+- Now onwards you need to be in chef-repo directory while working
+- node-key is the key 
+- Now create a node in Amazon machine and put below configuration in Advance details in step 3 while creating EC2 instance:
+#!/bin/bash
+sudo su
+yum update -y
+----
+- To bootstrap provide private ip address of node 
+- Transfer node-key.pem  from download to chef-repo directory in ec2 machine.
+
+[root@ip-172-31-89-24 chef-repo]# ls
+cookbooks  node-key.pem  README.md  roles
+
+[root@ip-172-31-89-24 chef-repo]# knife bootstrap 172.31.82.128 --ssh-user ec2-user --sudo -i node-key.pem -N node1
+--ssh-user: This flag is deprecated. Use -U/--connection-user instead.
+Connecting to 172.31.82.128 using ssh
+The authenticity of host '172.31.82.128 ()' can't be established.
+fingerprint is SHA256:hZvJmliYb4LAOh8X6eabJ95uxomre7ZAO8Db+mamZ8Y.
+
+Are you sure you want to continue connecting
+? (Y/N) Y
+Connecting to 172.31.82.128 using ssh
+Creating new client for node1
+Creating new node for node1
+Bootstrapping 172.31.82.128
+ [172.31.82.128] -----> Installing Chef Omnibus (stable/16)
+downloading https://omnitruck.chef.io/chef/install.sh
+  to file /tmp/install.sh.3523/install.sh
+trying wget...
+ [172.31.82.128] el 7 x86_64
+Getting information for chef stable 16 for el...
+downloading https://omnitruck.chef.io/stable/chef/metadata?v=16&p=el&pv=7&m=x86_64
+  to file /tmp/install.sh.3528/metadata.txt
+ [172.31.82.128] trying wget...
+ [172.31.82.128] sha1   c8d7dd6c06f5bccfdafdc423124760ad4eb3420c
+sha256  85c04b3f69ebbb2cc341a9da701a1769e40cbc55374ce2a7c263ae9d931802f6
+url     https://packages.chef.io/files/stable/chef/16.17.51/el/7/chef-16.17.51-1.el7.x86_64.rpm
+version 16.17.51
+ [172.31.82.128]
+ [172.31.82.128] downloaded metadata file looks valid...
+ [172.31.82.128] downloading https://packages.chef.io/files/stable/chef/16.17.51/el/7/chef-16.17.51-1.el7.x86_64.rpm
+  to file /tmp/install.sh.3528/chef-16.17.51-1.el7.x86_64.rpm
+ [172.31.82.128] trying wget...
+ [172.31.82.128] Comparing checksum with sha256sum...
+ [172.31.82.128] Installing chef 16
+installing with rpm...
+ [172.31.82.128] warning:
+ [172.31.82.128] /tmp/install.sh.3528/chef-16.17.51-1.el7.x86_64.rpm: Header V4 DSA/SHA1 Signature, key ID 83ef826a: NOKEY
+ [172.31.82.128] Preparing...
+ [172.31.82.128] ########################################
+ [172.31.82.128]
+ [172.31.82.128] Updating / installing...
+chef-16.17.51-1.el7
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128] #
+ [172.31.82.128]
+ [172.31.82.128] Thank you for installing Chef Infra Client! For help getting started visit https://learn.chef.io
+ [172.31.82.128] Starting the first Chef Infra Client Client run...
+ [172.31.82.128] +---------------------------------------------+
+✔ 2 product licenses accepted.
++---------------------------------------------+
+ [172.31.82.128] Starting Chef Infra Client, version 16.17.51
+ [172.31.82.128]
+ [172.31.82.128] Patents: https://www.chef.io/patents
+ [172.31.82.128]
+ [172.31.82.128] resolving cookbooks for run list: []
+ [172.31.82.128]
+ [172.31.82.128] Synchronizing Cookbooks:
+ [172.31.82.128]
+ [172.31.82.128] Installing Cookbook Gems:
+Compiling Cookbooks...
+[2022-03-26T06:32:30+00:00] WARN: Node node1 has an empty run list.
+ [172.31.82.128] Converging 0 resources
+ [172.31.82.128]
+ [172.31.82.128]
+ [172.31.82.128] Running handlers:
+ [172.31.82.128]
+ [172.31.82.128] Running handlers complete
+ [172.31.82.128] Chef Infra Client finished, 0/0 resources updated in 02 seconds
+ [172.31.82.128]
+----------
+[root@ip-172-31-89-24 chef-repo]# knife node list
+node1
+---
+[root@ip-172-31-89-24 chef-repo]# cd ..
+
+[root@ip-172-31-89-24 ec2-user]# mv cookbooks/apache-cookbook  chef-repo/cookbooks
+
+[root@ip-172-31-89-24 ec2-user]# mv cookbooks/test-cookbook chef-repo/cookbooks
+
+[root@ip-172-31-89-24 ec2-user]# rm -rf cookbooks
+
+[root@ip-172-31-89-24 ec2-user]# cd chef-repo
+
+[root@ip-172-31-89-24 chef-repo]# ls
+cookbooks  node-key.pem  README.md  roles
+
+[root@ip-172-31-89-24 chef-repo]# cd cookbooks
+
+[root@ip-172-31-89-24 cookbooks]# ls
+apache-cookbook  chefignore  starter  test-cookbook
+--
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload apache-cookbook
+Uploading apache-cookbook [0.1.0]
+Uploaded 1 cookbook.
+
+[root@ip-172-31-89-24 chef-repo]# knife cookbook list
+apache-cookbook   0.1.0
+----
+[root@ip-172-31-89-24 chef-repo]# knife node run_list set node1 "recipe[apache-cookbook::apache-recipe]"
+node1:
+  run_list: recipe[apache-cookbook::apache-recipe]
+---
+[root@ip-172-31-89-24 chef-repo]# knife node show node1
+Node Name:   node1
+Environment: _default
+FQDN:        ip-172-31-82-128.ec2.internal
+IP:          3.92.192.208
+Run List:    recipe[apache-cookbook::apache-recipe]
+Roles:
+Recipes:
+Platform:    amazon 2
+Tags:
+-------
+
+--------------------------------- Start commands in node1 ----------------
+
+Now Login to node1 linux machine and run the following commands
+
+login as: ec2-user
+
+[ec2-user@ip-172-31-82-128 ~]$ sudo su
+
+Call the chef-client manually
+[root@ip-172-31-82-128 ec2-user]# chef-client
+Starting Chef Infra Client, version 16.17.51
+Patents: https://www.chef.io/patents
+resolving cookbooks for run list: ["apache-cookbook::apache-recipe"]
+Synchronizing Cookbooks:
+  - apache-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 3 resources
+Recipe: apache-cookbook::apache-recipe
+  * yum_package[httpd] action install
+    - install version 0:2.4.52-1.amzn2.x86_64 of package httpd
+  * file[/var/www/html/index.html] action create
+    - create new file /var/www/html/index.html
+    - update content in file /var/www/html/index.html from none to 09d080
+    --- /var/www/html/index.html        2022-03-26 07:06:18.626231516 +0000
+    +++ /var/www/html/.chef-index20220326-4174-1n9t9m6.html     2022-03-26 07:06:18.626231516 +0000
+    @@ -1 +1,2 @@
+    +Welcome to technical guftgu youtube channel ---learn to codeand enjoy!!!
+  * service[httpd] action enable
+    - enable service service[httpd]
+  * service[httpd] action start
+    - start service service[httpd]
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 4/4 resources updated in 08 seconds
+----
+
+Now you can paste the public ip of node1 in browser you will get the following content.
+
+http://3.92.192.208/
+Welcome to technical guftgu youtube channel ---learn to codeand enjoy!!!
+
+--------------------- End ---------------------------------
+
+--------   commands in chef-workstation  -------------------
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat  cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+# Cookbook:: apache-cookbook
+# Recipe:: apache-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install httpd package
+package 'httpd' do
+  action :install
+end
+
+#Task2: Create an file
+file '/var/www/html/index.html' do
+  content 'Welcome to technical guftgu youtube channel. Updated content!'
+  action :create
+end
+
+#Task3 and 4: enable and start the server
+service 'httpd' do
+  action [:enable, :start]
+end
+-----
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload apache-cookbook
+Uploading apache-cookbook [0.1.0]
+Uploaded 1 cookbook.
+
+-----------------------------
+
+Now call chef-client mannually in node1
+
+[root@ip-172-31-82-128 ec2-user]# chef-client
+Starting Chef Infra Client, version 16.17.51
+Patents: https://www.chef.io/patents
+resolving cookbooks for run list: ["apache-cookbook::apache-recipe"]
+Synchronizing Cookbooks:
+  - apache-cookbook (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 3 resources
+Recipe: apache-cookbook::apache-recipe
+  * yum_package[httpd] action install (up to date)
+  * file[/var/www/html/index.html] action create
+    - update content in file /var/www/html/index.html from 09d080 to 9b745a
+    --- /var/www/html/index.html        2022-03-26 07:06:18.626231516 +0000
+    +++ /var/www/html/.chef-index20220326-4459-yl8su3.html      2022-03-26 07:20:39.692110122 +0000
+    @@ -1,2 +1,2 @@
+    -Welcome to technical guftgu youtube channel ---learn to codeand enjoy!!!
+    +Welcome to technical guftgu youtube channel. Updated content!
+  * service[httpd] action enable (up to date)
+  * service[httpd] action start (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Infra Client finished, 1/4 resources updated in 03 seconds
+-----------
+http://3.92.192.208/
+Welcome to technical guftgu youtube channel. Updated content!
+--------------------------------------------------------------
+
+------------- How to Automate the process in Node1  ------------
+
+To automate the chef-client we need to go to node1 and update content inside /etc/crontab file.
+
+[root@ip-172-31-82-128 ec2-user]# vi /etc/crontab
+
+[root@ip-172-31-82-128 ec2-user]# cat /etc/crontab
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+* * * * * root chef-client
+-----------------
+
+Go to workstation:
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+# Cookbook:: apache-cookbook
+# Recipe:: apache-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install httpd package
+package 'httpd' do
+  action :install
+end
+
+#Task2: Create an file
+file '/var/www/html/index.html' do
+  content 'Chef node is now automated!'
+  action :create
+end
+
+#Task3 and 4: enable and start the server
+service 'httpd' do
+  action [:enable, :start]
+end
+-----
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload apache-cookbook
+Uploading apache-cookbook [0.1.0]
+Uploaded 1 cookbook.
+
+The public ip of node1 in url shows the below content.
+http://3.92.192.208/
+Chef node is now automated!
+
+---------------Now launch  node2 in Amazon linux and automte --------
+
+Write following code in step3  advanced detail section in ec2-instance
+
+!/bin/bash
+sudo su
+yum update -y
+echo " * * * * *  root  chef-client" >> /etc/crontab
+
+------
+Bootstrap node2:
+[root@ip-172-31-89-24 chef-repo]# knife bootstrap 172.31.82.150 --ssh-user ec2-user --sudo -i node-key.pem -N node2
+
+--ssh-user: This flag is deprecated. Use -U/--connection-user instead.
+Connecting to 172.31.82.150 using ssh
+The authenticity of host '172.31.82.150 ()' can't be established.
+fingerprint is SHA256:8cqm5/+aYSIDFyvI8cwMvcsV8InwKSn1OwVCzCQ1Crw.
+
+Are you sure you want to continue connecting
+? (Y/N) y
+Connecting to 172.31.82.150 using ssh
+Creating new client for node2
+Creating new node for node2
+Bootstrapping 172.31.82.150
+ [172.31.82.150] -----> Installing Chef Omnibus (stable/16)
+downloading https://omnitruck.chef.io/chef/install.sh
+  to file /tmp/install.sh.3512/install.sh
+trying wget...
+ [172.31.82.150] el 7 x86_64
+Getting information for chef stable 16 for el...
+downloading https://omnitruck.chef.io/stable/chef/metadata?v=16&p=el&pv=7&m=x86_64
+  to file /tmp/install.sh.3517/metadata.txt
+ [172.31.82.150] trying wget...
+ [172.31.82.150] sha1   c8d7dd6c06f5bccfdafdc423124760ad4eb3420c
+sha256  85c04b3f69ebbb2cc341a9da701a1769e40cbc55374ce2a7c263ae9d931802f6
+url     https://packages.chef.io/files/stable/chef/16.17.51/el/7/chef-16.17.51-1.el7.x86_64.rpm
+version 16.17.51
+ [172.31.82.150]
+ [172.31.82.150] downloaded metadata file looks valid...
+ [172.31.82.150] downloading https://packages.chef.io/files/stable/chef/16.17.51/el/7/chef-16.17.51-1.el7.x86_64.rpm
+  to file /tmp/install.sh.3517/chef-16.17.51-1.el7.x86_64.rpm
+ [172.31.82.150] trying wget...
+ [172.31.82.150] Comparing checksum with sha256sum...
+ [172.31.82.150] Installing chef 16
+installing with rpm...
+ [172.31.82.150] warning:
+ [172.31.82.150] /tmp/install.sh.3517/chef-16.17.51-1.el7.x86_64.rpm: Header V4 DSA/SHA1 Signature, key ID 83ef826a: NOKEY
+ [172.31.82.150] Preparing...
+ [172.31.82.150] ########################################
+ [172.31.82.150]
+ [172.31.82.150] Updating / installing...
+chef-16.17.51-1.el7
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150] #
+ [172.31.82.150]
+ [172.31.82.150] Thank you for installing Chef Infra Client! For help getting started visit https://learn.chef.io
+ [172.31.82.150] Starting the first Chef Infra Client Client run...
+ [172.31.82.150] +---------------------------------------------+
+✔ 2 product licenses accepted.
++---------------------------------------------+
+ [172.31.82.150] Starting Chef Infra Client, version 16.17.51
+ [172.31.82.150]
+ [172.31.82.150] Patents: https://www.chef.io/patents
+ [172.31.82.150]
+ [172.31.82.150] resolving cookbooks for run list: []
+ [172.31.82.150]
+ [172.31.82.150] Synchronizing Cookbooks:
+ [172.31.82.150]
+ [172.31.82.150] Installing Cookbook Gems:
+Compiling Cookbooks...
+[2022-03-26T07:42:15+00:00] WARN: Node node2 has an empty run list.
+ [172.31.82.150] Converging 0 resources
+ [172.31.82.150]
+ [172.31.82.150]
+ [172.31.82.150] Running handlers:
+ [172.31.82.150]
+ [172.31.82.150] Running handlers complete
+ [172.31.82.150] Chef Infra Client finished, 0/0 resources updated in 02 seconds
+ [172.31.82.150]
+----------------
+
+[root@ip-172-31-89-24 chef-repo]# knife node run_list set node2 "recipe[apache-cookbook::apache-recipe]"
+node2:
+  run_list: recipe[apache-cookbook::apache-recipe]
+
+[root@ip-172-31-89-24 chef-repo]# knife node list
+node1
+node2
+
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+# Cookbook:: apache-cookbook
+# Recipe:: apache-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install httpd package
+package 'httpd' do
+  action :install
+end
+
+#Task2: Create an file
+file '/var/www/html/index.html' do
+  content 'Now both the nodes are fully automated no need to run chef-client inside node!'
+  action :create
+end
+
+#Task3 and 4: enable and start the server
+service 'httpd' do
+  action [:enable, :start]
+end
+------
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload apache-cookbook
+Uploading apache-cookbook [0.1.0]
+Uploaded 1 cookbook.
+-----
+Now paste the public ip of node1 and node2 in web browser following content shown
+
+http://3.92.192.208/
+Now both the nodes are fully automated no need to run chef-client inside node!
+
+http://18.233.96.191/
+Now both the nodes are fully automated no need to run chef-client inside node!
+
+
+----------------------- Lecture 22: Chef Roles  --------------------------
+
+Till Now did following:
+- Created cookbook and recipe in workstation
+- Uploaded cookbook in chef-server
+- Bootstrapped node with chef server one time to connect node with Server. Chef-client will be automatically installed in node machine.
+- Created run_list and recipe was added in node and recipe was connected with node.
+ 
+Chef-Workstation   -----> Chef-Server   ------> Nodes
+
+Now, we will have chef-workstation and chef-server and will delete nodes, cookbooks and clients from chef server. We will delete these from workstation because we will not have access to chef-server as devops engineer.
+
+login as: ec2-user
+
+[ec2-user@ip-172-31-89-24 ~]$ sudo su
+
+[root@ip-172-31-89-24 ec2-user]# cd chef-repo
+
+[root@ip-172-31-89-24 chef-repo]# ls
+cookbooks  node-key.pem  README.md  roles
+
+[root@ip-172-31-89-24 chef-repo]# knife node list
+node1
+node2
+
+[root@ip-172-31-89-24 chef-repo]# knife node delete node1 -y
+Deleted node[node1]
+
+[root@ip-172-31-89-24 chef-repo]# knife node delete node2 -y
+Deleted node[node2]
+
+[root@ip-172-31-89-24 chef-repo]# knife cookbook list
+apache-cookbook   0.1.0
+
+[root@ip-172-31-89-24 chef-repo]# knife cookbook delete apache-cookbook -y
+Deleted cookbook[apache-cookbook version 0.1.0]
+
+[root@ip-172-31-89-24 chef-repo]# knife client list
+dautomation-validator
+node1
+node2
+
+[root@ip-172-31-89-24 chef-repo]# knife client delete node1 -y
+Deleted client[node1]
+
+[root@ip-172-31-89-24 chef-repo]# knife client delete node2 -y
+Deleted client[node2]
+
+------------------------- Chef - role ----------------------
+
+Roles is an directory inside chef-repo
+
+Starter.rb is the default role inside roles directory
+
+[root@ip-172-31-89-24 chef-repo]# ls
+cookbooks  node-key.pem  README.md  roles
+
+[root@ip-172-31-89-24 chef-repo]# cd roles
+
+[root@ip-172-31-89-24 roles]# ls
+starter.rb
+
+[root@ip-172-31-89-24 roles]# vi devops.rb
+
+[root@ip-172-31-89-24 roles]# cat devops.rb
+name "devops"
+description "web server role"
+run_list "recipe[apache-cookbook::apache-recipe]"
+
+[root@ip-172-31-89-24 roles]# ls
+devops.rb  starter.rb
+
+[root@ip-172-31-89-24 roles]# cd ..
+
+[root@ip-172-31-89-24 chef-repo]# knife role from file roles/devops.rb
+Updated Role devops
+
+[root@ip-172-31-89-24 chef-repo]# knife role list
+devops
+
+---- Now create 4 instances as nodes in AWS.
+- Write following script in advanced details section in step 3 while creating instances.
+#!/bin/bash
+sudo su
+yum update -y
+echo "* * * * * root  chef-client" >> /etc/crontab
+---
+
+Bootstrapping all four nodes
+[root@ip-172-31-89-24 chef-repo]# knife bootstrap 172.31.85.48 --ssh-user ec2-user --sudo -i node-key.pem -N node1 -y
+
+--ssh-user: This flag is deprecated. Use -U/--connection-user instead.
+Connecting to 172.31.85.48 using ssh
+Connecting to 172.31.85.48 using ssh
+Creating new client for node1
+Creating new node for node1
+Bootstrapping 172.31.85.48
+ [172.31.85.48] -----> Installing Chef Omnibus (stable/16)
+downloading https://omnitruck.chef.io/chef/install.sh
+  to file /tmp/install.sh.3543/install.sh
+trying wget...
+ [172.31.85.48] el 7 x86_64
+Getting information for chef stable 16 for el...
+downloading https://omnitruck.chef.io/stable/chef/metadata?v=16&p=el&pv=7&m=x86_64
+  to file /tmp/install.sh.3548/metadata.txt
+ [172.31.85.48] trying wget...
+ [172.31.85.48] sha1    c8d7dd6c06f5bccfdafdc423124760ad4eb3420c
+sha256  85c04b3f69ebbb2cc341a9da701a1769e40cbc55374ce2a7c263ae9d931802f6
+url     https://packages.chef.io/files/stable/chef/16.17.51/el/7/chef-16.17.51-1.el7.x86_64.rpm
+version 16.17.51
+ [172.31.85.48]
+ [172.31.85.48] downloaded metadata file looks valid...
+ [172.31.85.48] downloading https://packages.chef.io/files/stable/chef/16.17.51/el/7/chef-16.17.51-1.el7.x86_64.rpm
+  to file /tmp/install.sh.3548/chef-16.17.51-1.el7.x86_64.rpm
+ [172.31.85.48] trying wget...
+ [172.31.85.48] Comparing checksum with sha256sum...
+ [172.31.85.48] Installing chef 16
+installing with rpm...
+ [172.31.85.48] warning:
+ [172.31.85.48] /tmp/install.sh.3548/chef-16.17.51-1.el7.x86_64.rpm: Header V4 DSA/SHA1 Signature, key ID 83ef826a: NOKEY
+ [172.31.85.48] Preparing...
+ [172.31.85.48] ########################################
+ [172.31.85.48]
+ [172.31.85.48] Updating / installing...
+chef-16.17.51-1.el7
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48] #
+ [172.31.85.48]
+ [172.31.85.48] Thank you for installing Chef Infra Client! For help getting started visit https://learn.chef.io
+ [172.31.85.48] Starting the first Chef Infra Client Client run...
+ [172.31.85.48] +---------------------------------------------+
+✔ 2 product licenses accepted.
++---------------------------------------------+
+ [172.31.85.48] Starting Chef Infra Client, version 16.17.51
+ [172.31.85.48]
+ [172.31.85.48] Patents: https://www.chef.io/patents
+ [172.31.85.48]
+ [172.31.85.48] resolving cookbooks for run list: []
+ [172.31.85.48]
+ [172.31.85.48] Synchronizing Cookbooks:
+ [172.31.85.48]
+ [172.31.85.48] Installing Cookbook Gems:
+Compiling Cookbooks...
+[2022-03-26T18:51:38+00:00] WARN: Node node1 has an empty run list.
+ [172.31.85.48] Converging 0 resources
+ [172.31.85.48]
+ [172.31.85.48]
+ [172.31.85.48] Running handlers:
+ [172.31.85.48]
+ [172.31.85.48] Running handlers complete
+ [172.31.85.48] Chef Infra Client finished, 0/0 resources updated in 02 seconds
+ [172.31.85.48]
+-------------------
+
+[root@ip-172-31-89-24 chef-repo]# knife bootstrap 172.31.85.192 --ssh-user ec2-user --sudo -i node-key.pem -N node2 -y
+
+[root@ip-172-31-89-24 chef-repo]# knife bootstrap 172.31.84.222 --ssh-user ec2-user --sudo -i node-key.pem -N node3 -y
+
+[root@ip-172-31-89-24 chef-repo]# knife bootstrap 172.31.92.91 --ssh-user ec2-user --sudo -i node-key.pem -N node4 -y
+
+[root@ip-172-31-89-24 chef-repo]# knife node list
+node1
+node2
+node3
+node4
+
+[root@ip-172-31-89-24 chef-repo]# knife client list
+dautomation-validator
+node1
+node2
+node3
+node4
+
+[root@ip-172-31-89-24 chef-repo]# knife node run_list set node1 "role[devops]"
+node1:
+  run_list: role[devops]
+
+[root@ip-172-31-89-24 chef-repo]# knife node run_list set node2 "role[devops]"
+node2:
+  run_list: role[devops]
+
+[root@ip-172-31-89-24 chef-repo]# knife node run_list set node3 "role[devops]"
+node3:
+  run_list: role[devops]
+
+[root@ip-172-31-89-24 chef-repo]# knife node run_list set node4 "role[devops]"
+node4:
+  run_list: role[devops]
+----
+[root@ip-172-31-89-24 chef-repo]# knife node show node1
+Node Name:   node1
+Environment: _default
+FQDN:        ip-172-31-85-48.ec2.internal
+IP:          3.92.222.46
+Run List:    role[devops]
+Roles:
+Recipes:
+Platform:    amazon 2
+Tags:
+-----
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload apache-cookbook
+Uploading apache-cookbook [0.1.0]
+Uploaded 1 cookbook.
+--
+Now paste public ip of node1, node2, node3 & node4 in web browser simultaneously it will have the following content
+
+node1 -->  
+http://3.92.222.46/
+Now both the nodes are fully automated no need to run chef-client inside node!
+
+node2 -->  
+http://35.171.18.82/
+Now both the nodes are fully automated no need to run chef-client inside node!
+
+node3 -->  
+http://34.201.134.70/
+Now both the nodes are fully automated no need to run chef-client inside node!
+
+node4 -->  
+http://3.92.208.68/
+Now both the nodes are fully automated no need to run chef-client inside node!
+---
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat  cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+# Cookbook:: apache-cookbook
+# Recipe:: apache-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install httpd package
+package 'httpd' do
+  action :install
+end
+
+#Task2: Create an file
+file '/var/www/html/index.html' do
+  content 'THIS IS THE LAST LECTURE IN CHEF. EVERYTHING IS NOW AUTOMATED !!!'
+  action :create
+end
+
+#Task3 and 4: enable and start the server
+service 'httpd' do
+  action [:enable, :start]
+end
+----
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload apache-cookbook
+Uploading apache-cookbook [0.1.0]
+Uploaded 1 cookbook.
+----
+Now content should be updated in all 4 nodes as follows:
+node1 -->  
+http://3.92.222.46/
+THIS IS THE LAST LECTURE IN CHEF. EVERYTHING IS NOW AUTOMATED !!!
+
+node2 -->  
+http://35.171.18.82/
+THIS IS THE LAST LECTURE IN CHEF. EVERYTHING IS NOW AUTOMATED !!!
+
+node3 -->  
+http://34.201.134.70/
+THIS IS THE LAST LECTURE IN CHEF. EVERYTHING IS NOW AUTOMATED !!!
+
+node4 -->  
+http://3.92.208.68/
+THIS IS THE LAST LECTURE IN CHEF. EVERYTHING IS NOW AUTOMATED !!!
+-----
+Now we want to work on recipe-new recipe then
+
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/apache-cookbook/recipes/recipe-new.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat cookbooks/apache-cookbook/recipes/recipe-new.rb
+#
+# Cookbook:: apache-cookbook
+# Recipe:: recipe-new
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: Create a file in root with basic info of the Ec2 machine
+file '/basicinfo' do
+  content "This is to get Attributes
+  HOSTNAME: #{node['hostname']}
+    IPADDRESS: #{node['ipaddress']}
+    CPU: #{node['cpu']['0']['mhz']}
+    MEMORY: #{node['memory']['total']}"
+    owner 'root'
+  group 'root'
+  action :create
+end
+-----
+
+[root@ip-172-31-89-24 chef-repo]# vi roles/devops.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat roles/devops.rb
+name "devops"
+description "web server role"
+run_list "recipe[apache-cookbook::recipe-new]"
+--
+Now upload the updated role in server
+[root@ip-172-31-89-24 chef-repo]# knife role from file roles/devops.rb
+Updated Role devops
+---
+Now login into one node and check the machine info
+eg: node1
+login as: ec2-user
+
+[ec2-user@ip-172-31-85-48 ~]$ sudo su
+--
+[root@ip-172-31-85-48 ec2-user]# ls /
+basicinfo  boot  etc   lib    local  mnt  proc  run   srv  tmp  var
+bin        dev   home  lib64  media  opt  root  sbin  sys  usr
+--
+[root@ip-172-31-85-48 ec2-user]# cat /basicinfo
+This is to get Attributes
+  HOSTNAME: ip-172-31-85-48
+    IPADDRESS: 172.31.85.48
+    CPU: 2400.074
+    MEMORY: 988672kB
+
+-------- Now run all the recipes from cookbook -----------------
+
+[root@ip-172-31-89-24 chef-repo]# vi roles/devops.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat roles/devops.rb
+name "devops"
+description "web server role"
+run_list "recipe[apache-cookbook]"
+
+[root@ip-172-31-89-24 chef-repo]# knife role from file roles/devops.rb
+Updated Role devops
+----
+Now update both recipes in apache-cookbook
+
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/apache-cookbook/recipes/recipe-new.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat cookbooks/apache-cookbook/recipes/recipe-new.rb
+#
+# Cookbook:: apache-cookbook
+# Recipe:: recipe-new
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: Create a file in root with basic info of the Ec2 machine
+file '/basicinfo' do
+  content "This is to get Attributes
+  HOSTNAME: #{node['hostname']}
+    IPADDRESS: #{node['ipaddress']}
+    CPU: #{node['cpu']['0']['mhz']}
+    MEMORY: #{node['memory']['total']}"
+    owner 'root'
+  group 'root'
+  action :create
+end
+
+user 'rajendra'
+file '/rajendrafile'
+-----
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+# Cookbook:: apache-cookbook
+# Recipe:: apache-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install httpd package
+package 'httpd' do
+  action :install
+end
+
+#Task2: Create an file
+file '/var/www/html/index.html' do
+  content 'CODES OF ALL RECIPES APPLY SIMULTANEOUSLY!!'
+  action :create
+end
+
+#Task3 and 4: enable and start the server
+service 'httpd' do
+  action [:enable, :start]
+end
+------
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload apache-cookbook
+Uploading apache-cookbook [0.1.0]
+Uploaded 1 cookbook.
+------
+Now check for the updates for all four nodes
+
+for example in node1 as below
+[root@ip-172-31-85-48 ec2-user]# cat /etc/passwd
+rajendra:x:1001:1001::/home/rajendra:/bin/bash
+
+[root@ip-172-31-85-48 ec2-user]# ls /
+basicinfo  boot  etc   lib    local  mnt  proc          root  sbin  sys  usr
+bin        dev   home  lib64  media  opt  rajendrafile  run   srv   tmp  var
+----
+
+http://3.92.222.46/
+CODES OF ALL RECIPES APPLY SIMULTANEOUSLY!!
+___________________________________________________________________________
+
+----------   Now run all the recipes in two cookbooks    --------
+
+[root@ip-172-31-89-24 chef-repo]#  vi roles/devops.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat roles/devops.rb
+name "devops"
+description "web server role"
+run_list "recipe[apache-cookbook]","recipe[test-cookbook]"
+--
+[root@ip-172-31-89-24 chef-repo]# knife role from file roles/devops.rb
+Updated Role devops
+
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload test-cookbook
+Uploading test-cookbook  [0.1.0]
+Uploaded 1 cookbook.
+---
+Check the content of recipe2.rb and test-recipe.rb as below
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/test-cookbook/recipes/recipe2.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat cookbooks/test-cookbook/recipes/recipe2.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: recipe2
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install tree package
+package 'tree' do
+  action :install
+end
+
+#Task2: create a file in root directory
+file '/myfile2' do
+  content 'This is my second project. Content is Updated !!!'
+action :create
+owner 'root'
+group 'root'
+end
+----
+
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/test-cookbook/recipes/test-recipe.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat cookbooks/test-cookbook/recipes/test-recipe.rb
+#
+# Cookbook:: test-cookbook
+# Recipe:: test-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# 1. The first code
+file '/myfile' do
+  content 'Welcome to Technical Guftgu youtube Channel'
+  action :create
+end
+
+# Task2: Create dirctory and a file using linux
+# ommand using between EOH: end of Here or end of hunk
+
+execute 'run a script' do
+  command <<-EOH
+  mkdir /aryaldir
+  touch /aryalfile
+  EOH
+  end
+
+# Task3: Create user
+user 'aryal' do
+  action :create
+end
+
+# Task4: Create a group
+group 'devops' do
+  action :create
+  members 'aryal'
+  append true
+end
+
+#Task5 and Task6: This is default in Ruby can directly write as below:
+user "reyona"
+file "/AutomationTesting"
+------
+
+Now check the updates in nodes according as the uploaded cookbooks/recipes in roles.
+
+eg node1:
+
+[root@ip-172-31-85-48 ec2-user]# ls /
+aryaldir           bin   home   media    opt           run   tmp
+aryalfile          boot  lib    mnt      proc          sbin  usr
+AutomationTesting  dev   lib64  myfile   rajendrafile  srv   var
+basicinfo          etc   local  myfile2  root          sys
+-----
+
+[root@ip-172-31-85-48 ec2-user]# cat /etc/passwd
+rajendra:x:1001:1001::/home/rajendra:/bin/bash
+aryal:x:1002:1002::/home/aryal:/bin/bash
+reyona:x:1003:1004::/home/reyona:/bin/bash
+-----
+[root@ip-172-31-85-48 ec2-user]# cat /etc/group
+ec2-user:x:1000:
+aryal:x:1001:
+devops:x:1002:aryal
+reyona:x:1003:
+---
+
+Node1's url and it's content:
+
+http://3.92.222.46/
+CODES OF ALL RECIPES APPLY SIMULTANEOUSLY!!
+
+
+--------- How to install multiple packages in chef nodes -------------
+
+[root@ip-172-31-89-24 chef-repo]# vi cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+[root@ip-172-31-89-24 chef-repo]# cat  cookbooks/apache-cookbook/recipes/apache-recipe.rb
+
+# Cookbook:: apache-cookbook
+# Recipe:: apache-recipe
+#
+# Copyright:: 2022, The Authors, All Rights Reserved.
+
+# Task1: install httpd package
+package 'httpd' do
+  action :install
+end
+
+#Task2: Create an file
+file '/var/www/html/index.html' do
+  content 'CODES OF ALL RECIPES APPLY SIMULTANEOUSLY!!'
+  action :create
+end
+
+#Task3 and 4: enable and start the server
+service 'httpd' do
+  action [:enable, :start]
+end
+
+ %w(httpd mariadb-server unzip git vim) .each do |p|
+   package p do
+     action :install
+   end
+ end
+---
+
+[root@ip-172-31-89-24 chef-repo]# knife cookbook upload apache-cookbook
+Uploading apache-cookbook [0.1.0]
+Uploaded 1 cookbook.
+------------
+Before uploading the cookbook in node1
+[root@ip-172-31-85-48 ec2-user]# which git
+/usr/bin/which: no git in (/sbin:/bin:/usr/sbin:/usr/bin)
+
+After updating apache-recipe 
+[root@ip-172-31-85-48 ec2-user]# which git
+/bin/git
+
+[root@ip-172-31-85-48 ec2-user]# which unzip
+/bin/unzip
+
+[root@ip-172-31-85-48 ec2-user]# which httpd
+/sbin/httpd
+
+[root@ip-172-31-85-48 ec2-user]# which vim
+/bin/vim
+
+
+----Deleting all nodes, cookbooks, clients and roles from server---
+
+
+[root@ip-172-31-89-24 chef-repo]# knife node list
+node1
+node2
+node3
+node4
+
+[root@ip-172-31-89-24 chef-repo]# knife node delete node1 -y
+Deleted node[node1]
+
+[root@ip-172-31-89-24 chef-repo]# knife node delete node2 -y
+Deleted node[node2]
+
+[root@ip-172-31-89-24 chef-repo]# knife node delete node3 -y
+Deleted node[node3]
+
+[root@ip-172-31-89-24 chef-repo]# knife node delete node4 -y
+Deleted node[node4]
+
+[root@ip-172-31-89-24 chef-repo]# knife cookbook list
+apache-cookbook   0.1.0
+test-cookbook     0.1.0
+
+[root@ip-172-31-89-24 chef-repo]# knife cookbook delete apache-cookbook -y
+Deleted cookbook[apache-cookbook version 0.1.0]
+
+[root@ip-172-31-89-24 chef-repo]# knife cookbook delete test-cookbook -y
+Deleted cookbook[test-cookbook version 0.1.0]
+
+[root@ip-172-31-89-24 chef-repo]# knife client list
+dautomation-validator
+node1
+node2
+node3
+node4
+
+[root@ip-172-31-89-24 chef-repo]# knife client delete node1 -y
+Deleted client[node1]
+
+[root@ip-172-31-89-24 chef-repo]# knife client delete node2 -y
+Deleted client[node2]
+
+[root@ip-172-31-89-24 chef-repo]# knife client delete node3 -y
+Deleted client[node3]
+
+[root@ip-172-31-89-24 chef-repo]# knife client delete node4 -y
+Deleted client[node4]
+
+[root@ip-172-31-89-24 chef-repo]# knife role list
+devops
+
+[root@ip-172-31-89-24 chef-repo]# knife role delete devops -y
+Deleted role[devops]
+
+___________________________________  END  ________________________________
+
+

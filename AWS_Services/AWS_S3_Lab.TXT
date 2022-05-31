@@ -1,0 +1,67 @@
+
+
+--------------- AWS S3 LAB  using CLI --------------------------
+
+
+We can create s3 buckets on aws s3 console using aws cli for that we need to follow the below steps:
+
+1. Download and run the 64-bit Windows installer on your windows machine.
+
+2. Reboot or restart your machine
+
+3. Open CMD on your machine
+
+ 4. C:\Users\creat>aws configure
+AWS Access Key ID [****************AMVG]:
+AWS Secret Access Key [****************/iIH]:
+Default region name [us-east-1]:
+Default output format [None]:
+
+5. To check the existing buckets in s3
+C:\Users\creat>aws s3 ls
+2022-05-19 16:47:09 dhruba1
+
+6. To create a new bucket in aws s3
+C:\Users\creat>aws s3 mb s3://dhruba12
+make_bucket: dhruba12
+
+7. To create another bucket in aws s3
+C:\Users\creat>aws s3 mb s3://dhruba123
+make_bucket: dhruba123
+
+8. To check lists of buckets in aws s3
+C:\Users\creat>aws s3 ls
+2022-05-19 16:47:09 dhruba1
+2022-05-19 16:52:52 dhruba12
+2022-05-19 17:04:20 dhruba123
+
+9. To delete a bucket from aws s3
+C:\Users\creat>aws s3 rb s3://dhruba123
+remove_bucket: dhruba123
+
+C:\Users\creat>aws s3 rb s3://dhruba12
+remove_bucket: dhruba12
+
+10. Check the list of buckets in aws s3
+C:\Users\creat>aws s3 ls
+2022-05-19 16:47:09 dhruba1
+
+11. Synchronize files from desktop any folder to aws s3 bucket
+C:\Users\creat\OneDrive\Desktop>cd Devops
+C:\Users\creat\OneDrive\Desktop\Devops>aws s3 sync . s3://dhruba1
+
+12. If accidently all/some files are deleted from your local machine folder then you can synchronize (pull) from  aws s3.
+C:\Users\creat\OneDrive\Desktop> cd storage
+C:\Users\creat\OneDrive\Desktop\storage>aws s3 sync s3://dhruba1 .
+
+13. To empty the bucket ( if versioning is not enabled) using cli
+Use the following command to remove all objects without specifying a prefix.
+C:\Users\creat>aws s3 rm s3://dhruba1 --recursive
+
+14. To remove some/few files from the bucket.
+The following rm command removes objects that have the key name prefix doc, for example, doc/doc1 and doc/doc2.
+aws s3 rm s3://bucket-name/doc --recursive
+
+C:\Users\creat>aws s3 rb s3://dhruba1
+remove_bucket: dhruba1
+

@@ -1,0 +1,581 @@
+
+________________________
+
+Retrieve instance metadata - Amazon Elastic Compute Cloudhttps://docs.aws.amazon.com › instancedata-data-retrieval
+To view all categories of instance metadata from within a running instance, use the following IPv4 or IPv6 URIs.
+ curl http://169.254.169.254/latest/meta-data/
+_____________________________________________________
+
+DNS (Domain Name System)
+- DNS is a host Name to IP address Translation service
+- It is an application layer Protocol
+- Previously, all the host name were saved in host.txt file.
+- 6 Top level domains included - .com, .org, .biz, .mil, .net & .edu.
+- Forword and reverse DNS lookups.
+- Higlhly Targeted for Hacking Purpose.
+- It uses TCP port 53 and UDP port 53.
+- Today, DNS support 13 Root Name Server (A to M)
+
+Note: There are two ways to resolve hostname to IP address. The first is building by a host table on each routers, and the second is to build a DNS server.
+
+Types of Domain
+Generic: .net, .edu, .org, .mil, .com, .net
+
+Country: .us, .uk, .in, .np
+
+Inverse:  (Ip to domain Name Mapping)
+
+A Namespace Map each address to a unique Name.
+ Namespace: Flat, Hierarchical
+
+Flat Namespace: In this method, Name is assigned to an address. It is in sequence of character without any structure.
+- Can't be used in large System.
+
+Hierarchical Namespace: In this method, Name is made of several paths. In this method, Name space can be decentralized.
+
+Hierarcy of Name Servers:
+
+Root Name Server: It is contacted by name servers that cannot resolve the name. It contatcts top level servers if name mapping is not known. It then gets the mapping and return the IP address to the host.
+
+Top Level Server: It is responsible for .com, .org. .edu etc and all top level contry domain like uk, us, fr, ca, in.
+They have information about Authoritative domain Servers and known names and IP address of each authoritative name server for the second level  domains.
+
+Authoritative Name Server: It can be maintained by organizaton or service provider. In order to reach ccna.tg.in we have to ask the root DNS server, then it will point out to the top level domain server and then to authoritative domain name server which actually contains the IP address so the autoritative server will return the assocative IP address.
+________________________
+
+OSI Model (Open system Interconnection)
+
+OSI Model is a reference model developed by ISO.
+
+Sender side
+------------
+1. Application Layer (HTTP, FTP, TELNet)
+2. Presentation Layer (Encryption/Decryption)
+3. Session Layer (Logical ports End to end messaging)
+( above this is software layer)
+4. Transport Layer  segmentation  (TCP AND UDP, Heart of the data flow)
+ (below is Hardware layer)
+5. Network Layer  packet
+6. Data link Layer  frame
+7. Physical Layer   bits
+
+Phrase: All people Seems To Need Data Processing
+
+_____________________________________________
+
+Addressing:
+-----------
+Physical Addressing 		Logical Addressing
+MAC Address			IPv4  & IPv6
+48 bits				Public IP  & Private IP
+
+
+IPv4: Internet Protocol
+32 bit Logical address
+4 Octet
+value of octet 0-255
+
+IP address  --> Network ID + Host ID
+
+eg --> 20.100.200.15
+	145.160.20.255
+
+-----------------
+Classes:
+Class A : 1.0.0.0 to 126.0.0.0
+Loop Back address 127.0.0.0
+
+Class B : 128.0.0.0 to 191.255.0.0
+
+Class C : 192.0.0.0 to 223.255.255.0
+
+Class D: 224 - 239 (Multicasting)
+
+Class E: 240 - 255  (Research)
+--------------
+
+137.20.20.10  --> Class B IP address
+
+201.100.10.0  --> Class C IP address
+
+Network ID:
+----------
+Class A   	N H H H
+Class B 	N N H H
+Class C 	N N N H
+
+Network bit represented by 1
+Host bit represented by 0
+
+Find the network ID of following IP address
+115 10.0.15   Network ID: 115.0.0.0
+196.10.10.10  Network ID: 196.10.10.0
+150.10.10.100	Network ID: 150.10.0.0
+
+ How to find subnet mask of following IP:
+Class A:	115 10 10 20 
+Network ID:	115.0.0.0 
+Subnet Mask:	11111111.00000000.00000000.00000000
+Subnet Mask:	255.0.0.0
+
+Class B:	160.10.20.10
+Network ID:	160.10.0.0
+Subnet Mask:	255.255.0.0 
+
+Convert the given IP address into binary
+decimal:	192.168.37.200
+Binary:		11000000.10101000.00100101.11001000
+---------------
+
+Private IP: For LAN and not used in Interet or in router.
+Private IP doesn't need to purchase
+Class A:	10.0.0.0
+Class B:	172.16.x.x
+Class C:	192.x.x.x
+
+Find for 150.10.20.30
+1. Network ID
+2. Subnet Mask  
+3. Broadcast ID
+4. Number of usable host
+
+Given IP:		150.10.20.30
+1. Network ID:		150.10.0.0
+2. Subnet Mask:		255.255.0.0
+3. Boradcast ID: 	150.10.255.255
+4. Number of usable host: 2*^16 -2 = 65,534 
+	First IP for Network ID
+	Last IP for Broadcast ID
+ 	Total IP =  2^16 = 65,536
+
+Given IP:		11.200.200.200
+Network ID :		N.H.H.H
+Network ID :		11.0.0.0
+Broadcasr ID :	 	11.255.255.255
+Subnet Mask:		255.0.0.0
+Number of usable ip address/host: 2^42-2 = ~ 16 million
+----------------------
+
+Subnetting:
+IPv4 is limited.
+Network within a Network is called subnetting. Logically division of IP addresses.
+Router's in each interface Network ID should be different.
+Router is Internetworking device.
+Switch is an device that is used for communication in the same network.
+
+Class A Default CIDR: x.0.0.0/8
+Class B Default CIDR: x.x.0.0/16
+Class C Default CIDR: x.x.x.0/24
+
+Steps for Network subnetting:
+1. For class c network id: 197.10.10.0 (default subnet mask 255.255.255.0)
+
+2. Convert the host in binary
+	197.10.10.00000000
+
+3. 2^n -2 >= maximum value of host in network 40 of the router  (n = number of bits of host)
+         n=1,2,3,4,5,6 ...
+	2^6-2 = 64-2 =62>=40
+	n=6
+
+4. Give the remainder to network (8-6 =2) network bit=1, host bit =0.
+	   197.10.0.00000000
+	   197.10.0.11000000
+
+Find the decimal value and add them up it will give the subnet mask.
+128+64+0+0+0+0+0+0 =192
+	   197.10.0.192
+
+5. 255.255.255.192 (subnet mask of above ip)
+
+6. 197.10.10.0/26 -subnet ID 1
+subnet mask: 255.255.255.192
+
+subnet1
+197.10.10.0/26
+197.10.10.63/26 Broadcast ID
+
+subnet2
+197.10.10.64/26
+197.10.10.127/26 Broadcast ID
+
+subnet3
+197.10.10.128/26
+
+subnet4
+197.10.10.192/26
+-------------------------------
+Given IP: 197.10.10.186/26
+Find subnet ID
+Find Broadcast ID.
+
+Subnet ID: 197.10.10.128
+Broadcast ID: 197.10.10.191
+-----------------------------
+Desigining of subneting from one network ID
+given network ID: 12.0.0.0
+
+maximum number of hosts in a network =60
+
+Class A
+12.0.0.0
+
+1. 12.0.0.0
+   N  H H H
+
+2. 12.00000000.00000000.00000000
+
+3. 2^n -2 >= maximum value of host in network of the router  (n = number of bits of host)
+         n=1,2,3,4,5,6 ...
+	2^6-2 = 64-2 =62>=40
+	n=6
+
+4.  n=6
+Give the remainder to network (8-6 =2) network bit=1, host bit =0.
+
+5. Network bit=1, host bit=0
+   12.00000000.00000000.00000000
+   12.11111111.11111111.11000000
+   12.255.255.255.192  (Last subnet ID)
+Subnet mask, Class A: 255.0.0.0
+		      255.255.255.192
+
+First subnet ID
+  12.0.0.0/26
+  subnet mask: 255.255.255.192
+  broadcast ID: 12.0.0.63/26
+	
+second subnet ID
+  12.0.0.64/26
+  broadcast ID: 12.0.0.127/26
+
+3rd subnet ID
+  12.0.0.128/26
+  broadcast ID: 12.0.0.191/26
+
+4th subnet ID
+  12.0.0.192/26
+
+5th subnet ID
+  12.0.1.0/26
+
+6th subnet ID
+  12.0.1.64/26
+
+7th subnet ID
+  12.0.1.128/26
+
+8th subnet ID
+  12.0.1.192/26
+
+9th subnet ID
+  12.0.2.192/26
+ 
+and so on
+--------------------------
+
+Question:
+Required network =6
+Maximum host =1024
+minimum host = 2
+Given ip is 12.0.0.0
+
+1. 12.0.0.0
+2. 12.00000000.00000000.00000000
+
+3. 2^n -2 >= maximum value of host in network of the router  (n = number of bits of host)
+         n=1,2,3,4,5,6 ...
+	2^11-2 = 2048 -2 = 2024>=1024
+	n=11
+
+4.  n=11
+Give the remainder to network (8-6 =2) network bit=1, host bit =0.
+
+5. Network bit=1, host bit=0
+   12.00000000.00000000.00000000
+   12.11111111.11111000.00000000
+   12.255.255.248.0  (Last subnet ID)
+Subnet mask, Class A: 255.0.0.0
+		      255.255.255.192
+6. first subnet ID
+12.0.0.0/21
+subnet mask: 255.255.248.0
+broadcast ID: 12.0.7.255/21
+
+second subnet ID
+12.0.8.0/21
+Broadcast ID: 12.0.15.255/21
+
+3rd subnet ID
+12.0.16.0/21
+Broadcast ID: 12.0.23.255/21
+
+4th subnet ID
+12.0.24.0/21
+Broadcast ID: 12.0.31.255/21
+
+5th subnet ID
+12.0.32.0/21
+Broadcast ID: 12.0.39.255/21
+
+6th subnet ID
+12.0.40.0/21
+Broadcast ID: 12.0.47.255/21
+--------------------------------------------
+
+Question:
+Given IP: 200.10.20.10/26
+How many hosts can we add in this network.
+
+For class C:
+1. N N N H
+ 	200.10.20.00000000
+	200.10.20.11000000
+For hosts: 2^6-2 = 64-2 =62 Hosts
+-------------------
+How many computers can you add in this subnet
+200.10.20.10/28
+For class C:
+1. N N N H
+ 	200.10.20.00000000
+	200.10.20.11110000
+For hosts: 2^4-2 = 16-2 = 14 Hosts
+
+----------------
+How many computers can you add in this subnet
+200.10.20.10/30
+For class C:
+1. N N N H
+ 	200.10.20.00000000
+	200.10.20.11111100
+For hosts: 2^2-2 = 4-2 =2 Hosts
+
+Router to routers between best subnet is /30.
+______________________________________________
+
+According to network requiremet:
+Consider the IP address 157 110 88 0 we need 30 subnet in such a way that each subnet may host upto 64 host.
+
+Steps:
+1. 	157.110.88.0
+	N    N  H  H
+This is class B IP address.
+Network ID: 157.110.0.0
+
+2. Convert host part into binary
+	157.110.00000000.00000000
+
+3. 	2^n >=30
+	2^5>=30
+
+4. 157.110.00000000.00000000
+	157.110.11111000.00000000
+	Class B default subnet mask is
+	255.255.248.0
+	157.110.248.0 --> Last subnet ID
+
+1st subnet ID: 157.110.0.0/21
+Broadcast ID:  157.110.7. 255/21
+
+2nd subnet ID: 157.110.8.0/21
+
+3rd subnet ID: 157.110.16.0/21
+
+last (32nd) subnet ID: 157.110.248.0
+
+usable subnet = 2^2-2 = 30
+
+11 bits is available for host. This means number of hosts per subnet 2^11 -2.
+---------------------------
+I need 130 subnet in 10.0.0.0 ip.
+
+1. 10.0.0.0
+   10.00000000.00000000.00000000
+
+2. 2^n >=30
+	2^8>=130
+
+3. 10.11111111.0.0
+   255.255.0.0
+
+4. First subnet ID: 10.0.0.0/16 
+Broadcast ID: 10.1.255.255/16
+
+2nd subnet ID: 10.1.0.0/16
+
+3rd subnet ID: 10.2.0.0/16
+---------------------------
+
+Given IP: 192.168.15.120/28 find subnet ID and broadcast ID.
+
+Solution:
+Class C default subnet = 24 +4 =28
+
+192.168.15.11110000
+
+192.168.15.0/28
+192.168.15.16/28
+192.168.15.32/28
+192.168.15.48/28
+192.168.15.64/28
+192.168.15.80/28
+192.168.15.96/28
+192.168.15.112/28
+192.168.15.128/28
+192.168.15.144/28
+
+Subnet ID -192.168.15.112
+Broadcast ID- 192.168.15.127/28
+
+________________________________________
+
+AWS Solution Architect
+
+AWS ---> 2006 Started
+2010  ---> Amazon.com
+2013  ---> Certification
+2015, 2016 ---> Double the profit
+2017  ---> Reinvent AI
+--------
+
+Characteristics of Cloud
+1. On demand Self Service
+2. Broad Network Access
+3. Scalability
+4. Resource Pooling
+	8GB (external) + 16GB (internal memory) = 24GB as internal memory if we add external memory as internal.
+5. Measured Services.
+________________________________
+
+Lecture 2: 
+Service Model in Cloud: 3 Service model
+
+IAAS  Infrastructure as a service
+PAAS  Platform as a service
+SAAS  Software as a service
+-------
+Services in cloud:
+
+Application (buttom to here is SAAS)
+Data
+
+Runtime		(buttom to here is PAAS)
+Middleware
+
+OS		(buttom to here is IAAS)
+Virtualization
+Server
+Storage
+Network
+----------------------
+
+Deployment Model of Cloud:
+1. Public cloud: AWS, Azure, GCP, Alibaba
+2. Private cloud: Enterprise Cloud (Branches of a company in different regions connected through internet in their own cloud)
+3. Hybrid cloud: Public cloud + Private cloud
+------
+AWS uses citrix as hypervisor
+Micorsofte uses hyper- V as hypervisor
+Vmware uses ESXI as hypervisor.
+_______________________________________
+
+Lecture 4: Types of EC2 (Elastic Cloud Compute):
+- Amazon EC2 provides scalable computing capacity in the AWS cloud.
+- You can use amazon EC2 to launch as many or as few virtual servers as you need. Confiugre security and networking and manage storage.
+- Amazon EC2 enables you to scale up or scale down the instance.
+- Amazon EC2 is having two storage options. ie EBS (elastic block store) and instance store.
+- preconfigured templates are available known as Amazon Machine Image.
+- By default, when you create on EC2 account with amazon, your account is limited to a mazimum of  20 instances per EC2 regions with two default High I/O instances.
+
+Types of EC2 Instances
+1. General Purpose  --> Balanced memory and cpu
+2. Compute Optimized --> More CPU than RAM 
+3. Memory Optimized  --> More RAM
+4. Storage Optimized --> Low Latency
+5. Accelearted Computing/GPU  --> Graphic Optimized
+6. High Memory Optimized --> High RAM, Nitro System 
+7. Previous generation
+________________________________________________
+
+1. General Purpose  --> Balanced memory and cpu
+3 Series in General Purpose
+A series (medium, large)
+M series (Large)  -- M4, M5, M5ad, and M5d
+T series: (nano, small, medium, large)
+instances available in Four sizes- Nano, Small, Medium, Large
+
+Types of EC2 Instances
+___________________________
+
+Virtual Private Cloud (VPC):
+
+A virtual private cloud is a virtual network that closely resembles a traditional networking that you operate in your own data center, with the benefits of using the scalable Infra-structure of AWS. 
+
+OR
+
+VPC is a virtual Network or Datacenter inside AWS for One client.
+
+- It is logically Isolated from other virtual network in the AWS cloud
+- Max 5 VPC can be created and 200 subnets in 1 VPC.
+- WE can allocate max 5 elastic IP.
+- Once we created VPC, DHCP, NACL and Security Group will be automatically created.
+- A VPC is confined to an AWS region and does not extend between Regions.
+- Once the VPC is createc, you cannot change its CIDR block range.
+- if you need a different CIDR size, create a new VPC.
+- The different Subnets within a VPC cannot overlap.
+- you can however expand your VPC CIDR by adding New/Extra IP address ranges(except GovCloud & AWS China)
+
+Components of VPC:
+CIDR and IP address Subnets.
+- Implied Router & Routing Table
+- Internet Gateway
+- Security Groups
+- Network ACL (Network access control list)
+- Virtual private gateway
+- peering Connections
+- Elastic IP
+
+Note: 
+1. NAT gateway created in Public subnet and used in private subnet.
+2. Router is inside Region.
+3. Internet Gateway is located in region's boundary.
+----------------
+
+VPC Types:
+1. default VPC
+2. custom VPC
+
+1. Default VPC:
+Created in each AWS region when account is created.
+- Has default CIDR, security group, NACL and route table settings.
+- Has an Internet gateway by default.
+
+2. Custom VPC:
+Is a VPC  an AWS account owner creates.
+- AWS user creating the custom VPC can decide the CIDR.
+- Has its own default security group, Network ACL and route tables.
+- Does not have an Internet gateway by default, one needs to be created if needed.
+--------------
+
+To create VPC 4 steps to follow:
+1. Create a VPC
+2. Create subnet.
+3. Create Internet gateway.
+4. Create Route table.
+---------------
+
+Public Subnet:
+If a subnet's traffic is routed to an Internet gateway, the subnet is known as a public subnet. If you want your instance in a public subnet to communicate with the internet over IPv4, it must have a public IPv4 address or an Elastic IP address.
+
+Private Subnet:
+If a subnet does not have a route to the internet gateway, the subnet is known as a private subnet.
+- when you create a VPC, you must specify an IPv4 CIDR block for the VPC. The allowed block size is between /16 to /28 netmask.
+- The first four and last IP address of subnet cannot be assigned.
+
+For eg --> 10.0.0.0 network address.
+10.0.0.1 --> Reserved by AWS for the VPC route.
+10.0.0.2 --> Reserved by AWS for the IP address of DNS server
+10.0.0.3 --> Reserved for future use.
+10.0.0.255 --> Broadcast address.
+
+Note: AWS does not support broadcast in a VPC but reserve this address.

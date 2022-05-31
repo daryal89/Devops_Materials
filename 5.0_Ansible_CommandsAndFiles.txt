@@ -1,0 +1,1026 @@
+
+Ansible: Configuration Management Tool
+--------------------------------------
+
+- In AWS EC2 instance creation: Step 3: Configure Instance Details --> Advanced Details -->User data section fill the following in Optional section:
+#!/bin/bash:
+sudo su
+yum update -y
+
+ansible ALL=(ALL) NOPASSWD: ALL
+
+Server - 172.31.83.5    54.86.81.176
+Node1: 172.31.88.11	54.226.97.25
+Node2: 172.31.92.124	18.234.164.55
+--------
+public key of server machine
+id_rsa.puba
+------
+Version of ansible:
+
+[root@ip-172-31-83-5 ec2-user]# ansible --version
+ansible 2.9.27
+  config file = /etc/ansible/ansible.cfg
+
+-------------------- Ansible Concept and LAB ------------------
+
+Make three machine in EC2 machine in AWS server, node1, and node2
+
+login into all of the machine
+
+In server machine be root user and do the following operations. 
+
+1. Download extra package for enterprise linux by:
+ wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+2. install epel package in EC2 machine:
+
+3.[root@ip-172-31-83-104 ec2-user]#  yum install epel-release-latest-7.noarch.rpm
+
+4. [root@ip-172-31-83-104 ec2-user]#  yum update -y
+
+5.[root@ip-172-31-83-104 ec2-user]#  yum install git python python-level python-pip openssl ansible -y
+
+[root@ip-172-31-83-104 ec2-user]# which ansible
+/bin/ansible
+
+[root@ip-172-31-83-104 ec2-user]# ansible --version
+ansible 2.9.27
+  config file = /etc/ansible/ansible.cfg
+------------
+6.open: Inventory file and create a group [demo] and keep all node's private id on the group and save it.
+ vi /etc/ansible/hosts
+
+# Ex 1: Ungrouped hosts, specify before any group headers.
+
+# create a demo group and paste private ip of two node machines in [demo] group
+
+[demo]
+172.31.94.73
+172.31.83.134
+
+[dev]  --created second test group
+172.31.23.232
+172.31.25.51
+172.31.26.98
+------
+7. Open an configuration file ansible.cfg and make changes in it and save it.
+vi /etc/ansible/ansible.cfg
+
+# some basic default values...
+inventory      = /etc/ansible/hosts     [uncomment this]
+#library        = /usr/share/my_modules/
+#module_utils   = /usr/share/my_module_utils/
+#remote_tmp     = ~/.ansible/tmp
+#local_tmp      = ~/.ansible/tmp
+#plugin_filters_cfg = /etc/ansible/plugin_filters.yml
+#forks          = 5
+#poll_interval  = 15
+sudo_user      = root       [uncomment this]
+#ask_sudo_pass = True
+#ask_pass      = True
+#transport      = smart
+#remote_port    = 22
+#module_lang    = C
+#module_set_locale = False
+-----
+8. Create user and give password for all three machines server, node1 and node2 
+[root@ip-172-31-83-104 ec2-user]# adduser ansible   (user is ansible and give password as technical)
+
+[root@ip-172-31-83-104 ec2-user]# passwd ansible
+----
+9. Switch the user as ansible in all three machine
+[root@ip-172-31-83-104 ec2-user]# su - ansible
+
+10. Provide sudoers right for ansible user in all three machines for that you logout from ansible user and come to root user and run the following command
+[root@ip-172-31-83-104 ec2-user]# visudo
+
+Make changes as appeared below in the visudo file
+
+## Allow root to run any commands anywhere
+root    ALL=(ALL)       ALL
+
+ansible ALL=(ALL) NOPASSWD: ALL   (for ansible user)
+
+test ALL=(ALL) NOPASSWD: ALL	  (for test user)
+
+dev ALL=(ALL) NOPASSWD: ALL        (for dev user)
+
+:wq
+
+Output:
+visudo: /etc/sudoers.tmp changed
+--------------------------------------
+11. Install httpd package in server using ansible user
+First switch user to ansible in all machines then install the package
+
+[ansible@ip-172-31-83-104 ~]$ sudo yum install httpd -y
+---------
+12. Connect the nodes with server using ssh connection for that we need to give permission in sshd_config file in all three machine (Estlabish ssh connection)
+[root@ip-172-31-83-104 ec2-user]# vi /etc/ssh/sshd_config
+
+Make the following changes in sshd_config file
+
+#LoginGraceTime 2m
+PermitRootLogin yes      (uncommented this)
+#StrictModes yes
+
+# To disable tunneled clear text passwords, change to no here!
+PasswordAuthentication yes    (uncommented this)
+#PermitEmptyPasswords no
+#PasswordAuthentication no    (commented this)
+--------------
+
+13. Restart the service sshd in all three machines
+[root@ip-172-31-83-104 ec2-user]# service sshd restart
+------------
+14. Access node through server by providing private ip of node1 and node2 in server machine simultaneously
+i. [ansible@ip-172-31-83-104 ~]$ ssh 172.31.94.73
+
+output:
+https://aws.amazon.com/amazon-linux-2/
+[ansible@ip-172-31-94-73 ~]$
+
+ii. Create three files through server as below:
+[ansible@ip-172-31-94-73 ~]$ touch file1 file2 file3
+
+iii. Check the created files in node1 machine
+[ansible@ip-172-31-94-73 ~]$ ls
+file1  file2  file3
+
+Repeat all above three steps for node2 and check whether the files are created in node2 or not.
+
+15. Create public and private key in ansible server and save the public key in nodes so that we need not to provide password every time for authentication. Trust relationship happens between root --> root  or user --> user,  ansible --> ansible
+[ansible@ip-172-31-83-104 ~]$ ssh-keygen
+
+Output:
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ansible/.ssh/id_rsa):
+/home/ansible/.ssh/id_rsa already exists.
+Overwrite (y/n)? y
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/ansible/.ssh/id_rsa.
+Your public key has been saved in /home/ansible/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:+m/nplwalI9Z/pb6kQNdtodvZjHi66NKnkCnXpfRspg ansible@ip-172-31-83-104.ec2.internal
+The key's randomart image is:
++---[RSA 2048]----+
+|                 |
+|                 |
+|                o|
+|           ... +.|
+|       .S.ooooo+.|
+|      ..o.o**..o+|
+|      .o E+++.+.=|
+|      ..=.++oo+* |
+|       ..***=*+  |
++----[SHA256]-----+
+
+
+[ansible@ip-172-31-83-104 ~]$ ls -a
+
+Output:
+.   .ansible       .bash_logout   .bashrc                           .ssh
+..  .bash_history  .bash_profile  epel-release-latest-7.noarch.rpm  .viminfo
+
+[ansible@ip-172-31-83-104 ~]$ cd .ssh/
+
+[ansible@ip-172-31-83-104 .ssh]$ ls
+id_rsa  id_rsa.pub  known_hosts
+
+16. Copy the public key into the node1 and node2
+
+Copy the public key in Node1:
+[ansible@ip-172-31-83-104 .ssh]$ ssh-copy-id ansible@172.31.94.73
+
+Output:
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/ansible/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+ansible@172.31.94.73's password:
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'ansible@172.31.94.73'"
+and check to make sure that only the key(s) you wanted were added.
+
+Copy the public key in Node2:
+[ansible@ip-172-31-83-104 .ssh]$ ssh-copy-id ansible@172.31.83.134
+
+Output:
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/ansible/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+ansible@172.31.83.134's password:
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'ansible@172.31.83.134'"
+and check to make sure that only the key(s) you wanted were added.
+
+Host Patterns:
+
+17.  How to see the details of the specific hosts through server
+[ansible@ip-172-31-83-104 ~]$ ansible all --list-hosts
+  hosts (2):
+    172.31.94.73
+    172.31.83.134
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo --list-hosts
+  hosts (2):
+    172.31.94.73
+    172.31.83.134
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo[0] --list-hosts
+  hosts (1):
+    172.31.94.73
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo[1] --list-hosts
+  hosts (1):
+    172.31.83.134
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo[2] --list-hosts
+[WARNING]: No hosts matched, nothing to do
+  hosts (0):
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo[-1] --list-hosts
+  hosts (1):
+    172.31.83.134
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo[0:1] --list-hosts
+  hosts (2):
+    172.31.94.73
+    172.31.83.134
+-----------------------------------------------
+
+To push code from ansible server to node has 3 methods
+
+1. ad-hoc commands (Simple linux commands, No idempotency/it will override the task every time, these are of one time usage)
+2. Modules (Written in YAML, Single work, Idempotency)
+3. Playbooks  (written in YAML->yet another markup language, more than one module, Idempotnecy)
+_______________________________________________________________________
+
+-----------------------1. Ad-hoc commands ------------------------------
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo -a "ls"
+
+Output:
+[WARNING]: Platform linux on host 172.31.83.134 is using the discovered Python
+interpreter at /usr/bin/python, but future installation of another Python
+interpreter could change this. See https://docs.ansible.com/ansible/2.9/referen
+ce_appendices/interpreter_discovery.html for more information.
+172.31.83.134 | CHANGED | rc=0 >>
+file4
+file5
+file6
+[WARNING]: Platform linux on host 172.31.94.73 is using the discovered Python
+interpreter at /usr/bin/python, but future installation of another Python
+interpreter could change this. See https://docs.ansible.com/ansible/2.9/referen
+ce_appendices/interpreter_discovery.html for more information.
+172.31.94.73 | CHANGED | rc=0 >>
+file1
+file2
+file3
+securitygaurd
+-----------------
+[ansible@ip-172-31-83-104 ~]$ ansible all -a "ls"
+
+Update a file in multiple node from server:
+[ansible@ip-172-31-83-104 ~]$ ansible all -a "touch aryalfile" 
+
+[ansible@ip-172-31-83-104 ~]$ ansible all -a "touch aryalfile" --- No idempotency
+-----------------
+[ansible@ip-172-31-83-104 ~]$ ansible demo -a "ls -al"
+
+[WARNING]: Platform linux on host 172.31.83.134 is using the discovered Python
+interpreter at /usr/bin/python, but future installation of another Python
+interpreter could change this. See https://docs.ansible.com/ansible/2.9/referen
+ce_appendices/interpreter_discovery.html for more information.
+172.31.83.134 | CHANGED | rc=0 >>
+total 16
+drwx------ 4 ansible ansible 167 Feb  3 05:32 .
+drwxr-xr-x 9 root    root    131 Feb  2 17:00 ..
+drwx------ 3 ansible ansible  17 Feb  2 04:09 .ansible
+-rw-rw-r-- 1 ansible ansible   0 Feb  3 05:32 aryalfile
+-rw------- 1 ansible ansible 614 Feb  3 04:40 .bash_history
+-rw-r--r-- 1 ansible ansible  18 Jul 15  2020 .bash_logout
+-rw-r--r-- 1 ansible ansible 193 Jul 15  2020 .bash_profile
+-rw-r--r-- 1 ansible ansible 231 Jul 15  2020 .bashrc
+-rw-rw-r-- 1 ansible ansible   0 Feb  3 04:00 file4
+-rw-rw-r-- 1 ansible ansible   0 Feb  3 04:00 file5
+-rw-rw-r-- 1 ansible ansible   0 Feb  3 04:00 file6
+drwx------ 2 ansible ansible  29 Jan 29 12:25 .ssh
+[WARNING]: Platform linux on host 172.31.94.73 is using the discovered Python
+interpreter at /usr/bin/python, but future installation of another Python
+interpreter could change this. See https://docs.ansible.com/ansible/2.9/referen
+ce_appendices/interpreter_discovery.html for more information.
+172.31.94.73 | CHANGED | rc=0 >>
+total 16
+drwx------ 4 ansible ansible  188 Feb  3 05:32 .
+drwxr-xr-x 9 root    root     131 Feb  2 17:00 ..
+drwx------ 3 ansible ansible   17 Feb  2 04:09 .ansible
+-rw-rw-r-- 1 ansible ansible    0 Feb  3 05:32 aryalfile
+-rw------- 1 ansible ansible 1029 Feb  3 04:40 .bash_history
+-rw-r--r-- 1 ansible ansible   18 Jul 15  2020 .bash_logout
+-rw-r--r-- 1 ansible ansible  193 Jul 15  2020 .bash_profile
+-rw-r--r-- 1 ansible ansible  231 Jul 15  2020 .bashrc
+-rw-rw-r-- 1 ansible ansible    0 Feb  3 03:54 file1
+-rw-rw-r-- 1 ansible ansible    0 Feb  3 03:54 file2
+-rw-rw-r-- 1 ansible ansible    0 Feb  3 03:54 file3
+-rw-rw-r-- 1 ansible ansible    0 Feb  3 04:22 securitygaurd
+drwx------ 2 ansible ansible   48 Jan 29 12:30 .ssh
+------------------------------------
+[ansible@ip-172-31-83-104 ~]$ ansible demo -a "sudo yum install httpd -y"  (--will install the httpd package in all machine)
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo -ba "yum remove httpd -y" (--will remove httpd package from all machine)
+____________________________________________________________
+
+-----------------   2. Ansible modules  -------------------------
+
+Library of modules can reside on any machine, and there are no servers, daemons, or databases required
+The default location for the inventory file is /etc/ansible/hosts
+We mention follwing for the packages for install, uninstall and update
+install =present
+uninstall = absent
+update = latest
+-----------------------
+To install httpd Package in both nodes/demo group:
+[ansible@ip-172-31-83-104 ~]$ ansible demo -b -m yum -a "pkg=httpd state=present"
+
+To update httpd package: 
+[ansible@ip-172-31-83-104 ~]$ ansible demo -b -m yum -a "pkg=httpd state=latest"
+
+To remove httpd package:
+[ansible@ip-172-31-83-104 ~]$ ansible demo -b -m yum -a "pkg=httpd state=absent"
+
+To start httpd service in node machines
+[ansible@ip-172-31-83-104 ~]$ ansible demo -b -m service -a "name=httpd state=started"
+
+To check the httpd service in node1
+[ansible@ip-172-31-94-73 ~]$ sudo service httpd status
+
+To create a user in nodes
+[ansible@ip-172-31-83-104 ~]$ ansible demo -b -m user -a "name=reyonaaryal"
+
+To check whether user is created or not in node1
+[ansible@ip-172-31-94-73 ~]$ cat /etc/passwd
+
+To paste the file present in server to last node
+[ansible@ip-172-31-83-104 ~]$ ansible demo[-1] -b -m copy -a "src=copiedfromserver dest=/tmp"
+
+To check the copied file from server to node2
+[ansible@ip-172-31-83-134 ~]$ ls /tmp
+
+
+To copy the file from server to all nodes present in a group
+[ansible@ip-172-31-83-104 ~]$ ansible demo -b -m copy -a"src=atwoodfile dest=/tmp"
+___________________________________________________________________
+
+Setup Module:
+In module and playbook method there is idempotency because of setup module prsent in ansible server. setup module will execute first when we run module or a playbook and It checks whether any task is already done in nodes or not and then performs the task.
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo -m setup
+
+[ansible@ip-172-31-83-104 ~]$ ansible demo -m setup -a "filter=*ipv4"
+____________________________________________
+ 
+----------------------3. Playbook   ------------------
+
+Playbook: Push code from ansible server to node using playbook. Playbook is written in yaml language
+
+[ansible@ip-172-31-83-104 ~]$ vi target.yml
+--- # My First testing YAML Playbook
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  gather_facts: yes
+
+esc --> :wq
+------
+For DryRun: Check whether the playbook is formatted correctly
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook target.yml --check
+
+Execute target.yml file
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook target.yml
+-----------------------
+task.yml
+Target +task
+
+[ansible@ip-172-31-83-104 ~]$ vi task.yml
+--- # My First test playbook technial guftgu
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  tasks:
+        - name: Install HTTPD on centos 7
+          action: yum name=httpd state=installed
+
+esc --> :wq
+
+For DryRun: Check whether the playbook is formatted correctly
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook task.yml --check
+
+Execute task.yml file
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook task.yml
+
+-----------------------------------------------------
+variable.yml
+target+ task + variable
+
+[ansible@ip-172-31-83-104 ~]$ vi variable.yml
+--- # My variable file for testing purpose
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  vars:
+         pkgname: httpd
+         tasks:
+                 - name: install HTTPD server on centos 7
+                   action: yum name='{{pkgname}}' state=installed
+esc --> :wq
+----
+For DryRun: Check whether the playbook is formatted correctly
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook variable.yml --check
+----
+Execute variable.yml
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook variable.yml
+--------------------------------------------------------
+handlers.yml
+target + task + handlers
+
+[ansible@ip-172-31-83-104 ~]$ vi handlers.yml
+--- # My playbook for handlers file
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  tasks:
+        - name: install httpd server on centos
+          action: yum name=httpd state=installed
+          notify: restart httpd
+  handlers:
+          - name: restart httpd
+            action: service name=httpd state=restarted
+
+esc --> :wq
+
+For DryRun: Check whether the playbook is formatted correctly
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook handlers.yml --check
+----
+Execute conditions.yml
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook handlers.yml
+------------------------------
+loops.yml
+target + task + loops
+
+--- # My Loops Playbook
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  tasks:
+         - name: add list of users in my nodes
+           user: name='{{item}}' state=present
+           with_items:
+                   - Bhupinder
+                   -  Dhruba
+                   - Raju
+                   - Prakash_Malla
+                   - Haris_Hamal
+
+esc --> :wq
+-------
+For DryRun: Check whether the playbook is formatted correctly
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook loops.yml --check
+----
+Execute loops.yml
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook loops.yml
+------------------------------------------
+conditions.yml
+target + task + conditions
+
+--- # My conditional playbook
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  tasks:
+          - name: Install apache server for debian family
+            command: apt-get -y install apache2
+            when: ansible_os_family == "Debian"
+          - name: Install apache server for redhat family
+            command: yum -y install httpd
+            when: ansible_os_family == "RedHat"
+
+esc --> :wq
+-------
+For DryRun: Check whether the playbook is formatted correctly
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook conditions.yml --check
+----
+Execute conditions.yml
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook conditions.yml
+
+PLAY [demo] ********************************************************************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: Platform linux on host 172.31.88.11 is using the discovered Python
+interpreter at /usr/bin/python, but future installation of another Python
+interpreter could change this. See https://docs.ansible.com/ansible/2.9/referen
+ce_appendices/interpreter_discovery.html for more information.
+ok: [172.31.88.11]
+[WARNING]: Platform linux on host 172.31.92.124 is using the discovered Python
+interpreter at /usr/bin/python, but future installation of another Python
+interpreter could change this. See https://docs.ansible.com/ansible/2.9/referen
+ce_appendices/interpreter_discovery.html for more information.
+ok: [172.31.92.124]
+
+TASK [Install apache server for debian family] *********************************
+skipping: [172.31.88.11]
+skipping: [172.31.92.124]
+
+TASK [Install apache server for redhat family] *********************************
+[WARNING]: Consider using the yum module rather than running 'yum'.  If you
+need to use command because yum is insufficient you can add 'warn: false' to
+this command task or set 'command_warnings=False' in ansible.cfg to get rid of
+this message.
+changed: [172.31.88.11]
+changed: [172.31.92.124]
+
+PLAY RECAP *********************************************************************
+172.31.88.11               : ok=2    changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+172.31.92.124              : ok=2    changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+_________________________________________________
+
+Vault: ansible allows keeping sensible data such as passwords or keys in encrypted files rather than a plain textin your playbooks.
+
+vault commands: To provide passwords for playbook
+
+ansible-vault create vault.yml
+ansible-vault edit vault.yml
+ansible-vault rekey vault.yml
+ansible-vault encrypt handlers.yml
+ansible-vault decrypt handlers.yml 
+ansible-vault view handlers.yml
+ansible-vault encrypt_string handlers.yml
+---------------------------------
+  Vault.yml file
+
+--- # My conditional  playbook with vault (password)
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  tasks:
+          - name: Install apache server for debian family
+            command: apt-get -y install apache2
+            when: ansible_os_family == "Debian"
+          - name: Install apache server for redhat family
+            command: yum -y install httpd
+            when: ansible_os_family == "RedHat"
+________________________________________________________________
+
+--------------------- VAULT LAB ---------------------------
+
+[ansible@ip-172-31-83-104 ~]$ ansible-vault create vault.yml
+New Vault password:admin
+Confirm New Vault password:admin
+
+--- # My conditional  playbook with vault (password)
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  tasks:
+          - name: Install apache server for debian family
+            command: apt-get -y install apache2
+            when: ansible_os_family == "Debian"
+          - name: Install apache server for redhat family
+            command: yum -y install httpd
+            when: ansible_os_family == "RedHat"
+:wq
+
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook vault.yml
+ERROR! Attempting to decrypt but no vault secrets found
+-------------------
+[ansible@ip-172-31-83-104 ~]$ ansible-vault decrypt vault.yml
+Vault password:admin
+Decryption successful
+
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook vault.yml
+______________________________________________________________
+
+Roles:
+- We can use two techniques for reusing a set of tasks: - includes and roles.
+
+- Roles are good for organising tasks and encapsulating data needed to accomplish those tasks.
+- Adding more and more functionality to the playbooks will make it difficult to maintain in a single file.
+
+Ansible roles:
+- Default
+- Files
+- Handlers
+- Meta
+- Templates
+-Tasks
+- Vars
+
+-----------------    ROLES LAB  --------------------------------
+
+[ansible@ip-172-31-83-104 ~]$$ mkdir -p playbook/roles/webserver/tasks
+
+[ansible@ip-172-31-83-104 ~]$ cd playbook
+
+[ansible@ip-172-31-83-104 playbook]$ tree
+
+Output:
+.
+└── roles
+    └── webserver
+        └── tasks
+
+[ansible@ip-172-31-83-104 playbook]$ touch roles/webserver/tasks/main.yml
+
+[ansible@ip-172-31-83-104 playbook]$ touch master.yml
+
+[ansible@ip-172-31-83-104 playbook]$ vi roles/webserver/tasks/main.yml
+
+- name: install apache on RedHat
+  yum: pkg=httpd state=latest
+
+esc ---> :wq
+--------
+[ansible@ip-172-31-83-104 playbook]$ vi master.yml
+
+--- # Master playbook for webservers
+- hosts: demo
+  user: ansible
+  become: yes
+  connection: ssh
+  roles:
+          - webserver
+
+esc ---> :wq
+
+For DryRun: Check whether the playbook is formatted correctly
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook master.yml --check
+----
+Execute master.yml
+[ansible@ip-172-31-83-104 ~]$ ansible-playbook master.yml
+__________________________________________________________
+
+Files created in ansible server:
+
+[ansible@ip-172-31-83-104  ~]$ ls
+conditions.yml  loops.yml  serverfile   task.yaml     vault.yml
+handlers.yml    playbook   target.yaml  variable.yml
+___________________________________________________________
+
+	Server side commands
+
+    1  touch file1
+    2  ls
+    3  yum install httpd -y
+    4  sudo yum install httpd -y
+    5  exit
+    6  ssh 172.31.94.73
+    7  exit
+    8  sudo yum install httpd -y
+    9  su - ansible
+   10  exit
+   11  ssh 172.31.94.73
+   12  ssh 172.31.83.134
+   13  ssh-keygen
+   14  ls -a
+   15  cd .ssh/
+   16  ls
+   17  ssh-copy-id ansible@172.31.94.73
+   18  ssh-copy-id ansible@172.31.83.134
+   19  cd ..
+   20  ssh 172.31.83.134
+   21  ssh 172.31.94.73
+   22  ansible all --list-hosts
+   23  ansible demo --list-hosts
+   24  ansible demo[0] --list-hosts
+   25  ansible demo[1] --list-hosts
+   26  ansible demo[2] --list-hosts
+   27  ansible demo[-1] --list-hosts
+   28  ansible demo[-2] --list-hosts
+   29  ansible demo[0:1] --list-hosts
+   30  ls
+   31  ansiblle demo -a "ls"
+   32  ansible demo -a "ls'
+   33  q
+   34  :q
+   35  exit
+   36  ansible demo -a "ls"
+   37  ansible all -a "ls"
+   38  ansible all -a "touch rajputfile"
+   39  ansible demo -a "ls -al"
+   40  ansible demo -a "yum install httpd -y"
+   41  ansible demo -a "sudo yum install httpd -y"
+   42  history
+   43  ansible demo -ba "yum remove httpd -y"
+   44  ansible demo -a "sudo yum install httpd -y"
+   45  ansible demo -a "touch rajputfile"
+   46  ansible demo -b -m yum -a "pkg=httpd state=present"
+   47  ansible demo -b -m yum -a "pkg=httpd state=update"
+   48  ansible demo -b -m yum -a "pkg=httpd state=latest"
+   49  ansible demo -b -m yum -a "pkg=httpd state=remove"
+   50  ansible demo -b -m yum -a "pkg=httpd state=absent"
+   51  ansible demo -b -m yum -a "pkg=httpd state=present"
+   52  anisble demo -b -m service -a "name=httpd state=started"
+   53  ansible demo -b -m service -a "name=httpd state=started"
+   54  ansible demo -b -m user -a "name=dhrubaaryal"
+   55  touch copiedfromserver
+   56  ls
+   57  ansible demo[-1] -b -m copy -a "src=copiedfromserver dest=/temp"
+   58  touch technicalguftgu
+   59  ls
+   60  ansible demo -b -m copy -a "src=technicalguftgu dest=/temp"
+   61  ls
+   62  ansible demo -m setup
+   63  ansible demo -m setup =a "filter=*ipv4*"
+   64  ansible demo -m setup -a "filter=*ipv4*"
+   65  ls
+   66  rm -rf *
+   67  ls
+   68  vi target.yml
+   69  ls
+   70  ansible-playbook target.yml
+   71  vi target.yml
+   72  ansible-playbook target.yml
+   73  vi task.yml
+   74  ansible-playbook task.yml
+   75  vi task.yml
+   76  ansible-playbook task.yml
+   77  vi task.yml
+   78  ansible-playbook task.yml
+   79  ls
+   80  vi variable.yml
+   81  ansible-plabook variable.yml
+   82  ansible-playbook variable.yml
+   83  vi variable.yml
+   84  ansible-playbook variable.yml
+   85  vi variable.yml
+   86  ansible-playbook variable.yml
+   87  ls
+   88  vi handlers.yml
+   89  ansible-playbook handlers.yml
+   90  vi handlers.yml
+   91  ansible-playbook handlers.yml --check
+   92  vi handlers.yml
+   93  ansible-playbook handlers.yml --check
+   94  vi handlers.yml
+   95  ansible-playbook handlers.yml
+   96  vi loops.yml
+   97  ansible-playbook loops.yml --check
+   98  ansible-playbook loops.yml
+   99  vi loops.yml
+  100  ansible-playbook loops.yml
+  101  ls
+  102  vi conditions.yml
+  103  --- # My loops playbook
+  104  - hosts: demo
+  105    user: ansible
+  106    become: yes
+  107    connection: ssh
+  108    tasks:
+  109            - name: add list of users in my nodes
+  110              user: name='{{item}}' state=present
+  111              with_items:
+  112                        - Bhupinder
+  113                        - Sachin_tendulker
+  114                        - Einstein
+  115                        - Vasco_gama
+  116  ansible-playbook conditions.yml
+  117  vi conditions.yml
+  118  ansible-playbook conditions.yml
+  119  vi conditions.yml
+  120  ansible-playbook conditions.yml
+  121  ansible-vault create vault.yml
+  122  vi vault.yml
+  123  ansible-vault edit vault.yml
+  124  vi vault.yml
+  125  ansible-vault edit vault.yml
+  126  ansible-vault rekey vault.yml
+  127  ansible-vault edit vault.yml
+  128  ls
+  129  ansible-vault encrypt handlers.yml
+  130  vi handlers.yml
+  131  ansible-vault decrypt handlers.yml
+  132  vi handlers.yml
+  133  ls
+  134  which tree
+  135  sudo yum install tree
+  136  tree
+  137  mkdir -p playbook/roles/webserver/tasks
+  138  tree
+  139  cd playbook/
+  140  ls
+  141  tree
+  142  touch roles/webserver/tasks/main.yml
+  143  tree
+  144  ls
+  145  tree
+  146  touch master.yml
+  147  ls
+  148  tree
+  149  vi roles/webserver/tasks/main.yml
+  150  vi master.yml
+  151  ansible-playbook master.yml
+  152  history
+_______________________________________________________
+Node commands
+1  sudo su
+    2  exit
+    3  touch file2 file3
+    4  ls
+    5  touch filez
+    6  exit
+    7  ls
+    8  touch securitygaurd
+    9  ls
+   10  exit
+   11  ssh
+   12  ssh 172.31.83.134
+   13  ansible all --list-hosts
+   14  exit
+   15  ls
+   16  which httpd
+   17  sudo service httpd status
+   18  cat /etc/passwd
+   19  ls
+   20  ls /temp
+   21  ls /tmp
+   22  ls /tmp/
+   23  ls
+   24  which httpd
+   25  sudo yum remove httpd -y
+   26  which httpd
+   27  sudo yum remove httpd -y
+   28  which httpd
+   29  sudo yum remove httpd -y
+   30  whih httpd
+   31  which httpd
+   32  sudo service httpd status
+   33  cat /etc/passwd
+   34  sudo yum remove httpd -y
+   35  which httpd
+   36  --- # My loops playbook
+   37  - hosts: demo
+   38    user: ansible
+   39    become: yes
+   40    connection: ssh
+   41    tasks:
+   42            - name: add list of users in my nodes
+   43              user: name='{{item}}' state=present
+   44              with_items:
+   45                        - Bhupinder
+   46                        - Sachin_tendulker
+   47                        - Einstein
+   48                        - Vasco_gama
+   49  which httpd
+   50  sudo yum remove httpd -y
+   51  which httpd
+   52  sudo yum remove httpd -y
+   53  which httpd
+   54  history
+_____________________________________________________________________
+
+    1  sudo yum install http -y
+    2  which httpd
+    3  sudo yum install httpd -y
+    4  which httpd
+    5  ssh 172.31.23.232
+    6  exit
+    7  ssh 172.31.23.232
+    8  exit
+    9  ssh 172.31.23.232
+   10  vi /etc/ansible/ansible.cfg
+   11  exit
+   12  touch file
+   13  ls
+   14  yum install httpd -y
+   15  sudo yum install httpd -y
+   16  which httpd
+   17  httpd --version
+   18  httpd -v
+   19  sudo yum install httpd -y
+   20  exit
+   21  ssh 172.31.23.232
+   22  service sshd restart
+   23  ssh 172.31.23.232
+   24  ssh 172.31.25.51
+   25  ssh 172.31.26.98
+   26  ssh-cioy-id test@172.31.25.51
+   27  ssh-copy-id test@172.31.25.51
+   28  exit
+   29  ls -a
+   30  cd .ssh
+   31  ssh-copy-id test@172.31.25.51
+   32  cd ..
+   33  ssh-keygen
+   34  ls-a
+   35  ls -a
+   36  cd -ssh
+   37  cd .ssh
+   38  ssh-copy-id test@172.31.23.232
+   39  ssh-copy-id test@172.31.25.51
+   40  ssh-copy-id test@172.31.26.98
+   41  cd ..
+   42  ssh 172.31.23.232
+   43  ssh 172.31.25.51
+   44  ssh 172.31.26.98
+   45  ansible all --list-hosts
+   46  ansible dev --list-hosts
+   47  ansible dev[0:1] --list-hosts
+   48  ansible dev[0,2] --list-hosts
+   49  ansible dev[0:2] --list-hosts
+   50  ansible dev[0:5] --list-hosts
+   51  ansible dev[-] --list-hosts
+   52  ansible dev[-3] --list-hosts
+   53  ansible dev[-3:-1] --list-hosts
+   54  ansible dev[-1:-3] --list-hosts
+   55  ansible dev[-1] --list-hosts
+   56  ansible all -a "ls"
+   57  ansible demo -a "ls"
+   58  ansible dev -a "ls"
+   59  ansible demo -a "touch myfile"
+   60  ansible dev -a "touch myfile"
+   61  ansible dev -a "ls -la"
+   62  ansible dev -a "sudo yum install httpd -y"
+   63  ansible dev -b -a "yum remove httpd -y"
+   64  ansible dev -b -m yum -a "pkg=httpd state=present"
+   65  ansible dev -b -m yum -a "pkg=httpd state=absent"
+   66  ansible dev -b -m yum -a "pkg=httpd state=installed"
+   67  ansible dev -b -m yum -a "pkg=httpd state=latest"
+   68  ansible dev -b -m service -a "name=httpd state=started"
+   69  ansible dev -b -m copy -a "src=serverfile dest=/tmp"
+   70  ls
+   71  ansible dev -b -m copy -a "src=file dest=/tmp"
+   72  ls
+   73  mkdir dirx
+   74  ansible dev -b -m copy -a "src=dirx dest = /tmp"
+   75  ansible dev -b -m copy -a "src=dirx dest =/tmp"
+   76  ls
+   77  touch sourcefile
+   78  ls
+   79  ansible dev -b -m copy -a "src=sourcefile dest=/tmp"
+   80  ansible dev -b -m user -a "name=bhoj"
+   81  ansible demo -m setup -a "filter=*ipv4"
+   82  ansible dev -m setup -a "filter=*ipv4"
+   83  vi target.yml
+   84  ansible-playbook target.yml --check
+   85  ls
+   86  rm -rf dirx file sourcefile
+   87  ls
+   88  ansible dev --list-hosts
+   89  ansible dev[0:1] --list-hosts
+   90  ansible dev[0:5] --list-hosts
+   91  vi tasks.yml
+   92  ansible-playbook tasks.yml --check
+   93  ansible-playbook tasks.yml
+   94  vi variable.yaml
+   95  ansible-playbook variable.yaml --check
+   96  ansible-playbook variable.yaml
+   97  vi variable.yaml
+   98  vi handlers.yml
+   99  ansible-playbook handlers.yml --check
+  100  ls
+  101  vi loop.yml
+  102  ansible-playbook loop.yml --check
+  103  ansible-playbook loop.yml
+  104  vi conditions.yaml
+  105  ansible-playbook conditions.yaml --check
+  106  ansible-playbook conditions.yaml
+  107  vi conditional.yml
+  108  ansible-playbook conditional.yml --check
+  109  vi conditional.yml
+  110  ansible-playbook conditional.yml --check
+  111  vi conditional.yml
+  112  ansible-playbook conditional.yml
+  113  ansible-vault valt.yml
+  114  ansible-vault create vault.yml
+  115  ansible-vault edit vault.yml
+  116  ansible-vault rekey vault.yml
+  117  ansible-vault decrypt vault.yml
+  118  ansible-vault encrypt vault.yml
+  119  ansible-vault view vault.yml
+  120  ansible-vault encrypt_string vault.yml
+  121  ansible-vault view vault.yml
+  122  mkdir -p playbook/roles/webserver/tasks
+  123  cd playbook
+  124  tree
+  125  yum install tree -y
+  126  sudo yum install tree -y
+  127  tree
+  128  touch roles/webserver/tasks/main.yml
+  129  vi roles/webserver/tasks/main.yml
+  130  vi master.yml
+  131  ansible-playbook master.yml --check
+  132  history
+____________________ END _________________________________

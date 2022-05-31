@@ -1,0 +1,339 @@
+
+Organization
+Project
+Team
+Azure Boards
+------
+What is a work item: A work item is a unit (small or large) of work which has sereral charactristics  and is a prt of your product development.
+Characteristics -
+- Title
+- Description
+- Assigned To
+- Completed by
+- etc
+
+Examples:
+- Epic
+- User story
+- Bug
+-Improvement 
+---------------------
+
+Work Item in Azure boards with basic process: (3 work items)
+- Epic
+- Issue
+- Task
+
+protofolio backlog (Epic) ---> product backlog (issue) ---> Task
+
+-----------------------
+WorkFlow: 
+Work flow is the process of updating work item progress.
+
+- This is very basic work flow
+  ToDo --> InProgress(Doing) --> Done
+
+
+Work items fields:
+- Title
+- AssignedTo
+- State
+- Reason
+- Area
+- Iteration
+- Description
+- Effort
+- Discussion
+- Start Date
+- Target Date
+- Tag
+- Priority (1 to 4 ) 1 is highest
+-----------------
+Backlog:
+A backlog is a collection of work items which will be used for future deolopment. 
+
+Product backlog: is an ordered list of everything that is known to be needed in the product.
+
+Sprint backlog: is the collection of work items which are in ToDo state.
+----------------
+How to create backlog in Azure devops
+
+How to create sprint in Azure devops
+---------------------------
+
+Create Agile process project
+
+Work items in Agile Process:
+- Bug
+- Epic
+- Feature
+- Issue
+- Task
+- Test Case
+- User Story
+-----------------
+WorkFlow of User Story
+New --> Active --> Resolved --> Closed
+
+Workflow of User bug
+New --> Active --> Resolved --> Closed
+
+Workflow of User task
+New --> Active --> Closed
+
+--------------------------
+How to create backlog and sprints in agile process:
+
+----------------------
+Azure Board project with CMMI Process
+
+work items availabe in CMMI process
+- Bug
+- Change Request
+- Epic
+- Feature
+- Issue
+- Requirement
+- Review
+- Risk
+- Task
+- Test Case
+------------------------
+
+Scrum Process:
+Work Items available with scrum process:
+- Bug
+- Epic
+- Feature
+- Impediment
+- Product Backlog Item
+- Task
+- Test Case
+---------------
+Workflow of product backlog item 
+New --> Approved --> commited --> Done
+
+-------------------------------------
+Change columns options in azure devops board
+
+What is a query:
+A query is a combination of few logic which is applied on work items.
+
+A query is used to filter work items based on several logic.
+
+Examples:
+See work items assigned to only a particular user.
+See a list of all bugs which are currently in TODO list.
+
+--------------------------------------------------------
+Azure Repo:
+
+Git vs TFVS
+-----------------
+
+Devops Engineer tools
+1. Linux
+2. AWS
+3. Docker
+4. kubernetes
+5. Ansible
+6. Git/Github
+7. Jenkins
+8. Projects
+At least 5 projects for industry level
+Prepare CV
+Give interview
+9. Terrafoam
+10. Nagios  
+11. Openshift 
+12. Data Science/Artificial Intelligence
+13. Machine Learning
+14. Python
+
+------------
+Linux Commands:
+pwd
+cp
+cd
+echo
+mv
+sort
+su, su <username>
+rm
+rm -r, rm -rp
+mkdir
+rmdir
+sudo
+grep
+man
+clear
+cat
+touch
+gedit/vi/nano/vm
+ls
+install
+whoami
+whereis
+whichis
+----
+chmod
+chown
+lsof -- list of opened files
+cut
+id
+sed
+had
+find
+tar
+diff
+zip,unzip
+uniq
+watch
+eval
+locate
+find
+islookup
+cron
+history
+tail
+passwd
+htop
+free
+sestatus
+dd
+ip
+rpm
+telnet
+netstat
+nslookup
+ifconfig
+curl
+awk
+ssh,ssh-keygen
+tr
+env
+sort,merge
+ps
+kill
+iptables
+apt-get
+df,du
+------------------
+dd if = /dev/hda  of=/dev/hdb
+ssh masters-ip
+ssh-keygen -t rsa
+ifconfig --- interface configuration
+nslookup option
+nslookup google.com --nameserver lookup
+
+ip link -- To fetch link layer information
+netstat  -a  used to show listening and non-listening ports are available sockert
+netstat -at  -- list all the TCP port that are availabe
+
+nslookup google.com -- The details of the domain name servers
+
+curl  --- To transfer data from to and from the server
+curl options URL
+awk  -- scripting language for manipulating data and generating reports
+
+awk '{print}' file1.txt
+awk '/Ram/{print}' file1.txt
+
+tr -- translate (translating or deleting characters)
+cat file1.txt | tr "[a-z]" ["A-Z"] --converting file all caps
+
+env --- to print enviornment variable. To run utility 
+env -i command
+env -u varibale name ( to remove variable)
+service iptables stop : to disable the firewalls
+
+Handling packages in linux
+apt-get : advance packageing tool in linux
+sudo apt-get install pinta
+sudo df -h
+sudo du -h -d 1 /var/
+
+Shell scripting:What is a shell?
+The shell is a command line interpreter. It translates commands entered by the user and converts them into a languge that is understood by the karnel
+-------------------
+clear
+su
+su username
+sudo
+pwd
+/
+cd
+------
+ls
+ls path
+ls -l(flag or options) 
+ls --author
+ls -S
+ls *.html 
+ls -lS
+--- 
+cd ~
+cd /
+cd ..
+cd 'xx yy'
+----------
+cat
+cat -b
+cat -n
+cat -s
+cat -E
+cat >file1.txt
+cat >> file1.txt
+
+grep
+grep -i options file1.txt
+grep -n options file1.txt
+grep -v options file1.txt
+grep -c options file1.txt
+ 
+sort
+pipe
+grep dh file1.txt file2.txt | sort
+grep dh file1.txt file2.txt | sort -r 
+
+-------------
+cp
+cp -i
+cp -n
+cp -u 
+cp -R
+cp -v
+
+mv
+mv -i
+mv -u
+mv -v
+
+mkdir
+mkdir -p
+mkdir --parents
+mkdir -p file1/{f2,f3,f4} 
+
+rm -r
+rm -rp
+
+rmdir
+rmdir -p
+rmdir -pv
+
+user permissions
+
+--
+linux repository
+tar files
+env variables
+regix
+--------
+processes
+adding users
+ssh
+---------  
+
+
+
+

@@ -1,0 +1,368 @@
+
+What is Devops? Really understand it | Devops vs SRE
+
+Devops Engineers Essentials:By Nana
+
+What tools and concepts you need to learn as a Devops Engineer?
+Development:
+1. Code Repository: 
+- How developers work
+- Which Git Workflow
+- How application is configured
+- Concept of automated testing
+
+Operations:
+2. Prepare the inftastructure
+- Linux Basics
+- Comfortable using CLI
+- Shell Commands
+- Linux File System
+- Server Management
+- SSH Key Management (How to SSH into the Server)
+
+3. Basics of Networking and security
+- Firewall, Proxy Servers
+- Load balancers
+- HTTP/HTTPS
+- IP/DNS Name Resolution
+
+DevOps vs IT Operations
+- Understand and know the BASICS
+- own professions for (Sys admins, Network and security)
+- your job is to understand the concept and know all of theseto the extent that you are able to prepare the server to run your application.
+
+4. Containers are becoming the defacto software packaging model
+- Virutalization
+- Containers
+- Docker
+
+5. How to release the application
+- continuosly
+- Automation
+- Build Tools & Package Manager
+ Maven, Gradle for Java, NPM for Javascript.
+- Docker images
+- Artifact Repository  (Docker Hub/ Nexus)
+- Build Automation (Jenkins)
+- Sending notificaton to the team about the pipeline state (additional step)
+- You should be able to configure complete CI/CD pipeline for your application. And that pipeline should be continuous.
+- Plan --> Code --> Build --> Test --> Release --> Deploy --> Operate --> Monitor
+
+6. Cloud Providers (AWS, Google Cloud, Microsoft Azure)
+- Infrastracutre as a Service (IaaS)
+- Learn at least 1 cloud provider
+- save Costs
+- Offer a range of services
+- load balancing, backup, clustering, security.
+- Using a UI you can create your network,configure firewalls, route tables, and all part of your infrastucture  through features and services it provides. 
+- Platform-specific services 
+
+7. Container Orchestration (To manage containers)
+- Docker Compose or docker swarm is enough to manage for small applications
+- More powerful tool is kubernetes in case of big microservices
+- learn Kubernetes powerful but complex
+- you need to know how kubernetes works, be able to administer and manage the cluster, as well as deploy applications in it.
+
+8. Monitoring
+- When thousands of containers running in kubernetes on hundreds of servers, how do you track performance of your individual applicatons or whether everything runs successfully. Whether your infrasturcture has any problems and more important how do you know if in real time users are experiencing any problems.
+Responsiblity of a Devops engineer is to setup monitoring of your running application.
+- Monitor software
+- Monitor infrasturcture
+- Monitoring tools (Prometheus, Nagios, splunk)
+
+9. Infrastructure as Code
+- You need more than 1 environment (development, Testing, Production)
+- Creating and maintaining an infrastructure for multiple environment is tedious and error prone so we need to automate the environment.
+- Create infrastructure
+- Configure to run and deploy your app
+
+You need to know one of the following tools
+- Infrastructure provisioning tool like terraform
+- Configuration Management tool --> Ansible, CHEF, Puppet
+- To make the infrastructure more efficient and transparent and easy to replicate and replicate.
+
+10. Scripting Language
+- Closely work with developers and system administrators
+- Automating tasks for development and Operations
+-  backups, cron jobs, system monitoring, network management and so on.
+- Know a scripting language OS specific (Bash or Power Shell)
+- More powerful like python, ruby or Golang which are OS independent.
+- python is popular, easy to learn,easy to read, more libraries.
+
+11. Version Control:
+- Infrastructure as code
+- Creating, managing,configuring infrastructure.
+- Learn git
+--------------------------------------------------------
+To Learn:
+- Dev Concepts
+- OS Sustem & Linux Basics (Linux)
+- Networking and Security
+- CI/CD (Jenkins)
+- Cloud Providers (AWS)
+- Scripting Language (Python)
+- Containers (Docker)
+- Container Orchestration (Kubernetes)
+- Monitoring (Nagios)
+- Infrastructure as Code (Ansible or Terraform) 
+- Version Control (GIT)
+
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tasks and Responsibilities of a Devops Engineer
+
+
+Boundaries of Devops from Development and Operations
+
+
+
+
+
+
+Most important skills for Devops Engineering Position
+
+Highest paid cloud certification:
+https://medium.com/pcmag-access/the-1...
+----------
+PLEASE SUBSCRIBE ➡️https://bit.ly/36x6qQy ❤️
+BUY ME A COFFEE ☕https://bit.ly/3lumyqx
+----------
+PLAYLISTS: 
+- Associate Cloud Engineer Study Guide: https://bit.ly/37y1dYl
+- Google Cloud Playlist: https://bit.ly/37uMZal
+-------------------------------------------------------
+
+1. Linux
+
+2. Docker
+
+3. Kubernetes: most important skill ck certification
+	 Learn one Managed kubernetes service out of three below
+	AWS  ---- EKS
+	Azure  --- AKS
+	GCP ---- GKE
+
+4. Terraform
+
+5. One cloud Knowledge (AWS, Azure, GCP, OCI)
+
+6. Understanding of CI/CD pipeline (Jenkins, Gitlab CI, Github Actions, Azure Devops)
+
+7. Ansible
+
+8. Solid understanding of GIT and GITHUB or gitlab
+
+9. One programming language (python is most important)
+
+10. Bash scripting if not any other programming language 
+
+-----------------------------------------------------
+
+Devops Career Roadmap- part1 (Automation Step by step -- Raghav pal)
+
+Stages in Devops
+
+1. Plan
+2. Code
+3. Build
+4. Deploy
+5. Test
+6. Release
+7. Configure/Operations
+8. Monitor
+
+Step 1. Learn a Programming language (python, java, c#) (--- Plan, Code Stages)
+
+ - Excel sheet
+ - Jira tool
+ - Any programing language
+
+Step 2. Learn Tools and platforms (Build and Deploy
+ - Build --- maven, Gradle, Ant
+ - SCM  --- Git, SVN, TFS, GitHub, BitBucket
+ - CI/CD --- jenkins,
+ - Contaienrs --- Docker kubernetes
+
+Step 3: Learn how to run tests from command line or a CI/CD tool (Testing Stage)
+
+Step 4: Learn Cloud services platforms (AWS, AZure, GCP) (-- Release, configuration, monitor)
+
+Step 5: Learn some configuration management tool like Ansible, chef, puppet (-- Release, configuration, monitor)
+
+Step 6: learn logging and Monitoring tools- Nagios, New Ralic (-- Release, configuration, monitor)
+----------------------------------------------
+
+Docker tutorials form Raghal pal
+
+All devops related youtube videos. 
+https://www.youtube.com/hashtag/devopstraining
+
+For practice docker commands
+https://labs.play-with-docker.com/
+
+For installing docker in different operating systems
+https://docs.docker.com.zh.xy2401.com/v17.09/manuals/
+
+For more installation related help
+https://get.docker.com/
+https://docs.docker.com/engine/
+
+To install docker form binaries
+https://docs.docker.com/engine/install/binaries/
+
+Installation steps for amazon ec2
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html
+
+https://www.youtube.com/watch?v=wi-MGFhrad0&list=PLhW3qG5bs-L99pQsZ74f-LC-tOEsBp2rK&ab_channel=AutomationStepbyStep
+
+https://github.com/wsargent/docker-cheat-sheet#dockerfile
+
+https://docs.docker.com/engine/reference/builder/#environment-replacement
+
+https://www.google.co.in/search?q=dockerfile&rlz=1C5CHFA_enIN734IN734&source=lnms&tbm=isch&sa=X&ved=0ahUKEwicqqOe_oTcAhWLbysKHX_6B5sQ_AUICigB&biw=1280&bih=703
+
+
+----------------------------------------------
+
+Docker makes the process of application deployment very easy and efficient and resolves a lot of issues related to deploying applications.
+
+What is docker?
+Docker is the world's leading software container platform
+
+Docker is a tool designed to make it easier to deploy and run applications by using containers.
+
+Containers allow a developer to package up an appliction with all of the parts it needs, such as libraries and other dependencies, and ship it all out as one package.
+
+How docker works?
+Dockerfile: describes step to create a Docker image. It's like a recipe with all ingredients and steps necessary in making your dish.
+
+Docker containers are the runtime instances of a docker image.These images can also be stored in an online cloud repositrory which is called docker hub.
+
+Docker is a Contaienr Platform.
+
+Contaienr will have application with all its dependencies.
+------------------------------------------------
+
+Docker commands
+sudo yum  install -y docker
+docker --version
+docker info
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+docker images
+docker ps
+docke ps -a
+docker run <image name>
+docker run hello-world
+docker images
+sudo service docker stop
+sudo yum remove -y docker
+-------------------
+
+USEFUL INFORMATION FOR INSTALLING DOCKER IN WINDOWS MACHINE
+If you install the Docker Toolbox on a Windows machine, the installer automatically installs Oracle Virtualbox to run the Docker virtual machine.
+____________________________________________________________
+Prerequisites
+OS - 64 bit
+Windows 7 or higher
+____________________________________________________________
+
+STEP 1 : Install Docker
+https://docs.docker.com/toolbox/toolb...
+https://docs.docker.com/docker-for-wi...
+____________________________________________________________
+
+STEP 2 : Troubleshooting (if any issue occurs)
+Convenient way to enable/disable Hyper-V
+https://superuser.com/questions/54005...
+
+Installing Docker Toolbox on Windows with Hyper-V Installed
+https://jayvilalta.com/blog/2016/04/2...
+____________________________________________________________
+
+STEP 3 : validate INSTALLATION
+run some docker commands
+
+docker
+docker --version
+docker run "image name"
+____________________________________________________________
+
+STEP 4 : uninstall DOCKER
+
+____________________________________________________________
+
+https://www.youtube.com/hashtag/dockercommands
+____________________________________________________________
+
+
+How to install Docker on MacOS
+
+Prerequisites
+Docker - Mac OS Yosemite 10.10.3 or above
+Docker Toolbox -  mac OS 10.8 “Mountain Lion” or newer
+
+STEP 1 
+Install DOCKER
+
+STEP 2
+validate INSTALLATION
+run some docker commands
+
+STEP 3
+uninstall DOCKER
+
+References:
+https://www.docker.com/
+https://www.docker.com/docker-mac
+https://hub.docker.com/editions/community/docker-ce-desktop-mac
+https://www.docker.com/products/docker-desktop
+https://docs.docker.com/toolbox/
+_____________________________________________________________________
+
+Docker commands
+ 
+Basic
+: docker version
+: docker -v
+: docker info
+: docker --help
+: docker login
+————————————
+Images
+: docker images
+: docker pull
+: docker rmi
+————————————
+Containers
+: docker ps
+: docker run
+: docker start
+: docker stop
+————————————
+System
+: docker stats
+: docker system df
+: docker system prune
+___________________
+what are images?
+Docker Images are templates used to create Docker containers
+Container is a running instance of image
+
+Where are images stored
+Registries(eg docker hub)
+
+
+

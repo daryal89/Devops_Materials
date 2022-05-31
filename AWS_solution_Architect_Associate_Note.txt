@@ -1,0 +1,41 @@
+
+AWS solution Architect - Associate note
+
+
+Characteristics of Cloud:
+1. On demand self service
+2. Broad Network Access
+3. Scalability
+4. Resource Pooling
+5. Measured Services.
+---------------------------------
+
+IAAS, PAAS SAAS
+- Application
+- Data
+- Runtime
+- Middleware
+- OS
+- Virtualization
+- Server
+- Storage
+- Network
+----------------------
+
+Deployment Model of Cloud
+
+1. Public Cloud  ---> AWS, Azure, GCP
+2. Private Cloud ---> Enterprise Cloud (company)
+3. Hybrid Cloud  ---> blend of public and private cloud
+
+Virtualization:  Hypervisor
+
+AWS --> Citrix
+VmWare hypervisor - Vsphere ESXI
+Microsoft hypervisor - HyperV
+
+-----------------------------------
+
+Types of EC2 (Elastic Cloud Compute):
+
+

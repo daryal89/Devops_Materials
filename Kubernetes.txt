@@ -1,0 +1,387 @@
+
+Container orchestration tools: Kubernetes, Docker Swam, Apach marathon
+
+     ___________________ Lecture:45  _______________________________
+
+Kubernetes:
+Kubernetes is an open-source container management tool which automates container deployment,container scaling and load balancing.
+
+- It schedules, runs and manages isolated containers which are running on virtual/physical/cloud machines.
+- Kubernetes is an open source platform and developed by google and written in 'Golang' and donated to CNCF (cloud native computing foundation) .
+
+- All top cloud providers support kubernetes.
+____________________________________
+Online platform for K8s
+- Kubernetes playground
+- play with k8s
+- Play with kubernetes classroom
+____________________________________
+Cloud Based k8s Services
+- GKE --> Google Kubernetes Service
+- AKS --> Azure Kubernetes Services
+- EKS --> Elastic Kubernetes Services
+_____________________________________
+Kubernetes instillation tool:
+- Minicube
+- Kubeadm
+____________________________________
+
+Problems with scaling up the Containers
+- Containers cannot communicate with each other
+- Autoscaling and load balancing was not possible
+- containers had to be managed carefully.
+- Kubernetes market share 57% docker swam 11%
+______________________________________________
+
+Features of Kubernetes
+- Orchestration (Clustering of any number of containers running on different networks)
+- Kubernetes supports hybrid cloud, virtual environment, onprimeses
+- Autoscaling (Vertical-- adding resources in existing container and Horizontal-- adding another container)
+- Auto-Healing
+- Load Balancing -- distribution of load
+- Platform independent (cloud/virtual/physical)
+- Fault Tolerance (Node/POD failure)
+- Rollback (going back to previous version)
+- Health Monitoring of Container
+- Batch Execution (One time, Sequential, Parallel)
+- Manifest is a file in kubrernetes written either on json or yaml.
+- K8s can work with almost all container types like Rocket, Docker, containerD
+- GUI is available.
+- Only shared with containers in same pod.
+- Inbuilt tool present for monitoring.
+
+ ______________________________ Lecture 46 ___________________________
+
+ Architecture of Kubernetes and it's demo:
+
+Master-slave/server-client
+
+Master (Control Plane)
+API-Server
+- Controller manager (actual state =desired)
+- Kube Scheduler (Action)
+- etcd Cluser (only API server can access etcd)
+- Admin/dev/user(kubectl) [manifest in json or .yml)
+
+Node (Workers/minion)
+-Kube-proxy
+-Kubelet
+	- POD A
+	- POD B
+- Container engine (eg Docker)
+_________________________________
+
+Working with Kubernetes
+
+- WE create manifest (.yml)
+- Apply this to cluser (to master) to bring into desired state.
+- Pod runs on node, which is controlled by master
+
+Role of Master Node:
+kubernetes cluster contains containers running on Bare Metal/VM instances/cloud instances/ all mix
+- Kubernetes designates one or more of these as master and all others as workers.
+- The master is now going to run set of K8s processes. These processes will ensure smooth functioning of cluster. These proceses are clled "Control Plane"
+
+- Can be Multi-master for high availability
+- Master runs Control plane to run cluster smoothly.
+
+Components of Control Plane (Master)
+
+1. Kube-api-server (for all communications)
+- This api-server interacts directs with user (ie we apply .yml or json manifest to kube-apiserver)
+- This kube-api-server is meant to scale automaticallhy as per load.
+- Kube api-server is front-end of control-plane.
+
+2. etcd:
+- Sores metadata and status of cluster
+- etcd is consistent and high-available stroe (key-value store)
+- Source of touch for cluster state (info about state of cluster)
+
+etcd has following features
+a. Fully repliatate - The entire state is available on every node in the cluster.
+
+b. secure - Implements automatic tLS with Optional client-certificate authentication
+
+c. Fast - Benchmarked at 10,000 writes per second.
+
+3. kube-Scheduler (action)
+-When user makes request for the creation and management of Pods, kube-scheduler is going ot take action on these requests.
+- Handles Pod creation and Management
+- Kube-scheduler match/asign any node to create and run pods.
+- A scheduler watches for newly created pods that have no node assigned for every pod that the scheduler discovers, the scheduler becomes responsible for finding best node for that pod to run on.
+- Scheduler gets the information for hardware configuration from configuration files and schedules the pods on nodes accordingly.
+
+4. Controller-manager
+- Make sure acture state of cluster matches to desired state
+Two possible choices for controller manager
+1. if K8s on cloud, then it will be cloud-controller -manager
+2. if k8s on non-cloud, then it will be kbe-controller-manager
+
+Components on master that runs controller
+
+Node-controller: For checking the cloud provider to determine if a node has been detected in the cloud after it stops responding.
+
+Route-controller:  Responsible for setting up work routes on your cloud
+ 
+Service controller: Responsible for load balances on your cloud against services of type load balancer.
+
+Volume Controller: For creating, attaching and mounting volumes and interacting with the cloud provider to orchestrate volume.
+___________________________________________________________
+
+Nodes (kubelet and container engine)
+
+Node is going to run three important piece of software/process
+
+Kublet:
+- Agent running on the node
+- Listens to kubrnetes master (eg - pod creation request)
+- use port 10255
+- Send success reports to master
+
+Container Engine:
+- Works with kublet
+- Pulling images
+- Start/stop containers
+- Exposing containers on ports specified in manifest.
+
+Kube-proxy:
+- Assign IP to each Pod
+- It is required to assign IP addresses to pods (dynamic)
+- Kube-proxy runs on each node &this make sure that each pod will get its own unique IP address.
+
+These 3 components collectively consist node.
+________________________________________________________________
+
+POD: 
+- Smallest unit in kubernetes
+- POD is a group of one or more container that are deployed together on the same host.
+- A cluster is a group of nodes
+- A cluster has atleast one worker node and one master node
+- In kubernetes, the control unit is the POD, not containers.
+- Consists of one or more tightly coupled containers.
+- POD runs on node, which is controlled by master
+- Kubernetes only knows about PODS(does not know about individual container)
+- Cannot start containers without a POD
+- One POD usually contains one container.
+
+Multi-container PODS:
+- Share access to memory space
+- Connect to each other using localhost <container port>.
+- Share access to the same volume
+- Containers within poe are deployed in an all-or -nothing manner.
+- Entire pod is hosted on the same node (scheduler will decide about which node)
+
+POD limitations
+- No auto-healing or auto-scaling
+- POD crashes
+
+Higer lever kubernetes Objects:
+Replication set --> Scaling and healing
+Deployment --> versioning and Rollback
+Service --> Static (non-ephemeral) IP and networking
+Volume --> Non-ephemerial Storage
+
+Important: Following commands are used for single cloud, on premise or federated system.
+
+Kubectl --> Single Cloud
+Kubeadm --> on Premise
+Kubefed --> Federated
+__________________________________________
+
+ ___________ Lectuure 47 --> setup Kubernetes Master and Node on AWS _____
+
+Log into AWS accoutn --> launch 3 Instances
+
+- Ubuntu 16.06 (t2 medium)
+- Node can be t2 micro
+
+Master must have 2vCPU and 4 GB RAM
+
+- Now, using puttygen, create private key and save
+- Access all the 3 instances (1 master and 2 nodes) using puty
+
+Commands common for Master and Node
+- sudo su
+- apt-get update
+
+Now install https package
+- get install apt-transport-https
+
+This https is needed for intra cluster communication  (particularly from control plane to individual pods)
+
+Now install docker on all three instances
+- sudo apt install docker.io -y
+
+To check, whether docker is installed or not 
+- docker --version
+- systemctl start docker
+- systemctl enable docker
+
+Setup open GPG key. This is required for intra cluster communication. it will be added to source key on this node ie when K*s sends signed info to our host, it is going to accept those inofrmation because this open GPG key is present in the source key.
+
+- sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg  | sudo apt-key add 
+
+Download the kubernetes-xenial package in the file kubernetes.list
+Edit sources list file (apt-get install nano)
+- nano /etc/apt/sources.list.d/kubernetes.list
+
+- deb http://apt.kubernetes.io/ kubernetes-xenial main
+
+Exit form nano --> ctrl+x --> Caps+Y --> Enter
+
+- apt-get update  -->  ( Install all Packages)
+
+- apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+_________________________________________
+
+BOOTSTRAPPING THE MASTER NODE (IN MASTER)
+
+To initialize k8s cluster
+- kubeadm init
+ 
+You will get one long command started from "kubeadem join  172.316......
+
+- COPY THE COMMAND TO RUN IN NODES & SAVE IN NOTEPAD
+
+Create both .kube and its parent directories(-p)
+- mkdir -p $HOME/.kube
+
+Copy configuration to kube directory (in config file)
+- cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+
+provide user permissions to confige file
+- chown $(id -u):$(id -g) $HOME/.kube/config
+
+Deploy flannel node network for its repository path flannel is going to place a binary in each node
+
+- kubectl apply -f 
+https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+- kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+
+CONFIGURE WORKER NODES (IN NODES) 
+
+COPY LONG CODE PROVIDED MY MASTER IN NODE NOW LIKE CODE GIVEN BELOW and paste the commamd in both the nodes
+
+e.g- kubeadm join 172.31.6.165:6443 --token kl9fhu.co2n90v3rxtqllrs --discovery-token-ca-cert-hash sha256:b0f8003d23dbf445e0132a53d7aa1922bdef8d553d9eca06e65c928322b3e7c0
+
+GO TO MASTER AND RUN THIS COMMAND
+kubectl get nodes
+______________________________________________________
+ 
+********************COMMANDS FOR DEMO********************
+
+sudo su
+apt-get update
+apt-get install apt-transport-https
+
+
+apt install docker.io -y
+docker --version
+systemctl start docker
+systemctl enable docker
+
+sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg  | sudo apt-key add 
+
+nano /etc/apt/sources.list.d/kubernetes.list
+
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+
+apt-get update
+
+apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+
+
+BOOTSTRAPPING THE MASTER NODE (IN MASTER)
+
+root@ip-172-31-84-113:/home/ubuntu# kubeadm init
+
+
+kubeadm init
+ 
+
+COPY THE COMMAND TO RUN IN NODES & SAVE IN NOTEPAD
+
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f 
+https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+
+CONFIGURE WORKER NODES (IN NODES) 
+
+COPY LONG CODE PROVIDED MY MASTER IN NODE NOW LIKE CODE GIVEN BELOW
+
+e.g- kubeadm join 172.31.6.165:6443 --token kl9fhu.co2n90v3rxtqllrs --discovery-token-ca-cert-hash sha256:b0f8003d23dbf445e0132a53d7aa1922bdef8d553d9eca06e65c928322b3e7c0
+
+GO TO MASTER AND RUN THIS COMMAND
+kubectl get nodes
+___________________________________________________________
+
+-------------------------- Kubernetes LAB  --------------
+
+---- Run the below commands in Master and all nodes --------------
+
+login as: ubuntu
+
+ubuntu@ip-172-31-80-39:~$ sudo su
+
+root@ip-172-31-87-148:/home/ubuntu# apt-get update
+
+root@ip-172-31-92-249:/home/ubuntu# apt-get install apt-transport-https
+
+root@ip-172-31-80-39:/home/ubuntu# apt install docker.io -y
+
+root@ip-172-31-87-148:/home/ubuntu# docker --version
+Docker version 18.09.7, build 2d0083d
+
+root@ip-172-31-87-148:/home/ubuntu# systemctl start docker
+
+root@ip-172-31-87-148:/home/ubuntu# systemctl enable docker
+Synchronizing state of docker.service with SysV init with /lib/systemd/systemd-sysv-install...
+Executing /lib/systemd/systemd-sysv-install enable docker
+
+root@ip-172-31-87-148:/home/ubuntu# sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg  | sudo apt-key add
+OK
+
+root@ip-172-31-95-244:/home/ubuntu# nano /etc/apt/sources.list.d/kubernetes.list
+
+paste the below link in kubernetes.list file:
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+
+root@ip-172-31-87-148:/home/ubuntu# apt-get update
+
+root@ip-172-31-95-244:/home/ubuntu# apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+
+------------ Run below commands in Master only -----------------------
+
+kubeadm init
+ 
+COPY THE COMMAND TO RUN IN NODES & SAVE IN NOTEPAD
+
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f 
+https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+
+-------------  CONFIGURE WORKER NODES (IN NODES)   -----------------
+
+COPY LONG CODE PROVIDED MY MASTER IN NODE NOW LIKE CODE GIVEN BELOW
+
+e.g- kubeadm join 172.31.6.165:6443 --token kl9fhu.co2n90v3rxtqllrs --discovery-token-ca-cert-hash sha256:b0f8003d23dbf445e0132a53d7aa1922bdef8d553d9eca06e65c928322b3e7c0
+
+---------------GO TO MASTER AND RUN BELOW COMMAND    ----------------
+kubectl get nodes
+____________________________END ____________________________________
+

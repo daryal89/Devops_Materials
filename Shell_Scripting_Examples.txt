@@ -1,0 +1,692 @@
+
+
+_____________________________________________________________________
+
+Basic File System of Linux:
+
+/bin 			Basic programs (ls,cd,mv etc...)
+/sbin			System Programs (fdisk, sysctl, mkfs etc...)
+/etc			Configuration files
+/temp 			Temporary Files
+/usr/bin		Applications (apt, nmap, etc ...)
+/usr/share		Application support and data files
+/home			Personal Directories of user's (/home/ec2-user)
+/root			Home Directory of usper user(Admin)
+______________________________________________________________________
+
+Basic Linux Commands:
+help			Shows you basic commands and their use
+man			Shows you complete manual of that command or program
+ls			List all the folders and files of a directory
+cd 			Change directory (one folder to another)
+pwd			Print working directory
+---
+dir			Same as ls
+mkdir			Creates an directory (folder)
+cp 			Copy a file or folder
+mv 			Move a file or folder
+rm 			Remove(delet) a file or folder
+---
+sudo su			Grant root privileges
+cat			Shows content of a file
+nano 			Linux file editor
+gedit			File editor software
+chmod			Change file/directory permission
+---
+./   			Executes shell file
+bash  			Execute shell programs
+apt-get update   	Update packages list (URL's)
+apt-get upgrade  	Update all installed software's.
+apt-get install gedit	Install a particular software 
+---
+top 			Showing Linux Processes
+kill 			Terminate processes Manually
+w			Who is logged on and what they are doing
+whoami			Displays the username of the current user
+touch			Create Empty Files
+---
+Hostname and Host file configuration
+
+Change hostname by following:
+root@ip-172-31-24-160:/home/ubuntu# nano /etc/hostname
+
+Change domain name as:
+root@ip-172-31-24-160:/home/ubuntu# nano /etc/hosts
+
+root@ip-172-31-24-160:/home/ubuntu# cat /etc/hosts
+127.0.0.1 localhost # This is the default domain name
+127.0.1.1 dhruba # This domain name is added
+------
+
+Apache Server:
+Microsoft Server --> IIS Server ( Internet Information Service)
+Linux Server --> Apache Server (Apache2 is latest version)
+Apache2 by default opens at port 80.
+
+root@ip-172-31-24-160:/home/ubuntu# cd /var/www/html
+
+root@ip-172-31-24-160:/var/www/html# ls
+index.html
+
+root@ip-172-31-24-160:/var/www/html# nano index.html
+
+You can change The heading of Apache2 webpage as:
+APache2 Debian Default Page  --> Any Content
+----
+
+root@ip-172-31-24-160:/etc# cd apache2
+
+root@ip-172-31-24-160:/etc/apache2# ls
+apache2.conf    magic           sites-available
+conf-available  mods-available  sites-enabled
+conf-enabled    mods-enabled
+envvars         ports.conf
+---
+root@ip-172-31-24-160:/etc/apache2# nano ports.conf
+--
+root@ip-172-31-24-160:/etc/apache2# cat ports.conf
+# If you just change the port or add more ports here, you will likely also
+# have to change the VirtualHost statement in
+# /etc/apache2/sites-enabled/000-default.conf
+
+#Listen 80  # Default
+
+Listen 8000
+
+<IfModule ssl_module>
+        Listen 443
+</IfModule>
+
+<IfModule mod_gnutls.c>
+        Listen 443
+</IfModule>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+---
+Now to access the apache2 server we need to give public ip of ubuntu machine:8000
+
+http://3.91.56.85:8000/
+-----------------------------
+
+Software Installation Without APT:
+1. with the help of .db file
+-  Search the software in google ( eg. open jdk8 in google)
+-  Go to the website
+-  Go to Linux operating system and download .deb file. (other .tar.gz, .rpm files)
+-  In terminal go to the download directory where the file downloaded.
+-  dpkg -i < downloaded file name >
+
+2. With help of other source like github. 
+-  Search the software in google like (eg beef github)
+-  Copy the url of the repository from github (readme.md will have complete instruction how to install the software).
+-  Go to the terminal home and git clone <url>
+-  cd software name
+-  ./install
+It will install the software in your ubuntu machine.
+--------------------------------------------------
+Error Resolving in Linux APT
+There are three steps to resolve errors.
+Step 1. Root permission is necessary
+- Internet connectivity should be on.
+cd /etc/apt
+gedit sources.list
+- Line 2 and line 5 should be uncommented in sources.list file
+
+- Then apt-get update
+- Then apt-get install <software name>
+
+Step 2: apt-get instal --fix-broken
+
+Step 3: rm -rf /var/lib/apt/lists/*
+
+- Then apt-get update
+-----------------------------------------------------
+
+Run Multiple comments in 1 line: (; &&  || operators)
+
+;  --> left side command run or not but right hand side command should run.
+root@ip-172-31-24-160:/home/ubuntu# cd ; ls
+snap
+---
+root@ip-172-31-24-160:~# cd documents ; ls
+bash: cd: documents: No such file or directory
+snap
+---
+&& --> Both commands should run.
+
+root@ip-172-31-24-160:/home/ubuntu# cd && ls
+snap
+--
+root@ip-172-31-24-160:~# cd documents && ls
+bash: cd: documents: No such file or directory
+------
+|| --> One of the command should run.
+
+root@ip-172-31-24-160:/home/ubuntu# cd || ls
+root@ip-172-31-24-160:~#
+
+root@ip-172-31-24-160:/home/ubuntu# cd documents || ls
+bash: cd: documents: No such file or directory
+myfile.txt
+------------------------------------------
+
+Top 10 Terminal Shotcuts
+Tab 		Autocompletes names
+Ctrl+c 		Abort Processes manually
+Ctrl+l		Same as clear command
+Ctrl+d 		Same as exit command
+Ctrl+Alt+d 	Minimize all terminals/windows
+Ctrl+U		Clear Line
+Ctrl+z		Suspend for Background(fg for revert)
+Ctrl+A		Position start point
+Ctrl+E		Position End point
+Ctrl+Shift+c/v	Copy/pasting in Terminal
+_________________________________________________________
+
+SSH in window machine:
+
+https://winbuzzer.com/2021/08/25/how-to-enable-and-use-ssh-commands-on-windows-10-xcxwbt/
+__________________________________________
+Connect to your EC2 instance using SSH client:
+
+ Connection method --> 1. A standalone SSH client 
+
+To access your instance:
+1. Open an SSH client. (find out how to connect using PuTTY)
+2. Locate your private key file (ubuntukey.pem). The wizard automatically detects the key you used to launch the instance.
+3. Your key must not be publicly viewable for SSH to work. Use this command if needed:
+chmod 400 ubuntukey.pem
+4. Connect to your instance using its Public DNS:
+ec2-54-221-157-207.compute-1.amazonaws.com
+
+Example:
+ssh -i "ubuntukey.pem" ubuntu@ec2-54-221-157-207.compute-1.amazonaws.com
+
+Please note that in most cases the username above will be correct, however please ensure that you read your AMI usage instructions to ensure that the AMI owner has not changed the default AMI username.
+
+If you need any assistance connecting to your instance, please see our connection documentation.
+Close
+__________________________________________________
+
+To connect to a different machine using ssh
+--> ssh -i <pem file name> user@ipaddress of the remote machine
+
+_____________________________________________________________
+
+----------------- Shell Scripting Examples  ---------
+ 
+#! /bin/bash
+
+echo " Hello World from ubuntu distribution Linux"
+
+# Variables in Linux: Two types: System Variables and User variables
+# System variables are usually defined in capital cases.
+# User variables are created by users and defined in lower cases without spaces
+# There is no space between variable and it's value. eg jobName=clerk
+# variable name should not start with number.
+
+echo Our shell name is:  $BASH
+echo Our shell version name is :  $BASH_VERSION
+echo Our home directory name is :  $HOME
+echo Our currnet working direcotry is:  $PWD
+
+# User defined variables
+name=Mark
+echo The name is:$name
+
+age=30
+echo The age is:$age
+
+profession=Software_Engineer
+echo The profession is:$profession
+
+# User to enter the name
+echo "Enter name: "
+read name
+echo "Entered name : $name"
+
+# User enter multiple values
+echo "Enter names: "
+read name1 name2 name3
+echo "Names : $name1, $name2, $name3"
+
+# ---- How to enter input in the same line -----
+read -p 'username : ' user_var
+read -sp 'password : ' pass_var
+echo
+echo "username : $user_var"
+echo "password : $pass_var"
+
+# ---- Enter multiple inputs and save those inputs in array ----
+echo "Enter names: "
+read -a names
+echo "Names: ${names[0]},${names[1]}"
+
+# Enter no variable after read command will go in built-in variable reply
+echo "Enter name: "
+read
+echo "Name : $REPLY"
+
+# -------Passing argument in bash script ------
+echo $0 $1 $2 $3 $4 $5 ' > echo $1 $2 $3 $4 $5'
+
+# Parse the arguments as an array
+args=("$@")
+echo ${args[0]} ${args[1]} ${args[2]} ${args[3]}
+
+echo $@ # it will print all the arguments this is called default variable.
+
+echo $#  # It will display the number of argument passed to the bash script
+
+_________________________________________________
+# ---- basic syntax of if statement in bash ----
+#! /bin/bash
+
+if [condition /comparisons]
+    then
+         commands
+fi
+
+# --------  Multiple selection syntax:-------
+if something ; then
+	do_stuff
+elif something_else ; then
+	do_other_stuff
+elif full_moon ; then
+	howl
+else
+	turn_into_a_newt
+fi
+________________________________________________
+
+# Example:  ------------------
+#! /bin/bash
+
+count=10
+if (($count >11))
+     then
+          echo "$count is greater"
+     else
+         echo  "$count is not greater"
+fi
+
+----------
+____________________
+
+#! /bin/bash
+ # -e flag is used to check whether the file exists or not
+ 
+echo -e "Enter the name of the file: \c"
+
+read file_name
+
+# -e flag is used to check whether the file exists or not
+if [ -e $fine_name ]
+        then
+        echo "$file_name found"
+       else
+        echo "$file_name not found"
+        fi
+__________________________________________________
+
+#! /bin/bash
+ # -e flag is used to enable the interpretation of \c
+echo -e "Enter the name of the file: \c"
+
+ # -f is the file exists or it is a regular file or not
+if [ -f $fine_name ]
+        then
+        echo "$file_name found"
+       else
+        echo "$file_name not found"
+        fi
+_____________________________________________________
+
+#! /bin/bash
+echo -e "Enter the name of the directory: \c"
+
+# -d is the directory exists or not
+if [ -d $dir_name ]
+        then
+        echo "$dir_name found"
+       else
+        echo "$dir_name not found"
+        fi
+______________________________________________________________________________
+
+1. first_script.sh
+
+#!/bin/bash
+
+echo "I will be a graet DevOps Engineer"
+
+#echo $BASH
+
+# Making variables
+
+name=Dhruba_Aryal
+
+echo "Hello,  ${name}, please enter your age"
+
+read age
+
+echo "My age is: ${age}"
+
+# Conversation between Me and subscriber
+echo "Sub: Hello, this is $1."
+
+sleep 2
+
+echo "Me: Hello $1, Welcome to my channel."
+
+sleep 2
+
+echo "Sub: Thank you, When will be another live on youtube?"
+
+sleep 2
+echo "Me: The live will be on every sunday @6:00pm EST."
+
+
+----------------------------
+
+ 2. nano if_test.sh
+
+#!/bin/bash
+
+if [ "$1" = "like" ]
+then
+echo "Hey, Please $1 this video."
+
+else
+echo "Please subscribe my channel."
+fi
+
+-------------------------
+
+ 3. nano if_elif_test.sh
+
+#!/bin/bash
+
+#variables
+a=-1000
+b=-2000
+c=-300
+
+if [[ $a -ge $b  && $a -ge $c ]]
+then
+echo "$a : A is the greatest"
+
+elif [[ $b -ge $a && $b -ge $c ]]
+then
+echo "$b : B is the greatest"
+
+else
+echo "$c : C is the greatest"
+fi
+
+--------------------------
+
+4. nano loops_test.sh
+
+#!/bin/bash
+
+#Printing values from 0 to 10
+for((i=0;i<=10;i++))
+
+do
+echo " value of i: $i"
+done
+
+# Creating multiple files using one command
+touch file-{0..10}.txt
+
+# Priniting all files in a directory using for loop
+echo "----- Printing all files in a directory -----"
+for  FILE in *
+do
+echo "$FILE"
+done
+
+# Printing only txt files in a directory
+echo "----- Printing only .txt files -----"
+for FILE in *.txt
+do
+echo "$FILE"
+done
+
+# Printing only .sh files in a directory
+echo "----- Printing only .sh files -----"
+for FILE in *.sh
+do
+echo "$FILE"
+done
+
+----------------------------------
+
+5. nano backup_test.sh
+
+#!/bin/bash
+
+src_dir=/home/ubuntu/scripts
+tgt_dir=/home/ubuntu/backups
+
+curr_timestamp=$(date "+%Y-%m-%d-%H-%M-%S")
+
+backup_file=$tgt_dir/$curr_timestamp.tgz
+
+echo "Taking backup on $curr_timestamp"
+#echo "$backup_file"
+
+tar czf $backup_file --absolute-names  $src_dir
+echo "Backup complete!"
+
+# To see backups go to backups directory and run below command
+# tar xf "<tar file name>"
+
+-------------------------
+6. vim check_disk_test.sh
+
+#!/bin/bash
+
+alert=20
+
+df -H  | awk '{print $5 " " $1}' | while read output;
+
+do
+#echo "Disk detail: $output"
+
+usage=$(echo $output | awk '{print $1}' | cut -d'%' -f1)
+#echo $usage
+
+file_system=$(echo $output | awk '{print $2}')
+#echo $file_system
+
+if [ $usage -ge $alert ]
+then
+
+echo "Disk usage is $usage : CRITICAL for file system : $file_system"
+
+ fi
+
+done
+
+--------------------
+
+7. vim  cat adding_user_test.sh
+
+#!/bin/bash
+
+add_user()
+{
+USER=$1
+PASS=$2
+
+useradd -m -p $PASS $USER && echo "Successfully added user."
+}
+
+#MAIN
+
+add_user  reyona_aryal test@123
+
+--------------------------
+8. vi  modified_checkdisk.sh
+
+#!/bin/bash
+
+alert=20
+backup_date=$(date +'%m/%d/%Y %H:%M:%S')
+
+df -H  | awk '{print $5 " " $1}' | while read output;
+
+do
+#echo "Disk detail: $output"
+
+usage=$(echo $output | awk '{print $1}' | cut -d'%' -f1)
+#echo $usage
+
+file_system=$(echo $output | awk '{print $2}')
+#echo $file_system
+
+if [ $usage -ge $alert ]
+then
+
+echo "Disk usage is $usage : CRITICAL for file system : $file_system on $backup_date"
+
+ fi
+
+done
+-----------------
+9. ubuntu@ip-172-31-23-27:~/scripts$ crontab -e
+ 
+# m h  dom mon dow   command
+10 * * * * echo "This is my first cron job" >> /home/ubuntu/first_cronjob_test.>
+15 * * * * bash /home/ubuntu/scripts/modified_checkdisk.sh >>/home/ubuntu/check>
+
+10 * * * * echo "This is my first cron job" >> /home/ubuntu/first_cronjob_test.txt
+15 * * * * bash /home/ubuntu/scripts/modified_checkdisk.sh >>/home/ubuntu/check_disk_logs.txt
+
+
+________________________________UBUNTU LAB__________________________________
+
+ubuntu@ip-172-31-18-57:~$ pwd
+/home/ubuntu
+---
+ubuntu@ip-172-31-18-57:~$ mkdir scripts
+---
+ubuntu@ip-172-31-18-57:~$ ls
+scripts
+---
+ubuntu@ip-172-31-18-57:~$ nano devops_first.sh
+-----
+ubuntu@ip-172-31-18-57:~/scripts$ ls
+devops_first.sh
+-----
+ubuntu@ip-172-31-18-57:~/scripts$ ls
+adding_user.sh  devops_first.sh  if_test.sh
+backup.sh       if_elif.sh       loops.sh
+---
+ubuntu@ip-172-31-18-57:~/scripts$ sudo touch file-{1..10}.txt
+---
+ubuntu@ip-172-31-18-57:~/scripts$ ls
+adding_user.sh   file-10.txt  file-5.txt  file-9.txt
+backup.sh        file-2.txt   file-6.txt  if_elif.sh
+devops_first.sh  file-3.txt   file-7.txt  if_test.sh
+file-1.txt       file-4.txt   file-8.txt  loops.sh
+---
+ubuntu@ip-172-31-18-57:~/scripts$ cd ..
+---
+ubuntu@ip-172-31-18-57:~$ mkdir backups
+---
+ubuntu@ip-172-31-18-57:~$ ls
+backups scripts 
+---
+ubuntu@ip-172-31-18-57:~$ cd backups
+--
+ubuntu@ip-172-31-18-57:~/backups$ ls
+2022-05-07-00-32-11.tgz  2022-05-07-00-50-54.tgz
+2022-05-07-00-35-48.tgz
+---
+ubuntu@ip-172-31-18-57:~/backups$ tar xf 2022-05-07-00-50-54.tgz
+tar: Removing leading `/' from member names
+---
+ubuntu@ip-172-31-18-57:~/backups$ ls
+2022-05-07-00-32-11.tgz  2022-05-07-00-50-54.tgz
+2022-05-07-00-35-48.tgz  home
+---
+ubuntu@ip-172-31-18-57:~/backups$ cd home
+---
+ubuntu@ip-172-31-18-57:~/backups/home$ ls
+ubuntu
+---
+ubuntu@ip-172-31-18-57:~/backups/home$ cd ubuntu
+---
+ubuntu@ip-172-31-18-57:~/backups/home/ubuntu$ ls
+scripts
+---
+ubuntu@ip-172-31-18-57:~/backups/home/ubuntu$ cd scripts
+--
+ubuntu@ip-172-31-18-57:~/backups/home/ubuntu/scripts$ ls
+adding_user.sh   file-10.txt  file-5.txt  file-9.txt
+backup.sh        file-2.txt   file-6.txt  if_elif.sh
+devops_first.sh  file-3.txt   file-7.txt  if_test.sh
+file-1.txt       file-4.txt   file-8.txt  loops.sh
+---
+ubuntu@ip-172-31-24-160:~$ df -H | awk '{print $1}'
+Filesystem
+/dev/root
+tmpfs
+tmpfs
+tmpfs
+/dev/xvda15
+tmpfs
+----
+ubuntu@ip-172-31-24-160:~$ df -H | awk '{print $5}'
+Use%
+35%
+0%
+1%
+0%
+5%
+1%
+--------------------
+Cron : Cron is a service or utility for scheduling any task on certain interval of time in linux
+
+crontab: Crontab is file where we need to run set of commands.
+
+Example of job definition:
+# *  *  *  *  * user-name command to be executed
+
+To see the list of crontab
+ubuntu@ip-172-31-23-27:~$ crontab -l
+
+To edit user's crontab
+ubuntu@ip-172-31-23-27:~$ crontab -e 
+
+# m h  dom mon dow   command
+10 * * * * echo "This is my first cron job" >> /home/ubuntu/first_cronjob_test.txt
+15 * * * * bash /home/ubuntu/scripts/modified_checkdisk.sh >>/home/ubuntu/check_disk_logs.txt
+
+
+to see the crontab file
+ubuntu@ip-172-31-23-27:~$ cat /etc/crontab
+
+
+
+
+
+
+
+
+
+
+
+
+________________________________________________
+
+ youtube clone github
+- make a docker file for the project
+- automated on ansible
+- deploy on aws.
+
+
+

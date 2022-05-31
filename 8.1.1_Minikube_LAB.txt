@@ -1,0 +1,420 @@
+
+--------------------------- Minikube Instillation and LAB  -----------------
+
+Lecture 48: Kubernetes in Details
+
+Create an Ubuntu Server 18.04 LTS (HVM), SSD Volume Type EC2 instance in AWS
+Login as:ubuntu
+
+ubuntu@ip-172-31-90-46:~$ sudo su
+
+root@ip-172-31-90-46:/home/ubuntu# sudo apt update && apt -y install docker.io
+
+root@ip-172-31-90-46:/home/ubuntu# which docker
+/usr/bin/docker
+
+root@ip-172-31-90-46:/home/ubuntu# docker -v
+Docker version 20.10.7, build 20.10.7-0ubuntu5~18.04.3
+
+
+To install Kubectl (command line tool) 
+root@ip-172-31-90-46:/home/ubuntu# curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+---
+
+To check whether cubectl intalled or not
+root@ip-172-31-90-46:/home/ubuntu# which kubectl
+/usr/local/bin/kubectl
+---
+
+To check the version of kubectl
+root@ip-172-31-90-46:/home/ubuntu# kubectl version
+Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.5", GitCommit:"c285e781331a3785a7f436042c65c5641ce8a9e9", GitTreeState:"clean", BuildDate:"2022-03-16T15:58:47Z", GoVersion:"go1.17.8", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.3", GitCommit:"816c97ab8cff8a1c72eccca1026f7820e93e0d25", GitTreeState:"clean", BuildDate:"2022-01-25T21:19:12Z", GoVersion:"go1.17.6", Compiler:"gc", Platform:"linux/amd64"}
+---
+
+To install Minikube
+root@ip-172-31-90-46:/home/ubuntu# curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+--
+
+To run minikube we need a supported file to install that is conntrack
+root@ip-172-31-90-46:/home/ubuntu# apt install conntrack
+---
+
+Each time you start ec2 start you run the following command
+root@ip-172-31-90-46:/home/ubuntu# minikube start --vm-driver=none
+---
+
+To check the minikube status
+root@ip-172-31-90-46:/home/ubuntu# minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+--
+
+To get nodes instances
+root@ip-172-31-90-46:/home/ubuntu# kubectl get nodes
+NAME              STATUS   ROLES                  AGE   VERSION
+ip-172-31-90-46   Ready    control-plane,master   31m   v1.23.3
+--
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl describe node ip-172-31-90-46
+partial op --> ip-172-31-90-46 status is now: NodeReady
+
+
+--------------------------- Create a POD ---------------------------
+
+root@ip-172-31-90-46:/home/ubuntu# vi pod1.yml
+
+root@ip-172-31-90-46:/home/ubuntu# cat pod1.yml
+# Create first pod as pod1.yml
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+  restartPolicy: Never         # Defaults to Always
+
+  ---------------------------------------------------------------------
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl apply -f pod1.yml
+pod/testpod created
+--
+
+To check how many pods are ther 
+root@ip-172-31-90-46:/home/ubuntu# kubectl get pods
+NAME      READY   STATUS    RESTARTS   AGE
+testpod   1/1     Running   0          17s
+---
+
+To check the details of pods
+root@ip-172-31-90-46:/home/ubuntu# kubectl get pods -o wide
+NAME      READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+testpod   1/1     Running   0          67s   172.17.0.3   ip-172-31-90-46   <none>           <none>
+---
+
+To get details of pods
+root@ip-172-31-90-46:/home/ubuntu# kubectl describe pod testpod
+Name:         testpod
+Namespace:    default
+---
+
+To see the logs of the container
+root@ip-172-31-90-46:/home/ubuntu# kubectl logs -f testpod
+Hello-Bhupinder
+to get out from running console
+ctrl Z
+---
+
+To see the container specific details
+root@ip-172-31-90-46:/home/ubuntu# kubectl logs -f testpod -c c00
+Hello-Bhupinder
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl logs -f testpod -c c01
+error: container c01 is not valid for pod testpod
+---
+
+To delete a pod
+root@ip-172-31-90-46:/home/ubuntu# kubectl delete pod testpod
+pod "testpod" deleted
+--
+
+To see the available pods
+root@ip-172-31-90-46:/home/ubuntu# kubectl get pods
+No resources found in default namespace.
+
+
+---------------- Annonations in PODS -------------------
+
+To add extra information about PODS we can add annotations.
+
+------- Example of Annotations-----------
+
+Croot@ip-172-31-90-46:/home/ubuntu# vi pod1.yml
+
+root@ip-172-31-90-46:/home/ubuntu# cat pod1.yml
+# Create first pod as pod1.yml
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod
+  annotations:
+   description: First test POD created for Kubernetes
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+  restartPolicy: Never         # Defaults to Always
+---
+
+To upadate the changes in pod
+root@ip-172-31-90-46:/home/ubuntu# kubectl apply -f pod1.yml
+pod/testpod created
+
+To check the details and annonations
+root@ip-172-31-90-46:/home/ubuntu# kubectl describe pod testpod
+Name:         testpod
+Namespace:    default
+Priority:     0
+Node:         ip-172-31-90-46/172.31.90.46
+Start Time:   Tue, 05 Apr 2022 03:11:55 +0000
+Labels:       <none>
+Annotations:  description: First test POD created for Kubernetes
+Status:       Running
+IP:           172.17.0.3
+IPs:
+  IP:  172.17.0.3
+Containers:
+  c00:
+    Container ID:  docker://e05054754ea36f7712ca2dc2f82bd93c4790359919e746d73f98a7329f5b2d5d
+    Image:         ubuntu
+    Image ID:      docker-pullable://ubuntu@sha256:bea6d19168bbfd6af8d77c2cc3c572114eb5d113e6f422573c93cb605a0e2ffb
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      while true; do echo Hello-Bhupinder; sleep 5 ; done
+    State:          Running
+      Started:      Tue, 05 Apr 2022 03:11:56 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-5hjwl (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  kube-api-access-5hjwl:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  37s   default-scheduler  Successfully assigned default/testpod to ip-172-31-90-46
+  Normal  Pulling    36s   kubelet            Pulling image "ubuntu"
+  Normal  Pulled     36s   kubelet            Successfully pulled image "ubuntu" in 104.589342ms
+  Normal  Created    36s   kubelet            Created container c00
+  Normal  Started    36s   kubelet            Started container c00
+----
+
+To delete the pod
+root@ip-172-31-90-46:/home/ubuntu# kubectl delete -f pod1.yml
+pod "testpod" deleted
+
+
+----------------- MULTI CONTAINER POD ENVIRONMENT --------------------
+
+
+root@ip-172-31-90-46:/home/ubuntu# vi pod2.yml
+
+root@ip-172-31-90-46:/home/ubuntu# cat pod2.yml
+# Create Second manifest as pod2.yml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod3
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Technical-Guftgu; sleep 5 ; done"]
+    - name: c01
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+    - name: c02
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello- Welcome Technical Gugftgu; sleep 5 ; done"]
+
+---
+
+To create a pod
+root@ip-172-31-90-46:/home/ubuntu# kubectl apply -f pod2.yml
+pod/testpod3 created
+--
+
+To show the pod details
+root@ip-172-31-90-46:/home/ubuntu# kubectl get pods
+NAME       READY   STATUS    RESTARTS   AGE
+testpod3   3/3     Running   0          67s
+--
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl describe pod testpod3
+Name:         testpod3
+Namespace:    default
+Priority:     0
+Node:         ip-172-31-90-46/172.31.90.46
+Start Time:   Tue, 05 Apr 2022 03:18:29 +0000
+Labels:       <none>
+Annotations:  <none>
+Status:       Running
+IP:           172.17.0.3
+IPs:
+  IP:  172.17.0.3
+-----
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl logs -f testpod3 -c c00
+Technical-Guftgu
+ctrl+z
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl logs -f testpod3 -c c01
+Hello-Bhupinder
+ctrl+z
+---
+
+root@ip-172-31-90-46:/home/ubuntu#kubctl logs -f testpod3 -c c02
+Hello- Welcome Technical Gugftgu
+ctrl+z
+---
+
+To see the ip of pod
+root@ip-172-31-90-46:/home/ubuntu# kubectl exec testpod3 -c c00 -- hostname -i
+172.17.0.3
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl exec testpod3 -c c01 -- hostname -i
+172.17.0.3
+---
+
+to see what is running inside specific container
+root@ip-172-31-90-46:/home/ubuntu# kubectl exec testpod3 -it -c c02 -- /bin/bash
+root@testpod3:/#
+---
+
+root@testpod3:/# ps
+  PID TTY          TIME CMD
+  210 pts/0    00:00:00 bash
+  223 pts/0    00:00:00 ps
+---
+
+root@testpod3:/# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 03:18 ?        00:00:00 /bin/bash -c while true;
+root       210     0  0 03:35 pts/0    00:00:00 /bin/bash
+root       222     1  0 03:35 ?        00:00:00 sleep 5
+root       224   210  0 03:35 pts/0    00:00:00 ps -ef
+---
+
+root@testpod3:/# exit
+exit
+---
+
+To delete the pod we can directly manifest file
+root@ip-172-31-90-46:/home/ubuntu# kubectl delete -f pod2.yml
+pod "testpod3" deleted
+
+-------------------------- POD ENVIRONMENT  VARIABLES ------------------
+
+root@ip-172-31-90-46:/home/ubuntu# vi pod3.yml
+
+root@ip-172-31-90-46:/home/ubuntu# cat pod3.yml
+
+# Create a third manifest file as pod3.yaml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: environments
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+      env:                        # List of environment variables to be used inside the pod
+      - name: MYNAME
+        value: BHUPINDER
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl apply -f pod3.yml
+pod/environments created
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl get pods
+NAME           READY   STATUS    RESTARTS   AGE
+environments   1/1     Running   0          113s
+--
+root@environments:/# env
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_SERVICE_PORT=443
+MYNAME=BHUPINDER
+HOSTNAME=environments
+PWD=/
+HOME=/root
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+---
+
+root@environments:/# exit
+exit
+------
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl delete -f pod3.yml
+pod "environments" deleted
+
+
+----------------------  Expose POD WITH PORTS --------------------------
+
+
+root@ip-172-31-90-46:/home/ubuntu# vi pod4.yml
+
+root@ip-172-31-90-46:/home/ubuntu# cat pod4.yml
+
+# Create a manifest as pod4.yml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod4
+spec:
+  containers:
+    - name: c00
+      image: httpd
+      ports:
+       - containerPort: 80
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl apply -f pod4.yml
+pod/testpod4 created
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl get pods
+NAME       READY   STATUS    RESTARTS   AGE
+testpod4   1/1     Running   0          27s
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl get pods -o wide
+NAME       READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+testpod4   1/1     Running   0          83s   172.17.0.3   ip-172-31-90-46   <none>           <none>
+---
+
+root@ip-172-31-90-46:/home/ubuntu# curl 172.17.0.3:80
+<html><body><h1>It works!</h1></body></html>
+op --> it works
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl delete -f pod4.yml
+pod "testpod4" deleted
+---
+
+root@ip-172-31-90-46:/home/ubuntu# kubectl get pods
+No resources found in default namespace.
+___________________________________ END _______________________________ 

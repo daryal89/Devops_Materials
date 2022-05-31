@@ -1,0 +1,260 @@
+
+----------------- Minikube Instillation and practice ---------------------
+
+Lecture 48: Kubernetes in Details
+
+Create an ubuntu 18.0.0 EC2 instance in AWS
+Login as:ubuntu
+
+sudo su
+
+Now update and install docker
+sudo apt update && apt -y install docker.io
+
+To install Kubectl (command line tool) 
+
+curl -LO https://storage.googleapis.com/kubernetes-release/release$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+
+To check whether cubectl intalled or not
+which cubectl
+
+To check the version of kubectl
+kubectl version
+
+To install Minikube
+
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+
+To run minikube we need a supported file to install that is conntrack
+apt install conntrack
+
+Each time you start ec2 start you run the following command
+minikube start --vm-driver=none
+
+To check the minikube status
+minikube status
+
+To check version of kubectl
+kubectl version
+
+To get nodes instances
+kubectl get nodes
+
+kubectl describe node <ipaddress>
+
+--------------------------- Create a POD ---------------------------
+
+Create a pod  
+vi pod1.yml
+
+# Create first pod as pod1.yml
+kind: Pod                              
+apiVersion: v1                     
+metadata:                           
+  name: testpod                  
+spec:                                    
+  containers:                      
+    - name: c00                     
+      image: ubuntu              
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+  restartPolicy: Never         # Defaults to Always
+
+
+  ---------------------------------------------------------------------
+
+
+kubectl apply -f pod1.yml
+
+To check how many pods are ther 
+kubectl get pods
+
+To check the details of pods
+kubectl get pods -o wide
+
+To get details of pods
+kubectl describe pod testpod
+
+To see the logs of the container
+kubectl logs -f testpod
+
+to get out from running console
+ctrl Z
+
+To see the container specific details
+kubectl logs -f testpod -c c00
+kubectl logs -f testpod -c c01
+
+To delete a pod
+kubectl delete pod testpod
+
+To see the available pods
+kubectl get pods
+
+---------------- Annonations in PODS -------------------
+
+To add extra information about PODS we can add annotations.
+
+------- Example of Annotations-----------
+
+Create a manifest as pod1.yml  
+vi pod1.yml
+
+# Create first manifest as pod1.yml
+kind: Pod                              
+apiVersion: v1                     
+metadata:                           
+  name: testpod 
+  annonations
+    description:  First test POD created for kubernetes                 
+spec:                                    
+  containers:                      
+    - name: c00                     
+      image: ubuntu              
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+  restartPolicy: Never         # Defaults to Always
+
+:wq
+
+---
+
+To upadate the changes in pod
+kubectl apply -f pod1.yml
+
+To check the details and annonations
+kubectl describe pod testpod
+
+To delete the pod
+kubectl delete pod testpod
+
+
+----------------- MULTI CONTAINER POD ENVIRONMENT --------------------
+
+
+# Create Second manifest as pod2.yml 
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod3
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Technical-Guftgu; sleep 5 ; done"]
+    - name: c01
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+- name: c02
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello- Welcome Technical Gugftgu; sleep 5 ; done"]
+
+:wq
+---
+To create a pod
+kubectl apply -f pod2.yml
+
+To show the pod details
+kubectl get pods
+
+kubectl describe pod testpod3
+
+kubctl logs -f testpod3 -c c00
+ctrl+z
+
+kubctl logs -f testpod3 -c c00
+ctrl+z
+
+kubctl logs -f testpod3 -c c00
+ctrl+z
+
+To see the ip of pod
+kbectl exec testpod -c c00 -- hostname -i
+
+kbectl exec testpod -c c01 -- hostname -i
+
+kbectl exec testpod -c c01 -- hostname -i
+
+to see what is running inside specific container
+kubectl exec testpod2 -it -c c02 -- /bin/bash
+
+ps
+
+ps -ef
+
+To delete the pod we can directly manifest file
+kubectl delete -f pod2.yml
+
+
+-------------------------- POD ENVIRONMENT  VARIABLES ------------------
+
+vi pod3.yml
+# Create a third manifest file as pod3.yaml
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: environments
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+      env:                        # List of environment variables to be used inside the pod
+      - name: MYNAME
+        value: BHUPINDER
+:wq
+---
+To create pod
+kubectl apply -y pod3.yml
+
+kubectl get pods
+
+kubectl exec environments -it -- /bin/bash
+
+env
+
+echo  $MYNAME
+
+exit
+
+kubectl delete -f pod3.yml
+
+
+
+
+
+
+
+ -----------------------  Expose POD WITH PORTS --------------------------
+
+vi pod4.yml
+
+# Create a manifest as pod4.yml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod4
+spec:
+  containers:
+    - name: c00
+      image: httpd
+      ports:
+       - containerPort: 80 
+
+:wq
+--- 
+
+kubectl apply -f pod4.yml
+
+kubectl get pods
+
+kubectl get pods -o wide
+op --> you will get ip address
+
+curl <ip-address>:80
+op --> it works
+
+kubectl delete -f pod4.yml
+
+kubectl get pods
+o/p --> No resources found
+___________________________________ END _______________________________ 

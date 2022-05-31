@@ -1,0 +1,196 @@
+
+______________________________
+
+AWS infrastrucure: 
+
+1. Regions - 24 regions
+2. Availability Zone (AZ) - 76 AZs
+3. Edge Location (like caching -- Service is CloudFront)
+____________________________________
+
+github projects:
+
+https://github.com/stacksimplify?tab=repositories
+__________________________________
+
+For ec2 ubuntu machine version 20.04
+IPv4 address for docker0: 172.17.0.1
+IPv4 address for eth0:    172.31.18.57
+
+_________________________
+Top 3 blogs devops
+DevopsSchool.com
+aws.amazon.com
+devops.com
+awesome python
+_____________________
+
+invideo.io
+_____________________
+Linux features
+CLI
+Lightweight
+Scabality
+____________________
+
+Ubuntu -- 20.04
+Ubuntu -- 20.10
+
+CentOS
+
+Debian
+
+cloudlinuxos
+_____________________
+
+On ubuntu machine
+ubuntu@ip-172-31-18-57:~$ sudo apt install net-tools
+
+ubuntu@ip-172-31-18-57:~$ ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9001
+        inet 172.31.18.57  netmask 255.255.240.0  broadcast 172.31.31.255
+------
+server ip: 172.31.18.57 
+________________________
+vi Dockerfile
+
+FROM python:3.6-slim
+RUN mkdir /Demo
+WORKDIR /Demo
+ADD . /Demo
+RUN pip install -r requirements.txt
+EXPOSE 8000
+CMD python manage.py runserver 0:8000
+______________________________________
+
+ADD: source to destination
+COPY: will make an extra file
+
+____________________________________
+Servercopy(scp) vs wget
+
+Local server to remote server file upload
+
+-------------------------
+
+What is shell? (user interface) 
+The shell is a program that takes commands from the keyboard and passes them to the operating system (kernel) for performing.
+During the initial days, shells was the only mode for communicating with the kernel(via the CLI).
+
+What is BASH?
+Bash is short for Bourne Again SHell. it's a replacement to the original shell(/bin/sh). Bash combines the features of the Original Shell + additional functionality to make it easier and more convenient to use.
+Nowadays, BASH has been adopted as the default shell for most Linux systems.
+
+bash default characteristics
+1. command alias c=clear
+2. command completion
+3. command history
+
+/etc/shells  for configration files
+echo $SHELL
+
+what are Daemons?
+- A daemon is a type of program that runs in the background, free of user control.
+- They can be activated( initiated as a process) by the occurance of a specific event or condition.
+- Daemons accommodate service requests from tother programs or hardware activity or requests from other computer on a network.
+- After the request is serviced, the Daemon disconnects and wits for furtehr requests.
+ps -ef  (all the daemons in TTY)
+
+sar -r
+
+LVM 
+df -fT
+ext4 & ext3 are default file systems in linux
+
+free -g  
+/dev/sda1
+/dev/sda2
+--------------------
+
+Train with subham video: part2
+
+Secured Shell Protocol (SSH)
+update and install
+man
+SCP
+
+SSH client use
+Optional features
+Add
+Add : openSSH Client
+-----------------------------
+To SSH in a machine
+ssh -i "Pem-file-name" user@serverlocation or serverip
+---------------
+man-db is a helper database
+
+ubuntu@ip-172-31-18-57:~$ sudo apt update
+ubuntu@ip-172-31-18-57:~$ sudo apt install docker
+----------------
+copy file from local to server
+1. Make a file in your local machine
+2. sudo scp -i Pem_file_name <source file>  <destination path>
+
+sending local machine to server
+sudo scp -i TWS-key.pem <source file> <ubuntu@ec2ip:/home/ubuntu/folder_name
+
+downloading from server to local
+sudo scp -i TWD-key.pem <ubuntu@ec2ip:/home/ubuntu/folder_name/meri_file.txt .
+
+Script is a single file where you write commands.
+whereas in programming you write functions for application
+__________________________________________
+
+
+AWS compute services: 
+
+1. EC2 (Elastic cloud compute) ---> IAAS (Server rent, High operational cost)
+2. ECS (Elastic Container Service) ---> Container as a service (CAAS)
+3. Fargate (Serverless) ---> Platform as a service (PAAS, depends on usage)
+4. Lambda (function, trigger or service) ---> Function as a service (FAAS,best and efficient)
+
+DevOps:
+- Reability
+- Continuous Delivery
+- Scabality
+
+What is in DevSECOPS?
+Security:
+
+1. HIPPA
+2. Psswords and Secrets
+3. Data Encryption Techniques
+______________________________
+
+DevOps Roadmap:
+
+1. Programming basics: 
+
+Python 
+- cryptography
+- Automation
+- Scripting
+
+2. Computer Networks: 
+- OSI Model
+- Security/Keys
+- Protocols
+- SSH/HTTPS
+- Bash/shell
+
+3. Operating Sytems
+- Tools
+- Linux
+- Terminal
+
+4. Infrastructure as a code
+- logs/monitoring
+- CI/CD
+- Git/Github
+- Docker
+- AWS/Azure/GCP
+- Kubernetes
+
+Service based companies
+
+

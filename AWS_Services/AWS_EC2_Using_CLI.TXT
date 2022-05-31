@@ -1,0 +1,305 @@
+
+
+--------------- AWS EC2 LAB  using CLI --------------------------
+
+
+We can create ec2 instance using aws cli for that we need to follow the below steps:
+
+1. Download and run the 64-bit Windows installer on your windows machine.
+
+2. Reboot or restart your machine
+
+3. Open CMD on your machine
+
+ 4. C:\Users\creat>aws configure
+AWS Access Key ID [****************AMVG]:
+AWS Secret Access Key [****************/iIH]:
+Default region name [us-east-1]:
+Default output format [json]:
+
+5. Create A New Key Pair
+C:\Users\creat>aws ec2 create-key-pair --key-name keypair10 --key-type rsa --query 'KeyMaterial' --output text > keypair10.pem
+
+To see if the key is actually created.
+ {
+            "KeyPairId": "key-0a1eb1c52b6aebf93",
+            "KeyFingerprint": "f9:14:6b:40:fd:4f:bb:c0:bf:e4:0f:92:0a:a0:59:7a:7a:75:64:62",
+            "KeyName": "keypair10",
+            "KeyType": "rsa",
+            "Tags": [],
+            "CreateTime": "2022-05-20T02:42:44+00:00"
+        }
+
+
+Step 6: Create a security group
+C:\Users\creat>aws ec2 create-security-group --group-name security1 --description "Security group"
+{
+    "GroupId": "sg-07f011fa87340fe88"
+}
+
+The security group will help us determine the traffic route to protect the ec2.
+
+For this lesson, I will set up the security group to allow all HTTP access and SSH.
+
+C:\Users\creat>aws ec2 authorize-security-group-ingress --group-id sg-07f011fa87340fe88 --protocol tcp --port 80 --cidr 0.0.0.0/0
+{
+    "Return": true,
+    "SecurityGroupRules": [
+        {
+            "SecurityGroupRuleId": "sgr-04b5a85b83d903b06",
+            "GroupId": "sg-07f011fa87340fe88",
+            "GroupOwnerId": "078118208581",
+            "IsEgress": false,
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIpv4": "0.0.0.0/0"
+        }
+    ]
+}
+
+
+C:\Users\creat>aws ec2 authorize-security-group-ingress --group-id sg-07f011fa87340fe88 --protocol tcp --port 22 --cidr 0.0.0.0/0
+{
+    "Return": true,
+    "SecurityGroupRules": [
+        {
+            "SecurityGroupRuleId": "sgr-04dcffaa5fd71143a",
+            "GroupId": "sg-07f011fa87340fe88",
+            "GroupOwnerId": "078118208581",
+            "IsEgress": false,
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIpv4": "0.0.0.0/0"
+        }
+    ]
+}
+
+-----
+
+Step 8: Create a bash script to install Apache
+Before we going to create an EC2, we will need to make a script to install and enable Apache so that we can append it to the EC2 creation.
+
+vim apache_script.sh
+
+Inside the script, enter:
+
+s
+
+tap ESC on the keyboard and type :wq , this will create the script and also save it.
+
+--------------------
+Step 9: Create an EC2 and Launch the webserver
+To be able to create an EC2 using CLI, you need an Amazon Machine Image(AMI) to be able to launch it.
+
+Let’s find the AMI, go to your AWS -> Search EC2 -> Launch Instances and you should be able to locate it in there.
+
+AMI ID:  ami-0022f774911c1d690
+
+
+Let’s create an EC2:
+
+C:\Users\creat>aws ec2 run-instances --image-id ami-0022f774911c1d690 --count 1 --instance-type t2.micro --key-name keypair10 --security-group-ids sg-07f011fa87340fe88
+{
+    "Groups": [],
+    "Instances": [
+        {
+            "AmiLaunchIndex": 0,
+            "ImageId": "ami-0022f774911c1d690",
+            "InstanceId": "i-06611586a5127585c",
+            "InstanceType": "t2.micro",
+            "KeyName": "keypair10",
+            "LaunchTime": "2022-05-20T03:18:24+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-east-1b",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-25-179.ec2.internal",
+            "PrivateIpAddress": "172.31.25.179",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-39c1d174",
+            "VpcId": "vpc-27d9455a",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "7bbb5f8e-4ae6-403a-9aa7-1ad7706dfb86",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2022-05-20T03:18:24+00:00",
+                        "AttachmentId": "eni-attach-09e11a0853739e637",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "security1",
+                            "GroupId": "sg-07f011fa87340fe88"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "0a:ba:28:43:54:e9",
+                    "NetworkInterfaceId": "eni-0cbe1707ef4d9f112",
+                    "OwnerId": "078118208581",
+                    "PrivateDnsName": "ip-172-31-25-179.ec2.internal",
+                    "PrivateIpAddress": "172.31.25.179",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-25-179.ec2.internal",
+                            "PrivateIpAddress": "172.31.25.179"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-39c1d174",
+                    "VpcId": "vpc-27d9455a",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/xvda",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "security1",
+                    "GroupId": "sg-07f011fa87340fe88"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 1
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        }
+    ],
+    "OwnerId": "078118208581",
+    "ReservationId": "r-0b9d446e6768da40b"
+}
+
+---------------------------------------
+To be able to create an EC2 using CLI, you need an Amazon Machine Image(AMI) to be able to launch it. with userdata...
+
+aws ec2 run-instances --image-id your AMI ID --count 1 --instance-type t2.micro --key-name yourkeypairname --security-group-ids yoursecuritygroupid --user-data file://apache_script.sh
+
+Congrats!, You created an EC2.
+
+After, you can go to your AWS Console and verify the EC2 has been created.
+
+
+Go to the instance -> copy the Public IPv4 Address -> Paste it onto a browser and you should see something like this
+
+--------------------------------
+
+  Open the Amazon EC2 console.
+
+4.    Stop your instance.
+
+5.    Choose Actions, choose Instance Settings, and then choose Edit User Data.
+
+6.    Copy your user script into the Edit user data box, and then choose Save.
+
+The following example is a shell script that writes "Hello World" to a testfile.txt file in a /tmp directory.
+
+_______________________________________________________________END_______________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
